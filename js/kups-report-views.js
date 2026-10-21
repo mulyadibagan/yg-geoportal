@@ -22,12 +22,19 @@
     const difference=delta===0?'Sesuai saldo buku':Math.abs(delta)<1?'Selisih pembulatan':'Selisih terhadap saldo buku';
     return '<h2>Rekonsiliasi saldo akhir</h2><p class="muted">Bulan '+esc(r.month)+'. Catatan saldo akhir, tidak mengubah saldo awal atau transaksi.</p><div class="table-wrap"><table><thead><tr><th>Akun</th><th class="number">Saldo akhir yang dicatat</th></tr></thead><tbody><tr><td>Rekening kelompok</td><td class="number">'+fmt(r.bank_amount)+'</td></tr><tr><td>Kas tunai</td><td class="number">'+fmt(r.cash_amount)+'</td></tr><tr><th>Total kas + rekening</th><td class="number">'+fmt(total)+'</td></tr><tr><td>'+difference+'</td><td class="number">'+fmt(delta)+'</td></tr></tbody></table></div>'+(changed?'<p class="error">Saldo buku berubah setelah rekonsiliasi dicatat. Periksa kembali catatan saldo akhir.</p>':'')+'<p class="muted">'+esc(r.note)+' · Dicatat oleh '+esc(r.updated_by)+' · '+esc(r.updated_at)+'</p>';
   }
-  function breakdown(rows,fmt,esc){
+  function forecast(accounts,kind,selected,amount){
+    const paid=Number.isFinite(amount)&&amount>=0?amount:0;
+    return ['cash','bank'].map(id=>{const before=accounts?.find(a=>a.id===id)?.balance??null;return {id,before,after:before===null?null:before+(id===selected?(kind==='income'?paid:-paid):0)};});
+  }
+  function entireTable(rows,fmt,esc){
+    return '<div class="table-wrap"><table><thead><tr><th>Tanggal / referensi</th><th>Uraian / kategori</th><th>Akun</th><th class="number">Pemasukan</th><th class="number">Pengeluaran</th></tr></thead><tbody>'+rows.filter(r=>!r.deleted_at).map(r=>'<tr><td>'+esc(r.date)+'<br><small>'+esc(r.source_ref)+'</small></td><td>'+esc(r.description)+'<br><small>'+esc(r.category)+'</small></td><td>'+({cash:'Kas tunai',bank:'Rekening kelompok'}[r.account]||'Belum dipetakan')+'</td><td class="number">'+(r.kind==='income'?fmt(r.amount):'—')+'</td><td class="number">'+(r.kind==='expense'?fmt(r.amount):'—')+'</td></tr>').join('')+'</tbody></table></div>';
+  }
+  function breakdown(rows,fmt,esc,all=false){
     const grouped=categories(rows);
-    return '<h2>Rincian pemasukan dan pengeluaran bulan pilihan</h2><p class="muted">Dikelompokkan berdasarkan kategori transaksi aktif. Transfer internal tidak dihitung sebagai pemasukan atau pengeluaran.</p><div class="two-col">'+['income','expense'].map(kind=>{
+    return '<h2>Rincian pemasukan dan pengeluaran '+(all?'seluruh periode':'bulan pilihan')+'</h2><p class="muted">Dikelompokkan berdasarkan kategori transaksi aktif. Transfer internal tidak dihitung sebagai pemasukan atau pengeluaran.</p><div class="two-col">'+['income','expense'].map(kind=>{
       const entries=grouped[kind],total=entries.reduce((sum,r)=>sum+r.amount,0);
       return '<article class="card category-chart"><h3>'+(kind==='income'?'Pemasukan dari apa saja':'Pengeluaran untuk apa saja')+'</h3><p>Total <strong>'+fmt(total)+'</strong></p>'+(entries.length?entries.map(r=>'<div class="category-chart-row"><div class="category-chart-label"><strong>'+esc(r.category)+'</strong><span>'+fmt(r.amount)+'</span></div><div class="category-chart-track" aria-hidden="true"><span class="'+kind+'" style="width:'+(r.share*100)+'%"></span></div><small>'+r.count+' transaksi · '+new Intl.NumberFormat('id-ID',{style:'percent',maximumFractionDigits:1}).format(r.share)+'</small></div>').join(''):'<p class="muted">Belum ada transaksi.</p>')+'</article>';
     }).join('')+'</div>';
   }
-  return {categories,closing,breakdown};
+  return {categories,closing,breakdown,forecast,entireTable};
 });
