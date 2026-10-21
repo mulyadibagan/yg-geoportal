@@ -65,7 +65,7 @@
     add.onclick=async()=>{if(dirty()){status.textContent='Simpan keputusan atau muat keputusan tim sebelum menambah penanda buah.';return;}cancelBox();stopPlantEditing?.();try{await openBlock();if(!alive())return;linking=false;adding=!adding;add.textContent=adding?'Selesai menambah buah':addLabel;status.textContent=adding?'Klik titik nanas yang berbuah. Satu tanaman hanya satu penanda buah.':'Penambahan penanda buah dibatalkan.';}catch(error){if(alive())status.textContent=error.message;}};
     const metres=(a,b)=>Math.hypot((a[0]-b[0])*111320*Math.cos((a[1]+b[1])*Math.PI/360),(a[1]-b[1])*110574);
     async function placeForPlant(plant,c=plant?.geometry?.coordinates){
-      if(!alive()||!adding||busy||dirty()||head?.supports_plant_links!==true)return;
+      if(map.orthoMeasuring||!alive()||!adding||busy||dirty()||head?.supports_plant_links!==true)return;
       if(!plant||plant.properties.status==='rejected'){status.textContent='Pilih titik nanas yang masih aktif.';return;}
       if(map.getZoom()<22||preparePoint&&!await preparePoint(c)){status.textContent='Tunggu TIFF asli siap, lalu klik titik nanas lagi.';return;}
       if(!alive()||!adding||busy||dirty())return;
@@ -77,7 +77,7 @@
       memo.value=selected.properties.note||'';
       if(await decide(selected.properties.status)){linking=false;adding=!relinking;add.textContent=adding?'Selesai menambah buah':addLabel;focusZone?.(selected?.properties.zones[0]||'__UNASSIGNED__');}
     }
-    const click=async event=>{if(!alive()||!adding||busy||dirty())return;if(isPlantEditing?.()){adding=false;add.textContent=addLabel;return;}
+    const click=async event=>{if(map.orthoMeasuring)return;if(!alive()||!adding||busy||dirty())return;if(isPlantEditing?.()){adding=false;add.textContent=addLabel;return;}
       const c=[event.latlng.lng,event.latlng.lat];try{
         const near=!linking&&head.features.find(f=>f.properties.status!=='rejected'&&metres(c,f.geometry.coordinates)<.20);if(near){adding=false;await pick(near);return;}
         const candidates=getPlants().filter(f=>f.properties.status!=='rejected').map(f=>({f,d:metres(c,f.geometry.coordinates)})).filter(p=>p.d<=.45).sort((a,b)=>a.d-b.d);
