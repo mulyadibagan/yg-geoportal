@@ -76,3 +76,5 @@ test('direct sample opens its private raster and selects a point without saving 
  const dispose=await mount(s.options);assert.equal(s.opened.length,1);assert.equal(s.markers.length,1);assert.equal(s.find('Terapkan keputusan').disabled,false);assert.ok(s.host.children.some(n=>n.textContent.includes('ABC-A-01-001')));assert.ok(requests.every(r=>!r.options.method));dispose();
  s.options.initialSample='missing';await assert.rejects(()=>mount(s.options),/Sampel pada tautan/);
 });
+
+ test('measuring cannot add a sample candidate',async()=>{const s=setup(),reviewer=await mount(s.options);try{await s.find('Buka sampel dan penanda').onclick();s.find('Tambah kandidat di peta').onclick();s.options.map.orthoMeasuring=true;await s.listeners.click({latlng:{lng:102.005,lat:.582}});assert.equal(s.markers.length,1);}finally{reviewer();}});
