@@ -37,6 +37,13 @@ test('four laptops keep independent additions and converge without duplicate pla
  }finally{for(const e of editors)e.dispose();}
 });
 
+test('503 after a committed save automatically retries the same operation without duplicates or lost team points',async()=>{
+ const retry=require('../js/dayun-save-retry.js'),s=setup(),api=s.options.api;let fail=true;const waits=[];
+ s.shared.remote(point('A-manual-anotherstaff','accepted'));
+ s.options.api=(path,config)=>retry.run(async()=>{const response=await api(path,config);if(config&&fail){fail=false;throw Object.assign(Error('HTTP 503'),{status:503});}return response;},{path,options:config,...config?.saveRetry,wait:async ms=>waits.push(ms),random:()=>0});
+ const e=await editor.mount(s.options);try{await add(s);await s.button('Simpan koreksi Blok A privat').onclick();const posts=s.calls.filter(c=>c.config);assert.equal(posts.length,2);assert.equal(posts[0].config.body,posts[1].config.body);assert.deepEqual(waits,[5000]);assert.equal(s.shared.snapshot().revision,2);assert.equal(s.shared.snapshot().counts.manual_additions,2);assert.equal(e.canLeave(),true);assert.equal(JSON.stringify(s.original),s.before);}finally{e.dispose();}
+});
+
 function boxFixture(s){let disabled=0,highlights=0;global.L.Draw={Rectangle:class{constructor(map,options){this.options=options;}enable(){}disable(){disabled++;}}};global.L.circleMarker=()=>({addTo(){highlights++;return this;}});return{draw:contains=>{s.button('Blok titik dengan mouse').onclick();s.events['draw:created']({layer:{options:{dayunPlantSelection:true},addTo(){return this;},getBounds:()=>({contains:contains||(()=>true)})}});},disabled:()=>disabled,highlights:()=>highlights};}
 
 test('box selection previews without writes; cancel leaves all points unchanged',async()=>{

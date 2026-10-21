@@ -4,8 +4,17 @@ import {blockReviewOperation} from './dayun-block-corrections.js';
 import {fruitingOperation} from './dayun-fruiting.js';
 // One coordinator serializes queue changes; R2 mirror remains readable by the processor.
 export class DroneQueue {
-  constructor(state,env){this.state=state;this.env=env;}
-  async fetch(request){return this.state.blockConcurrencyWhile(async()=>{
+  constructor(state,env){this.state=state;this.env=env;this.serial=Promise.resolve();}
+  fetch(request){
+    // R2 I/O can exceed blockConcurrencyWhile's 30-second reset deadline.
+    // Keep the whole read/merge/archive/head transaction serial, including
+    // reads, without holding the runtime's initialization gate. Never release
+    // this queue on a timeout while an uncertain R2 write is still in flight.
+    const response=this.serial.then(()=>this.handleRequest(request));
+    this.serial=response.then(()=>undefined,()=>undefined);
+    return response;
+  }
+  async handleRequest(request){
     if(new URL(request.url).pathname==='/dayun-analysis-areas'){
       try{return Response.json(await analysisAreasOperation(this.env,await request.json()));}
       catch(error){return Response.json({ok:false,error:error.status?error.message:'private_area_storage_failed'},{status:error.status||503});}
@@ -41,5 +50,5 @@ export class DroneQueue {
     // Also repairs a mirror after an interrupted R2 write.
     await this.env.PUBLIC_SNAPSHOTS.put('drone/queue/pending.json',JSON.stringify(queue),{httpMetadata:{contentType:'application/json'}});
     return Response.json(queue);
-  });}
+  }
 }

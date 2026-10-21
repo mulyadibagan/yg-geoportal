@@ -13,7 +13,7 @@ function cors(request){
     'access-control-allow-origin': ALLOWED_ORIGINS.has(origin)?origin:'https://webgisyg.id',
     'access-control-allow-methods':'GET, HEAD, POST, PUT, OPTIONS',
     'access-control-allow-headers':'content-type, x-file-name, x-job-token, authorization, range',
-    'access-control-expose-headers':'content-range, content-length, accept-ranges, etag',
+    'access-control-expose-headers':'content-range, content-length, accept-ranges, etag, retry-after',
     'access-control-max-age':'3600',
     vary:'Origin',
     'x-content-type-options':'nosniff'

@@ -61,10 +61,15 @@
     return workerApi(path,options);
   }
   async function workerApi(path, options = {}) {
+    const {saveRetry,...requestOptions}=options;
+    const send=()=>workerRequest(path,requestOptions);
+    return window.YG_DAYUN_SAVE_RETRY?window.YG_DAYUN_SAVE_RETRY.run(send,{path,options:requestOptions,...saveRetry}):send();
+  }
+  async function workerRequest(path, options = {}) {
     if (!validSession()) { lock('Sesi berakhir. Silakan masuk kembali.'); throw Error('Sesi staf tidak aktif.'); }
     const response = await fetch(API + path, {...options, headers: {...options.headers, Authorization: `Bearer ${session.token}`}, cache: 'no-store', signal: options.signal || AbortSignal.timeout(30000)});
     if (response.status === 401 || response.status === 403) { lock('Akses staf tidak valid. Silakan masuk kembali.'); throw Error('Akses ditolak.'); }
-    if (!response.ok) {const error=Error(`Layanan mengembalikan HTTP ${response.status}.`);error.status=response.status;try{error.details=await response.json();}catch{}throw error;}
+    if (!response.ok) {const error=Error(`Layanan mengembalikan HTTP ${response.status}.`);error.status=response.status;const retryAfter=Number(response.headers?.get('retry-after'));if(Number.isFinite(retryAfter)&&retryAfter>0)error.retryAfterMs=retryAfter*1000;try{error.details=await response.json();}catch{}throw error;}
     return response;
   }
   async function authorize() {
