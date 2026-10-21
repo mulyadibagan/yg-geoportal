@@ -13,7 +13,7 @@
   if(requestedSample){const q=new URLSearchParams(requestedSample.block?{source:requestedSample.source,block:requestedSample.block}:{source:requestedSample.source,trial:requestedSample.trial,sample:requestedSample.sample});if(requestedSample.point)q.set('point',requestedSample.point);$('sampleLogin').href='staff-login.html?return='+encodeURIComponent('orthomosaic-internal.html?'+q.toString());}
   let initialLinkOpened=false;
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, rasterContext = null, sequence = 0;
-  let teamProgress=null,nextZoneTarget=null;
+  let teamProgress=null,nextZoneTarget=null,areaMeter=null;
   let disposeMeritechExport = null, disposeCandidateReview=null, disposeBlockReview=null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
   const nativeRasters=new Set();
   function clearNativeRasters(){for(const raster of [...nativeRasters])raster.dispose();}
@@ -104,9 +104,10 @@
     const imageryPane=map.createPane('ortho-imagery');imageryPane.style.zIndex='300';imageryPane.style.pointerEvents='none';
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 26, maxNativeZoom: 19, referrerPolicy: 'origin', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'}).addTo(map);
     areas = L.featureGroup().addTo(map);
-    map.addControl(new L.Control.Draw({draw:{polygon:{allowIntersection:false},polyline:true,rectangle:true,circle:false,circlemarker:false,marker:false}, edit:{featureGroup:areas}}));
+    map.addControl(new L.Control.Draw({draw:{polygon:{allowIntersection:false,showArea:true},polyline:true,rectangle:true,circle:false,circlemarker:false,marker:false}, edit:{featureGroup:areas}}));
     map.on(L.Draw.Event.CREATED, event => { if(event.layer.options?.dayunPlantSelection||event.layer.options?.dayunFruitSelection)return; event.layer.feature={type:'Feature',properties:{source:source?.title || 'Peta referensi',sourceId:source?.id || null},geometry:event.layer.toGeoJSON().geometry}; areas.addLayer(event.layer); updateMeasurements(); });
     map.on('draw:edited draw:deleted', updateMeasurements);
+    areaMeter=window.YG_ORTHO_MEASURE?.mount({map,areas,onChanged:updateMeasurements,beforeDraw:()=>{if(disposeBlockReview?.canLeave?.()===false){$('mapStatus').textContent='Tunggu koreksi titik tersimpan sebelum mengukur.';return false;}return true;}});
     map.on('mousemove', event => { $('coordinate').textContent = `${event.latlng.lat.toFixed(6)}, ${event.latlng.lng.toFixed(6)}`; });
     $('focusMap').onclick=()=>{
       const card=document.querySelector('.map-card'),expanded=card.classList.toggle('map-expanded');
@@ -123,19 +124,20 @@
     return areas.getLayers().map((layer,index) => {
       const feature = layer.toGeoJSON();
       const polygon = /Polygon/.test(feature.geometry.type);
-      feature.properties = {name: `${polygon?'Area':'Garis'} ${index+1}`, source: feature.properties.source || 'Peta referensi', sourceId: feature.properties.sourceId || null, measuredAt: new Date().toISOString(), method:'digitasi_manual', ...(polygon ? {areaHa:turf.area(feature)/10000} : {lengthM:turf.length(feature,{units:'kilometers'})*1000})};
+      feature.properties = {...feature.properties, name: feature.properties.name || `${polygon?'Area':'Garis'} ${index+1}`, source: feature.properties.source || 'Peta referensi', sourceId: feature.properties.sourceId || null, measuredAt: new Date().toISOString(), method:feature.properties.method||'digitasi_manual', ...(polygon ? {areaM2:turf.area(feature),areaHa:turf.area(feature)/10000} : {lengthM:turf.length(feature,{units:'kilometers'})*1000})};
       return feature;
     });
   }
   function updateMeasurements() {
     const list = features(); $('measurements').replaceChildren();
     list.forEach((feature,index) => {
-      const p=feature.properties, result=p.areaHa !== undefined ? `${number(p.areaHa,4)} ha` : `${number(p.lengthM)} m`;
+      const p=feature.properties, result=p.areaHa !== undefined ? `${number(p.areaM2)} m² · ${number(p.areaHa,4)} ha` : `${number(p.lengthM)} m`;
       const tr=document.createElement('tr'); [p.name,result].forEach(value => {const td=document.createElement('td');td.textContent=value;tr.append(td);}); $('measurements').append(tr);
-      areas.getLayers()[index].bindTooltip(`${p.name}: ${result}`);
+      areas.getLayers()[index].bindTooltip(`${p.name}: ${result}`,{permanent:true,direction:'center'});
     });
     if (!list.length) { const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=2;td.textContent='Belum ada geometri analisis.';tr.append(td);$('measurements').append(tr); }
     $('exportAreas').disabled = $('clearAreas').disabled = !list.length;
+    if(list.length)areaMeter?.showFeature(list.at(-1));else areaMeter?.clear();
   }
   function save(blob, name) {
     const url=URL.createObjectURL(blob), a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);

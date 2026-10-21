@@ -117,3 +117,5 @@ test('an older server cannot silently discard a new species-rejection label',asy
 
 
 test('adding a manual point reveals its actual zone without changing its identity or save payload',async()=>{const s=setup(),placed=[];s.options.onPointPlaced=f=>placed.push(structuredClone(f));const e=await editor.mount(s.options);try{await add(s);assert.equal(placed.length,1);assert.deepEqual(placed[0].properties.zones,['GT-A-01']);assert.equal(e.canLeave(),false);await s.button('Simpan koreksi Blok A privat').onclick();const f=s.shared.snapshot().review.changes.find(f=>f.properties.id===placed[0].properties.id);assert.deepEqual(f.geometry,placed[0].geometry);assert.deepEqual(f.properties.zones,['GT-A-01']);assert.equal(e.canLeave(),true);}finally{e.dispose();}});
+
+ test('measuring a boundary cannot create pineapple corrections',async()=>{const s=setup();s.options.preparePoint=async()=>true;const e=await editor.mount(s.options);try{s.button('Tambah titik nanas').onclick();s.options.map.orthoMeasuring=true;await s.events.click({latlng:{lng:1,lat:1}});assert.equal(e.features().length,2);assert.equal(s.calls.filter(c=>c.config).length,0);}finally{e.dispose();}});
