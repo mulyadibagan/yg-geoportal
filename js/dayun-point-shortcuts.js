@@ -1,6 +1,6 @@
 (function(root,factory){const api=factory();if(typeof module==='object'&&module.exports)module.exports=api;else root.YG_DAYUN_POINT_SHORTCUTS=api;})(typeof window!=='undefined'?window:globalThis,function(){
  'use strict';
- function mount({container,map,enabled,selectBounds,deleteSelection,cancelSelection,addPoint,doc=document,win=window}){
+ function mount({container,map,enabled,selectBounds,deleteSelection,undoDelete,cancelSelection,addPoint,doc=document,win=window}){
   if(!container)return {focus(){},dispose(){}};
   let drag=null,space=false,suppressUntil=0,rectangle=null;
   const typing=t=>!!t?.closest?.('input,textarea,select,button,[contenteditable="true"],[role="textbox"],.leaflet-control,.leaflet-marker-icon');
@@ -27,7 +27,11 @@
   }
   function click(e){if(Date.now()<suppressUntil){e.preventDefault();e.stopImmediatePropagation();}}
   function keydown(e){
-   if(typing(e.target)||!focused()||!enabled()||e.ctrlKey||e.metaKey||e.altKey)return;
+   if(typing(e.target)||!focused()||!enabled()||e.altKey)return;
+   if((e.ctrlKey||e.metaKey)&&!e.shiftKey&&e.key?.toLowerCase()==='z'){
+    if(!e.repeat){e.preventDefault();undoDelete?.();}return;
+   }
+   if(e.ctrlKey||e.metaKey)return;
    if(e.code==='Space'||e.key===' '){space=true;e.preventDefault();return;}
    if(e.repeat)return;
    if(e.key==='Delete'){e.preventDefault();deleteSelection();}
