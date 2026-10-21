@@ -29,12 +29,15 @@
   function entireTable(rows,fmt,esc){
     return '<div class="table-wrap"><table><thead><tr><th>Tanggal / referensi</th><th>Uraian / kategori</th><th>Akun</th><th class="number">Pemasukan</th><th class="number">Pengeluaran</th></tr></thead><tbody>'+rows.filter(r=>!r.deleted_at).map(r=>'<tr><td>'+esc(r.date)+'<br><small>'+esc(r.source_ref)+'</small></td><td>'+esc(r.description)+'<br><small>'+esc(r.category)+'</small></td><td>'+({cash:'Kas tunai',bank:'Rekening kelompok'}[r.account]||'Belum dipetakan')+'</td><td class="number">'+(r.kind==='income'?fmt(r.amount):'—')+'</td><td class="number">'+(r.kind==='expense'?fmt(r.amount):'—')+'</td></tr>').join('')+'</tbody></table></div>';
   }
+  function categoryRows(rows,kind,category){
+    return (rows||[]).filter(r=>!r.deleted_at&&!r._transfer&&r.kind===kind&&String(r.category||'Belum dikategorikan')===category);
+  }
   function breakdown(rows,fmt,esc,all=false){
     const grouped=categories(rows);
     return '<h2>Rincian pemasukan dan pengeluaran '+(all?'seluruh periode':'bulan pilihan')+'</h2><p class="muted">Dikelompokkan berdasarkan kategori transaksi aktif. Transfer internal tidak dihitung sebagai pemasukan atau pengeluaran.</p><div class="two-col">'+['income','expense'].map(kind=>{
       const entries=grouped[kind],total=entries.reduce((sum,r)=>sum+r.amount,0);
-      return '<article class="card category-chart"><h3>'+(kind==='income'?'Pemasukan dari apa saja':'Pengeluaran untuk apa saja')+'</h3><p>Total <strong>'+fmt(total)+'</strong></p>'+(entries.length?entries.map(r=>'<div class="category-chart-row"><div class="category-chart-label"><strong>'+esc(r.category)+'</strong><span>'+fmt(r.amount)+'</span></div><div class="category-chart-track" aria-hidden="true"><span class="'+kind+'" style="width:'+(r.share*100)+'%"></span></div><small>'+r.count+' transaksi · '+new Intl.NumberFormat('id-ID',{style:'percent',maximumFractionDigits:1}).format(r.share)+'</small></div>').join(''):'<p class="muted">Belum ada transaksi.</p>')+'</article>';
+      return '<article class="card category-chart"><h3>'+(kind==='income'?'Pemasukan dari apa saja':'Pengeluaran untuk apa saja')+'</h3><p>Total <strong>'+fmt(total)+'</strong></p>'+(entries.length?entries.map(r=>'<button type="button" class="category-chart-row" data-category-kind="'+kind+'" data-category="'+esc(r.category)+'" aria-haspopup="dialog"><span class="category-chart-label"><strong>'+esc(r.category)+'</strong><span>'+fmt(r.amount)+'</span></span><span class="category-chart-track" aria-hidden="true"><span class="'+kind+'" style="width:'+(r.share*100)+'%"></span></span><small>'+r.count+' transaksi · '+new Intl.NumberFormat('id-ID',{style:'percent',maximumFractionDigits:1}).format(r.share)+' · Lihat rincian →</small></button>').join(''):'<p class="muted">Belum ada transaksi.</p>')+'</article>';
     }).join('')+'</div>';
   }
-  return {categories,closing,breakdown,forecast,entireTable};
+  return {categories,closing,breakdown,forecast,entireTable,categoryRows};
 });
