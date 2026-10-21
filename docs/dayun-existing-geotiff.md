@@ -99,6 +99,14 @@ ada penyalinan koordinat ke data sensus atau perubahan pembagian hitungan
 gawangan. Daftar dibaca saat masuk, melalui **Perbarui batas**, atau setelah
 menyimpan batas; geser dan zoom tidak menambah permintaan batas.
 
+Peta **Agroforestri Dayun** (`dayun-map.html`) memakai renderer dan API batas
+yang sama, hanya bila sesi staf aktif. Tidak ada salinan polygon horti dalam
+GeoJSON publik, sumber sensus, atau paket offline. Daftar legenda yang berubah
+tetap memakai kontrol lapisan yang sama tanpa mengunduh ulang. Logout,
+pergantian sesi, dan kedaluwarsa menghapus lapisan privat; pembaca anonim tetap
+dapat memakai peta publik tanpa memanggil API batas. Tombol **Perbarui batas**
+mengambil versi privat terbaru yang juga dibaca Analisis Orthomosaic.
+
 `/api/staff/drone/analysis/areas` memerlukan sesi staf yang sama dengan analisis
 lainnya. Operasi diserialkan oleh koordinator yang sudah ada; revisi usang
 ditolak dan percobaan ulang memakai ID operasi yang sama. Arsip dan head berada

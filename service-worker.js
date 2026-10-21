@@ -36,6 +36,8 @@ const DAYUN_CORE_ASSETS = [
   "/js/dayun-data-source.js",
   "/js/dayun-agro-summary.js",
   "/js/dayun-public.js",
+  "/js/dayun-horti-boundary.js",
+  "/js/orthomosaic-area-store.js",
   "/js/dayun-mpts.js",
   "/js/dayun-mpts-summary.js",
   "/js/dayun-mpts-profile.js",

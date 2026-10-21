@@ -68,6 +68,8 @@
     var satellite=L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxNativeZoom:18,maxZoom:20,attribution:'Tiles &copy; Esri'});
     var osm=L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',{maxNativeZoom:19,maxZoom:20,attribution:'&copy; OpenStreetMap contributors'});
     var map=L.map(mapEl,{zoomControl:true,layers:[satellite],preferCanvas:true}).setView([0.5844,102.009],17);
+    // Reuse the same authenticated, read-only boundary renderer as Orthomosaic.
+    var hortiHost=null;if(window.YG_DAYUN_HORTI){hortiHost=document.createElement('section');hortiHost.id='dayun-horti-boundaries';hortiHost.setAttribute('aria-label','Batas horti privat');window.YG_DAYUN_HORTI.mount({map:map,host:hortiHost});}
     // Keep Leaflet geometry aligned after browser zoom, responsive layout, and fullscreen changes.
     var resizeFrame;
     function syncMapSize(){cancelAnimationFrame(resizeFrame);resizeFrame=requestAnimationFrame(function(){map.invalidateSize({pan:false});});}
@@ -145,6 +147,7 @@
         var nav=document.createElement('div');nav.className='dy-sidebar-tabs';nav.setAttribute('role','group');nav.setAttribute('aria-label','Panel peta');nav.innerHTML=[['gawangan','Gawangan'],['work','Pekerjaan'],['mpts','MPTS']].map(function(t){return '<button type="button" data-sidebar-tab="'+t[0]+'" aria-pressed="'+(sidebarTab===t[0])+'">'+t[1]+'</button>';}).join('');legendEl.prepend(nav);legendEl.dataset.panel=sidebarTab;
         nav.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){sidebarTab=b.dataset.sidebarTab;legendEl.dataset.panel=sidebarTab;nav.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});});});
         var shortcut=document.createElement('a');shortcut.className='dy-work-shortcut';shortcut.href='#dayun-field-work';shortcut.textContent='Buka pekerjaan bulan ini dan jadwal →';legendEl.appendChild(shortcut);
+        if(hortiHost)legendEl.appendChild(hortiHost);
       }
       function switchLayer(id){if(!groups[id]||id===active)return;map.removeLayer(groups[active]);active=id;groups[active].addTo(map);renderLegend();map.fitBounds(groups[active].getBounds(),{padding:[24,24]});if(ethrelController)ethrelController.repaint();}
       groups[active].addTo(map);renderLegend();map.fitBounds(groups[active].getBounds(),{padding:[24,24]});setTimeout(function(){map.invalidateSize();map.fitBounds(groups[active].getBounds(),{padding:[24,24]});},120);
