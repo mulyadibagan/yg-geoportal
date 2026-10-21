@@ -10,6 +10,13 @@ function setup(){
  const fire=(name,e={})=>events[name]?.forEach(f=>f(e));return{lib,map,areas,layers,nodes,fire};
 }
 const square=(x=102)=>turf.polygon([[[x,.5],[x+.001,.5],[x+.001,.501],[x,.501],[x,.5]]]);
+
+test('measurement tools mount in the sidebar instead of a floating Leaflet map control',()=>{
+ const s=setup(),children=[],container={append:n=>children.push(n)};
+ const meter=s.lib.mount({map:s.map,areas:s.areas,container,onChanged(){}});
+ assert.equal(children[0],meter.element);assert.equal(meter.control,undefined);
+ const html=fs.readFileSync('orthomosaic-internal.html','utf8');assert.match(html,/<details id="measurementTools"><summary>Ukur luas/);assert.match(html,/<div id="measureTools"><\/div>/);
+});
 test('live polygon and rectangle show square metres and hectares before completion without network',()=>{const s=setup();s.lib.mount({map:s.map,areas:s.areas,onChanged(){}});const output=s.nodes.find(e=>e.tag==='output');s.fire('draw:drawstart',{layerType:'polygon'});assert.equal(s.map.orthoMeasuring,true);s.fire('draw:drawvertex',{layers:{getLayers:()=>[{getLatLng:()=>({lng:102,lat:.5})},{getLatLng:()=>({lng:102.001,lat:.5})}]}});s.fire('mousemove',{latlng:{lng:102.001,lat:.501}});assert.match(output.textContent,/m².*ha/);assert.equal(s.layers.length,0);s.fire('draw:drawstop');assert.equal(s.map.orthoMeasuring,false);assert.match(output.textContent,/mulai gambar/);s.fire('draw:drawstart',{layerType:'rectangle'});s.fire('mousedown',{latlng:{lng:102,lat:.5}});s.fire('mousemove',{latlng:{lng:102.001,lat:.501}});assert.match(output.textContent,/m².*ha/);});
 test('merged overlapping parts of the same ID are counted once without mutating source',()=>{const s=setup(),f=square(),a=structuredClone(f);a.properties.sourceGawanganId='GT-A-01';const data={features:[a,structuredClone(a)]},before=JSON.stringify(data),group=s.lib.groups(data);assert.equal(group.size,1);const merged=s.lib.merge(group.get('GT-A-01'),turf);assert.ok(Math.abs(turf.area(merged)-turf.area(f))<.01);assert.equal(JSON.stringify(data),before);assert.match(s.lib.format(10000),/10\.000 m² · 1 ha/);});
 test('real revised A–F polygons merge and each gawangan is measured from geometry',()=>{const s=setup(),data=JSON.parse(fs.readFileSync('data/dayun-map.geojson','utf8')),before=JSON.stringify(data),group=s.lib.groups(data);assert.ok(group.size>40);assert.equal(group.get('GT-A-01').length,3);for(const list of group.values())assert.ok(turf.area(s.lib.merge(list,turf))>0);const all=s.lib.merge([...group.values()].flat(),turf),sum=data.features.reduce((n,f)=>n+turf.area(f),0);assert.ok(turf.area(all)<=sum+.01);assert.equal(JSON.stringify(data),before);});

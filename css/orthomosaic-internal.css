@@ -23,6 +23,8 @@
 
 .dayun-fruit-marker svg{margin:2px}.dayun-fruit-marker.fruit-selected{outline:3px solid #2563eb;outline-offset:2px;border-radius:4px}
 
-.ortho-measure{background:#fff;padding:8px!important;border-radius:6px;max-width:260px;box-shadow:0 1px 6px #0003}.ortho-measure output{display:block;font-weight:750;color:#145b45;margin:7px 0;white-space:normal}.ortho-measure button{font-size:12px;padding:7px 10px;width:100%}.ortho-measure summary{cursor:pointer;font-size:12px}.ortho-measure select{width:100%;font-size:12px;margin:6px 0}.ortho-measure small{display:block;font-size:10px;line-height:1.3;margin-top:5px}
+.ortho-measure{background:#fff;padding:8px 0;max-width:100%}.ortho-measure output{display:block;font-weight:750;color:#145b45;margin:7px 0;white-space:normal}.ortho-measure button{font-size:12px;padding:7px 10px;width:100%}.ortho-measure summary{cursor:pointer;font-size:12px}.ortho-measure select{width:100%;font-size:12px;margin:6px 0}.ortho-measure small{display:block;font-size:10px;line-height:1.3;margin-top:5px}
 
 .ortho-measure input{width:100%;box-sizing:border-box;font-size:12px;padding:6px;margin:6px 0}.ortho-measure details+details{border-top:1px solid #dce6e0;margin-top:7px;padding-top:7px}.ortho-measure p{font-size:11px;line-height:1.4;margin:6px 0}.ortho-measure details button{margin:3px 0}
+
+#teamBoundaryTools{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 0;border-top:1px solid #dce6e0}#teamBoundaryTools label{color:#a21caf;font-size:13px;font-weight:700}#teamBoundaryTools input{width:auto}#teamBoundaryTools button{font-size:12px;padding:5px 8px}#teamBoundaryTools small{flex-basis:100%;font-size:11px}#measurementTools{border-top:1px solid #dce6e0}
