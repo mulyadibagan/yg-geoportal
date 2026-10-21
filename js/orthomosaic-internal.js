@@ -105,7 +105,7 @@
     L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {maxZoom: 26, maxNativeZoom: 19, referrerPolicy: 'origin', attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap contributors</a>'}).addTo(map);
     areas = L.featureGroup().addTo(map);
     map.addControl(new L.Control.Draw({draw:{polygon:{allowIntersection:false,showArea:true},polyline:true,rectangle:true,circle:false,circlemarker:false,marker:false}, edit:{featureGroup:areas}}));
-    map.on(L.Draw.Event.CREATED, event => { if(event.layer.options?.dayunPlantSelection||event.layer.options?.dayunFruitSelection)return; event.layer.feature={type:'Feature',properties:{source:source?.title || 'Peta referensi',sourceId:source?.id || null},geometry:event.layer.toGeoJSON().geometry}; areas.addLayer(event.layer); updateMeasurements(); });
+    map.on(L.Draw.Event.CREATED, event => { if(event.layer.options?.dayunPlantSelection||event.layer.options?.dayunFruitSelection)return; event.layer.feature={type:'Feature',properties:{source:source?.title || 'Peta referensi',sourceId:source?.id || null},geometry:event.layer.toGeoJSON(false).geometry}; areas.addLayer(event.layer); updateMeasurements(); });
     map.on('draw:edited draw:deleted', updateMeasurements);
     areaMeter=window.YG_ORTHO_MEASURE?.mount({map,areas,onChanged:updateMeasurements,beforeDraw:()=>{if(disposeBlockReview?.canLeave?.()===false){$('mapStatus').textContent='Tunggu koreksi titik tersimpan sebelum mengukur.';return false;}return true;}});
     map.on('mousemove', event => { $('coordinate').textContent = `${event.latlng.lat.toFixed(6)}, ${event.latlng.lng.toFixed(6)}`; });
@@ -122,7 +122,7 @@
   }
   function features() {
     return areas.getLayers().map((layer,index) => {
-      const feature = layer.toGeoJSON();
+      const feature = layer.toGeoJSON(false);
       const polygon = /Polygon/.test(feature.geometry.type);
       feature.properties = {...feature.properties, name: feature.properties.name || `${polygon?'Area':'Garis'} ${index+1}`, source: feature.properties.source || 'Peta referensi', sourceId: feature.properties.sourceId || null, measuredAt: new Date().toISOString(), method:feature.properties.method||'digitasi_manual', ...(polygon ? {areaM2:turf.area(feature),areaHa:turf.area(feature)/10000} : {lengthM:turf.length(feature,{units:'kilometers'})*1000})};
       return feature;
