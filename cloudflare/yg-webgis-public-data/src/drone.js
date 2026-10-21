@@ -201,6 +201,14 @@ async function servePublicCog(request,env,id){
 
 async function dayunAnalysis(request,env,url,verifyStaffToken){
   if(!await authorizedStaff(request,env,verifyStaffToken))return reply(request,{ok:false,error:'unauthorized'},401);
+  if(url.pathname==='/api/staff/drone/analysis/areas'){
+    if(!['GET','POST'].includes(request.method))return reply(request,{ok:false,error:'method_not_allowed'},405);
+    if(!env.DRONE_QUEUE)return reply(request,{ok:false,error:'area_storage_unavailable'},503);
+    let body={};if(request.method==='POST'){const text=await request.text();if(text.length>1024*1024)return reply(request,{ok:false,error:'area_collection_too_large'},413);try{body=JSON.parse(text)}catch{return reply(request,{ok:false,error:'invalid_area_json'},400);}if(!body||typeof body!=='object'||Array.isArray(body))return reply(request,{ok:false,error:'invalid_area_json'},400);}
+    const stub=env.DRONE_QUEUE.get(env.DRONE_QUEUE.idFromName('dayun-analysis-areas'));
+    const response=await stub.fetch(new Request('https://queue.internal/dayun-analysis-areas',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({...body,action:request.method==='POST'?'save':url.searchParams.has('id')?'load':'list',...(request.method==='GET'?{id:url.searchParams.get('id'),cursor:url.searchParams.get('cursor')||undefined}:{})})}));
+    return reply(request,await response.json(),response.status,{'cache-control':'private, no-store'});
+  }
   const scope=request.method==='POST'&&url.pathname.endsWith('/asset-links')?'assets':request.method==='POST'&&url.pathname.endsWith('/requests')?'analysis':['GET','HEAD'].includes(request.method)&&url.pathname.includes('/files/')?'legacy':null;
   if(scope){const limited=await droneUsageGuard(request,env,scope,suppliedStaffToken(request));if(limited)return reply(request,limited.body,limited.status,{'retry-after':'60'});}
   const assets=url.pathname.match(/^\/api\/staff\/drone\/analysis\/(Agro_ABC|Agro_DEF)\/asset-links$/);
