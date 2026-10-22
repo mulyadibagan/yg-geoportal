@@ -1604,7 +1604,9 @@ L.control.scale({
     // Display linked canal markers beside their FDRS reference; never move geometry.
     const linkedReference = config.id === "sekat_kanal" &&
       Boolean(feature && feature.properties && feature.properties.Referensi_Object_ID);
-    const referenceLeader = linkedReference
+    const linkedCanal = linkedReference || (config.id === "sekat_kanal" &&
+      Boolean(feature && feature.properties && feature.properties.FDRS_Terkait_Object_ID));
+    const referenceLeader = linkedCanal
       ? '<span aria-hidden="true" style="position:absolute;left:20px;top:19px;width:32px;border-top:2px dashed #00838f;pointer-events:none"></span>'
       : "";
 
@@ -1629,8 +1631,8 @@ L.control.scale({
           escapeHtml(symbol) +
           '</span></span>',
         iconSize: [40, 40],
-        iconAnchor: linkedReference ? [52, 20] : [20, 20],
-        popupAnchor: linkedReference ? [-32, -16] : [0, -16]
+        iconAnchor: linkedCanal ? [52, 20] : [20, 20],
+        popupAnchor: linkedCanal ? [-32, -16] : [0, -16]
       })
     });
   }
