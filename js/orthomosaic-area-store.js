@@ -17,32 +17,32 @@
  }
  // A read-only map layer, separate from editable measurements and point work.
  // Fetch only on entry or an explicit refresh/save, never on pan or zoom.
- function mountOverlay({host,map,api,current=()=>true}){
+ function mountOverlay({host,map,api,current=()=>true,title="Batas horti",matches=item=>/\bhorti\b/i.test(item.name),paneName="ortho-team-boundaries",color="#a21caf"}){
   const el=(tag,text)=>{const n=document.createElement(tag);if(text)n.textContent=text;return n;};
-  const label=el('label',' Batas horti'),toggle=el('input'),reload=el('button','Perbarui batas'),status=el('small');
+  const label=el('label',' '+title),toggle=el('input'),reload=el('button','Perbarui batas'),status=el('small');
   toggle.type='checkbox';toggle.checked=true;reload.type='button';status.setAttribute('role','status');label.prepend(toggle);host.replaceChildren(label,reload,status);
-  const pane=map.createPane('ortho-team-boundaries');pane.style.zIndex='450';pane.style.pointerEvents='none';
+  const pane=map.createPane(paneName);pane.style.zIndex='450';pane.style.pointerEvents='none';
   const layer=root.L.layerGroup().addTo(map);let disposed=false,busy=false,again=false;
   const alive=()=>!disposed&&current();
   toggle.onchange=()=>{if(!alive())return;if(toggle.checked)layer.addTo(map);else map.removeLayer(layer);};
   async function refresh(){
-   if(!alive())return;if(busy){again=true;return;}busy=true;reload.disabled=true;status.textContent='Memuat batas horti…';
+   if(!alive())return;if(busy){again=true;return;}busy=true;reload.disabled=true;status.textContent='Memuat '+title+'…';
    try{
     const items=[];let cursor=null;
     for(let page=0;page<5;page++){
      const d=await(await api('/api/staff/drone/analysis/areas'+(cursor?'?cursor='+encodeURIComponent(cursor):''))).json();if(!alive())return;
-     items.push(...d.items.filter(item=>/\bhorti\b/i.test(item.name)));cursor=d.cursor;if(!cursor)break;
+     items.push(...d.items.filter(matches));cursor=d.cursor;if(!cursor)break;
     }
     if(cursor)throw Error('Daftar batas belum lengkap.');
     const rendered=[];
     for(const item of new Map(items.map(item=>[item.id,item])).values()){
      const d=await(await api('/api/staff/drone/analysis/areas?id='+encodeURIComponent(item.id))).json();if(!alive())return;
      const polygons=d.record.collection.features.filter(f=>/^(Multi)?Polygon$/.test(f.geometry?.type));
-     if(polygons.length)rendered.push(root.L.geoJSON({type:'FeatureCollection',features:polygons},{pane:'ortho-team-boundaries',interactive:false,style:{color:'#a21caf',weight:3,dashArray:'8 5',fill:false,fillOpacity:0}}));
+     if(polygons.length)rendered.push(root.L.geoJSON({type:'FeatureCollection',features:polygons},{pane:paneName,interactive:false,style:{color,weight:3,dashArray:'8 5',fill:false,fillOpacity:0}}));
     }
     if(!alive())return;layer.clearLayers();for(const shape of rendered)shape.addTo(layer);
-    status.textContent=rendered.length?rendered.length+' batas horti privat':'Belum ada batas horti tersimpan.';
-   }catch(error){if(alive())status.textContent='Batas horti belum diperbarui: '+error.message;}
+    status.textContent=rendered.length?rendered.length+' '+title+' privat':'Belum ada '+title+' tersimpan.';
+   }catch(error){if(alive())status.textContent=title+' belum diperbarui: '+error.message;}
    finally{busy=false;if(alive()){reload.disabled=false;if(again){again=false;refresh();}}}
   }
   reload.onclick=refresh;refresh();
