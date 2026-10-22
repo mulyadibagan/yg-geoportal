@@ -1,8 +1,8 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm'),{webcrypto}=require('node:crypto');
 const turf=require('../cloudflare/yg-webgis-public-data/node_modules/@turf/turf');
-const T={...turf,union:(a,b)=>turf.union(turf.featureCollection([a,b]))};
+const T={...turf,union:(a,b)=>turf.union(turf.featureCollection([a,b])),intersect:(a,b)=>turf.intersect(turf.featureCollection([a,b]))};
 const square=(x=0)=>turf.polygon([[[x,0],[x+2,0],[x+2,2],[x,2],[x,0]]]);
-function setup(shared={records:new Map()},measurementFeatures=[],initialSnapshot){
+function setup(shared={records:new Map()},measurementFeatures=[],initialSnapshot,boundaryFeatures){
  const nodes=[],listeners={},events={},requests=[],groups=[];let fail=false,allowed=true;
  const el=tag=>{const n={tag,children:[],textContent:'',_value:null,setAttribute(){},append(...xs){this.children.push(...xs)},prepend(n){this.children.unshift(n)},replaceChildren(){this.children=[];this._value=null},remove(){},get options(){return this.children},get value(){return this._value??this.children[0]?.value??''},set value(v){this._value=v}};nodes.push(n);return n;};
  const makeLayer=f=>({toGeoJSON:()=>structuredClone(f)});
@@ -13,7 +13,7 @@ function setup(shared={records:new Map()},measurementFeatures=[],initialSnapshot
  const context={window:{turf:T,L:{featureGroup:layerGroup,geoJSON:f=>({getLayers:()=>[makeLayer(f)]}),Draw:{Polygon:function(){this.enable=()=>{};this.disable=()=>{}}},EditToolbar:{Edit:function(){this.enable=()=>{};this.save=()=>{};this.disable=()=>{}}}},confirm:()=>allowed,addEventListener:(n,f)=>events[n]=f,removeEventListener:n=>delete events[n]},document:{createElement:el},Option:function(text,value){return{textContent:text,value}},crypto:webcrypto,Blob};
  vm.runInNewContext(fs.readFileSync('js/dayun-new-planting.js','utf8'),context);
  const api=async(path,options)=>{requests.push({path,options});if(options){const b=JSON.parse(options.body),prior=shared.records.get(b.id);if(prior?.operation_id===b.operation_id)return{json:async()=>({record:prior})};if((prior?.revision||0)!==b.expected_revision)throw Object.assign(Error('conflict'),{status:409});const record={...b,revision:b.expected_revision+1};shared.records.set(b.id,record);if(fail){fail=false;throw Error('response lost')};return{json:async()=>({record})};}const id=new URL('https://x'+path).searchParams.get('id');return{json:async()=>id?{record:shared.records.get(id)}:{items:[...shared.records.values()],cursor:null}};};
- const control=context.window.YG_DAYUN_NEW_PLANTING.mount({host:el('div'),map,api,current:()=>true,getSnapshot:()=>snapshot,getMeasurements:()=>measurementFeatures,save(){},loadCensus:async()=>({objects:[{objectId:'DAYUN-GT-A-02',crops:[{crop:'NANAS',plantingCohorts:[{period:'2026-08',plantedCount:1029}]}]}]})});
+ const control=context.window.YG_DAYUN_NEW_PLANTING.mount({host:el('div'),map,api,current:()=>true,getSnapshot:()=>snapshot,getMeasurements:()=>measurementFeatures,save(){},loadBoundaries:async()=>({type:'FeatureCollection',features:boundaryFeatures||[turf.polygon([[[-2,-2],[10,-2],[10,10],[-2,10],[-2,-2]]],{shortId:'GT-A-02',boundaryRevision:'test-rev'})]}),loadCensus:async()=>({objects:[{objectId:'DAYUN-GT-A-02',crops:[{crop:'NANAS',plantingCohorts:[{period:'2026-08',plantedCount:1029}]}]}]})});
  return{context,control,shared,requests,events,nodes,button:text=>nodes.find(n=>n.textContent===text),select:nodes.filter(n=>n.tag==='select')[1],emit,add:f=>emit('draw:created',{layer:{options:{dayunNewPlanting:true},toGeoJSON:()=>structuredClone(f)}}),fail:()=>fail=true,setSnapshot:s=>{snapshot=s;emit('dayun:plantschanged')},output:()=>nodes.filter(n=>n.tag==='p')[0].textContent,allow:v=>allowed=v};
 }
 const flush=()=>new Promise(r=>setImmediate(r));
@@ -50,4 +50,34 @@ test('mount before any block or census is loaded does not abort map initializati
  s.add(square());assert.match(s.output(),/Hitungan belum tersedia/);
  s.setSnapshot({block:'A',ready:true,dirty:false,features:[turf.point([1,1],{id:'later'})]});
  assert.match(s.output(),/Titik dalam batas: 1/);s.control.dispose();
+});
+
+test('gawangan reference merges every source part without filling gaps or mutating source',()=>{
+ const s=setup(),fn=s.context.window.YG_DAYUN_NEW_PLANTING.boundaryFor;
+ const data=turf.featureCollection([square(),square(4)]);for(const f of data.features)f.properties={sourceGawanganId:'GT-A-02',boundaryRevision:'rev-18-oct'};
+ const original=JSON.stringify(data),boundary=fn(data,'GT-A-02',T);
+ assert.equal(boundary.geometry.type,'MultiPolygon');assert.equal(boundary.properties.boundaryRevision,'rev-18-oct');
+ assert.ok(Math.abs(turf.area(boundary)-turf.area(data))<.001);assert.equal(turf.booleanPointInPolygon(turf.point([3,1]),boundary),false);assert.equal(JSON.stringify(data),original);s.control.dispose();
+});
+test('partial draw clips to source edges and excludes gap and outside points from saved count',async()=>{
+ const left=square(),right=square(4);for(const f of [left,right])f.properties={shortId:'GT-A-02',boundaryRevision:'rev-18-oct'};
+ const s=setup(undefined,[],undefined,[left,right]);await flush();
+ s.setSnapshot({block:'A',ready:true,dirty:false,revision:9,features:[turf.point([1,1],{id:'in-left'}),turf.point([5,1],{id:'in-right',origin:'manual_addition'}),turf.point([3,1],{id:'gap'}),turf.point([8,1],{id:'out'})]});
+ s.add(turf.polygon([[[-1,-1],[9,-1],[9,3],[-1,3],[-1,-1]]]));assert.match(s.output(),/2 bagian/);assert.match(s.output(),/Titik dalam batas: 2/);
+ await s.button('Simpan layer tanaman baru').onclick();const fs=[...s.shared.records.values()][0].collection.features;
+ assert.equal(fs.length,2);assert.equal(fs[0].properties.pointCount,2);assert.equal(fs[0].properties.boundaryMethod,'digitasi_dipotong_gawangan');assert.equal(fs[0].properties.boundaryRevision,'rev-18-oct');
+ for(const f of fs)assert.equal(turf.difference(turf.featureCollection([f,T.union(left,right)])),null);s.control.dispose();
+});
+test('use entire gawangan saves all source parts with matching area and provenance',async()=>{
+ const data=[square(),square(4)];for(const f of data)f.properties={shortId:'GT-A-02',boundaryRevision:'revised'};
+ const s=setup(undefined,[],undefined,data);await flush();s.button('Pakai seluruh batas gawangan').onclick();await s.button('Simpan layer tanaman baru').onclick();
+ const fs=[...s.shared.records.values()][0].collection.features;assert.equal(fs.length,2);assert.ok(Math.abs(turf.area(turf.featureCollection(fs))-turf.area(turf.featureCollection(data)))<.001);assert.equal(fs[0].properties.boundaryMethod,'seluruh_batas_gawangan_revisi');s.control.dispose();
+});
+test('missing reference or nonintersecting polygon cannot create an unrestricted saved boundary',async()=>{
+ const s=setup(undefined,[],undefined,[]);await flush();s.add(square());await s.button('Simpan layer tanaman baru').onclick();assert.equal(s.shared.records.size,0);assert.equal(s.button('Gambar bagian tanaman baru').disabled,true);s.control.dispose();
+ const t=setup(undefined,[],undefined,[{...square(4),properties:{shortId:'GT-A-02'}}]);await flush();t.add(square());await t.button('Simpan layer tanaman baru').onclick();assert.equal(t.shared.records.size,0);t.control.dispose();
+});
+test('actual A1 revised reference includes all three parts and remains separate from A2',()=>{
+ const s=setup(),fn=s.context.window.YG_DAYUN_NEW_PLANTING.boundaryFor,data=JSON.parse(fs.readFileSync('data/dayun-map.geojson'));
+ const a1=fn(data,'GT-A-01',T),parts=data.features.filter(f=>f.properties.sourceGawanganId==='GT-A-01');assert.equal(parts.length,3);assert.ok(turf.area(a1)>2000&&turf.area(a1)<2200);assert.notDeepEqual(a1.geometry,fn(data,'GT-A-02',T).geometry);s.control.dispose();
 });
