@@ -33,3 +33,18 @@ test('all network loading routes restore the reviewed canal layer', () => {
   assert.match(code,/\[loadOfficialCanalPoints, mergeOfficialCanalPoints, "sekat_kanal.geojson"\]/);
   assert.equal((code.match(/mergeOfficialCanalPoints\(data, await loadOfficialCanalPoints\(\)\)/g)||[]).length,2);
 });
+
+test('linked Pedekik marker uses a display offset without moving its coordinates', () => {
+  const start=code.indexOf('  function pointFor('), end=code.indexOf('  function addFeatureToSearch(');
+  const source=code.slice(start,end);
+  const pointFor=vm.runInNewContext(source+'\npointFor', {
+    pointSymbolFor:()=> 'S', escapeHtml:x=>x,
+    L:{marker:(latlng,options)=>({latlng,options}),divIcon:options=>options}
+  });
+  const latlng={lat:1.52159,lng:102.094672};
+  const marker=pointFor({id:'sekat_kanal',label:'Sekat Kanal',color:'#00838f'},latlng,'points',{properties:{FDRS_Terkait_Object_ID:'FDRS-PEDEKIK-2026-001'}});
+  assert.equal(marker.latlng,latlng);
+  assert.equal(JSON.stringify(marker.options.icon.iconAnchor),'[52,20]');
+  assert.equal(marker.options.title,'Sekat Kanal');
+  assert.match(marker.options.icon.html,/dashed/);
+});
