@@ -114,11 +114,11 @@
     areas = L.featureGroup().addTo(map);
     map.addControl(new L.Control.Draw({draw:{polygon:{allowIntersection:false,showArea:true},polyline:true,rectangle:true,circle:false,circlemarker:false,marker:false}, edit:{featureGroup:areas}}));
     map.on(L.Draw.Event.CREATED, event => { if(event.layer.options?.dayunPlantSelection||event.layer.options?.dayunFruitSelection||event.layer.options?.dayunNewPlanting)return; event.layer.feature={type:'Feature',properties:{source:source?.title || 'Peta referensi',sourceId:source?.id || null},geometry:event.layer.toGeoJSON(false).geometry}; areas.addLayer(event.layer); updateMeasurements(); });
-    map.on('draw:edited draw:deleted', updateMeasurements);
+    map.on('draw:edited draw:deleted dayun:plantschanged', updateMeasurements);
     areaMeter=window.YG_ORTHO_MEASURE?.mount({map,areas,container:$('measureTools'),onChanged:updateMeasurements,beforeDraw:()=>{if(disposeBlockReview?.canLeave?.()===false){$('mapStatus').textContent='Tunggu koreksi titik tersimpan sebelum mengukur.';return false;}return true;}});
     teamBoundaries=window.YG_ORTHO_AREA_STORE?.mountOverlay?.({host:$('teamBoundaryTools'),map,api,current:validSession});
     newPlantingOverlay=window.YG_ORTHO_AREA_STORE?.mountOverlay?.({host:$('newPlantingLayer'),map,api,current:validSession,title:'Nanas baru Agustus 2026',matches:item=>item.name.startsWith('Nanas baru Agustus 2026 · '),paneName:'ortho-new-planting',color:'#0891b2'});
-    newPlanting=window.YG_DAYUN_NEW_PLANTING?.mount({host:$('newPlantingTools'),map,api,current:validSession,getSnapshot:()=>disposeBlockReview?.getPlantSnapshot?.(),beforeDraw:()=>{if(disposeBlockReview?.canLeave?.()===false)return false;return true;},save,onSaved:()=>newPlantingOverlay?.refresh()});
+    newPlanting=window.YG_DAYUN_NEW_PLANTING?.mount({host:$('newPlantingTools'),map,api,current:validSession,getSnapshot:()=>disposeBlockReview?.getPlantSnapshot?.(),getMeasurements:features,beforeDraw:()=>{if(disposeBlockReview?.canLeave?.()===false)return false;return true;},save,onSaved:()=>newPlantingOverlay?.refresh()});
     if(areaMeter?.element&&window.YG_ORTHO_AREA_STORE)areaStore=window.YG_ORTHO_AREA_STORE.mount({host:areaMeter.element,api,current:validSession,onSaved:()=>teamBoundaries?.refresh(),getCollection:()=>({type:'FeatureCollection',features:features()}),showCollection:collection=>{areas.clearLayers();for(const f of collection.features){const layer=L.geoJSON(f,{style:{color:'#2563eb',weight:3,fillOpacity:.08}}).getLayers()[0];areas.addLayer(layer);}updateMeasurements();if(areas.getLayers().length)map.fitBounds(areas.getBounds());}});
     map.on('mousemove', event => { $('coordinate').textContent = `${event.latlng.lat.toFixed(6)}, ${event.latlng.lng.toFixed(6)}`; });
     $('focusMap').onclick=()=>{
@@ -144,13 +144,15 @@
     const list = features(); $('measurements').replaceChildren();
     list.forEach((feature,index) => {
       const p=feature.properties, result=p.areaHa !== undefined ? `${number(p.areaM2)} m² · ${number(p.areaHa,4)} ha` : `${number(p.lengthM)} m`;
-      const tr=document.createElement('tr'); [p.name,result].forEach(value => {const td=document.createElement('td');td.textContent=value;tr.append(td);}); $('measurements').append(tr);
-      const label=document.createElement('span');label.textContent=`${p.name}: ${result}`;areas.getLayers()[index].bindTooltip(label,{permanent:true,direction:'center'});
+      const snapshot=disposeBlockReview?.getPlantSnapshot?.();
+      const count=p.areaHa===undefined?'—':!snapshot?.ready?'Menunggu titik nanas dimuat':snapshot.dirty?'Menunggu koreksi tersimpan':window.YG_DAYUN_NEW_PLANTING?number(window.YG_DAYUN_NEW_PLANTING.countPoints([feature],snapshot.features,turf).total)+' titik · Blok '+snapshot.block:'Penghitung belum dimuat';
+      const tr=document.createElement('tr'); [p.name,result,count].forEach(value => {const td=document.createElement('td');td.textContent=value;tr.append(td);}); $('measurements').append(tr);
+      const label=document.createElement('span');label.textContent=`${p.name}: ${result} · ${count}`;areas.getLayers()[index].bindTooltip(label,{permanent:true,direction:'center'});
     });
-    if (!list.length) { const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=2;td.textContent='Belum ada geometri analisis.';tr.append(td);$('measurements').append(tr); }
+    if (!list.length) { const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=3;td.textContent='Belum ada geometri analisis.';tr.append(td);$('measurements').append(tr); }
     $('exportAreas').disabled = $('clearAreas').disabled = !list.length;
     if(list.length)areaMeter?.showFeature(list.at(-1));else areaMeter?.clear();
-    areaStore?.refresh();
+    areaStore?.refresh();newPlanting?.refresh();
   }
   function save(blob, name) {
     const url=URL.createObjectURL(blob), a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),60000);
@@ -360,7 +362,7 @@
       };
       $('dayunResults').append(select);$('dayunResults').append(inspect);$('dayunResults').append(button);
       if(!target&&window.YG_DAYUN_BLOCK){
-        try{const expand=()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}};const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),comparisonHost:$('blockComparison'),countHost:$('blockLiveCounts'),compact:true,initialZone:zoneTarget,onNavigate:navigateWorkspace,onTeamPlant:value=>teamProgress?.updatePlant(block,value),onTeamFruit:value=>teamProgress?.updateFruit(block,value),onLeaveBlock:owner=>teamProgress?.clearLocal(block,owner),onShowProgress:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();teamProgress?.focus();},map,api,base,manifest,block,openRaster,openNativeRaster,getRasterSource:()=>source||(rasterContext?{...rasterContext,pending:true}:null),onNativeStatus:text=>{$('mapStatus').textContent=text;},save,current,autoOpen:blockTarget,onAutoOpen:expand,onEditMap:expand,onShowComparison:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();}});if(current()){disposeBlockReview=dispose;newPlanting?.refresh();$('retryNative').disabled=!dispose.retryNative;if(manifest.block_analyses?.[block])$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
+        try{const expand=()=>{if(current()){const card=document.querySelector?.('.map-card');if(card&&!card.classList.contains('map-expanded'))$('focusMap').onclick?.();}};const dispose=await window.YG_DAYUN_BLOCK.mount({host:$('blockReview'),comparisonHost:$('blockComparison'),countHost:$('blockLiveCounts'),compact:true,initialZone:zoneTarget,onNavigate:navigateWorkspace,onTeamPlant:value=>teamProgress?.updatePlant(block,value),onTeamFruit:value=>teamProgress?.updateFruit(block,value),onLeaveBlock:owner=>teamProgress?.clearLocal(block,owner),onShowProgress:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();teamProgress?.focus();},map,api,base,manifest,block,openRaster,openNativeRaster,getRasterSource:()=>source||(rasterContext?{...rasterContext,pending:true}:null),onNativeStatus:text=>{$('mapStatus').textContent=text;},save,current,autoOpen:blockTarget,onAutoOpen:expand,onEditMap:expand,onShowComparison:()=>{const card=document.querySelector?.('.map-card');if(card?.classList.contains('map-expanded'))$('focusMap').onclick?.();}});if(current()){disposeBlockReview=dispose;updateMeasurements();newPlanting?.refresh();$('retryNative').disabled=!dispose.retryNative;if(manifest.block_analyses?.[block])$('sampleReviewPanel').open=Boolean(manifest.preferred_candidate_trial)&&!blockTarget;}else dispose();}
         catch(error){if(current())$('dayunStatus').textContent+=' Analisis blok belum dapat dimuat: '+error.message;}
       }
       if(window.YG_DAYUN_CANDIDATES){
