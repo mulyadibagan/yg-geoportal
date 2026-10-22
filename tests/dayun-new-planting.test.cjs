@@ -2,14 +2,14 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const turf=require('../cloudflare/yg-webgis-public-data/node_modules/@turf/turf');
 const T={...turf,union:(a,b)=>turf.union(turf.featureCollection([a,b]))};
 const square=(x=0)=>turf.polygon([[[x,0],[x+2,0],[x+2,2],[x,2],[x,0]]]);
-function setup(shared={records:new Map()},measurementFeatures=[]){
+function setup(shared={records:new Map()},measurementFeatures=[],initialSnapshot){
  const nodes=[],listeners={},events={},requests=[],groups=[];let fail=false,allowed=true;
  const el=tag=>{const n={tag,children:[],textContent:'',_value:null,setAttribute(){},append(...xs){this.children.push(...xs)},prepend(n){this.children.unshift(n)},replaceChildren(){this.children=[];this._value=null},remove(){},get options(){return this.children},get value(){return this._value??this.children[0]?.value??''},set value(v){this._value=v}};nodes.push(n);return n;};
  const makeLayer=f=>({toGeoJSON:()=>structuredClone(f)});
  const layerGroup=()=>{const group={items:[],addTo(){return this},addLayer(l){this.items.push(l)},getLayers(){return this.items},clearLayers(){this.items=[]},getBounds(){return[]}};groups.push(group);return group;};
  const map={on(names,fn){for(const n of names.split(' '))(listeners[n]??=[]).push(fn)},off(){},removeLayer(){},fitBounds(){},orthoMeasuring:false};
  const emit=(n,e)=>{for(const fn of listeners[n]||[])fn(e)};
- let snapshot={block:'A',ready:true,dirty:false,revision:7,sourceRun:'run-test',features:[turf.point([1,1],{id:'one',status:'accepted'})]};
+ let snapshot=initialSnapshot===undefined?{block:'A',ready:true,dirty:false,revision:7,sourceRun:'run-test',features:[turf.point([1,1],{id:'one',status:'accepted'})]}:initialSnapshot;
  const context={window:{turf:T,L:{featureGroup:layerGroup,geoJSON:f=>({getLayers:()=>[makeLayer(f)]}),Draw:{Polygon:function(){this.enable=()=>{};this.disable=()=>{}}},EditToolbar:{Edit:function(){this.enable=()=>{};this.save=()=>{};this.disable=()=>{}}}},confirm:()=>allowed,addEventListener:(n,f)=>events[n]=f,removeEventListener:n=>delete events[n]},document:{createElement:el},Option:function(text,value){return{textContent:text,value}},crypto:webcrypto,Blob};
  vm.runInNewContext(fs.readFileSync('js/dayun-new-planting.js','utf8'),context);
  const api=async(path,options)=>{requests.push({path,options});if(options){const b=JSON.parse(options.body),prior=shared.records.get(b.id);if(prior?.operation_id===b.operation_id)return{json:async()=>({record:prior})};if((prior?.revision||0)!==b.expected_revision)throw Object.assign(Error('conflict'),{status:409});const record={...b,revision:b.expected_revision+1};shared.records.set(b.id,record);if(fail){fail=false;throw Error('response lost')};return{json:async()=>({record})};}const id=new URL('https://x'+path).searchParams.get('id');return{json:async()=>id?{record:shared.records.get(id)}:{items:[...shared.records.values()],cursor:null}};};
@@ -43,4 +43,11 @@ test('ordinary map polygon previews its count and can become a saved cohort boun
  assert.equal(s.button('Simpan layer tanaman baru').disabled,false);
  await s.button('Simpan layer tanaman baru').onclick();
  const record=[...s.shared.records.values()][0];assert.equal(record.collection.features[0].properties.pointCount,1);assert.equal(record.collection.features[0].properties.zoneId,'GT-A-02');s.control.dispose();
+});
+
+test('mount before any block or census is loaded does not abort map initialization',async()=>{
+ const s=setup(undefined,[],null);await flush();assert.match(s.output(),/Belum ada batas/);
+ s.add(square());assert.match(s.output(),/Hitungan belum tersedia/);
+ s.setSnapshot({block:'A',ready:true,dirty:false,features:[turf.point([1,1],{id:'later'})]});
+ assert.match(s.output(),/Titik dalam batas: 1/);s.control.dispose();
 });
