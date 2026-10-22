@@ -11,12 +11,12 @@
  function boundaryFor(data,zone,T){
   const matches=(data?.features||[]).filter(f=>/^(Multi)?Polygon$/.test(f.geometry?.type)&&[f.properties?.sourceGawanganId,f.properties?.displayId,f.properties?.shortId].includes(zone));
   if(!matches.length)throw Error('Batas '+zone+' belum tersedia.');
-  const merged=matches.map(f=>T.cleanCoords(T.truncate(f,{precision:8,mutate:false}))).reduce((a,b)=>a?T.union(a,b):b,null);
-  merged.properties={zoneId:zone,boundaryRevision:matches[0].properties?.boundaryRevision||null};return merged;
+  const parts=matches.flatMap(f=>polygonParts(T.cleanCoords(T.truncate(f,{precision:8,mutate:false})),T));
+  const reference=T.multiPolygon(parts.map(f=>f.geometry.coordinates),{zoneId:zone,boundaryRevision:matches[0].properties?.boundaryRevision||null});return reference;
  }
  function polygonParts(f,T){return !f?[]:f.geometry.type==='MultiPolygon'?f.geometry.coordinates.map(rings=>T.polygon(rings,{...f.properties})):[f];}
  function clipToBoundary(polys,boundary,T){
-  return polys.flatMap(f=>{if(T.kinks(f).features.length)throw Error('Batas berpotongan. Perbaiki sudut terlebih dahulu.');return polygonParts(T.intersect(f,boundary),T);});
+  return polys.flatMap(f=>{if(T.kinks(f).features.length)throw Error('Batas berpotongan. Perbaiki sudut terlebih dahulu.');return polygonParts(boundary,T).flatMap(part=>polygonParts(T.intersect(f,part),T));});
  }
  function mount({host,map,api,current,getSnapshot,getMeasurements=()=>[],onSaved=()=>{},beforeDraw=()=>true,save,loadBoundaries=()=>fetch('data/dayun-map.geojson',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Batas gawangan gagal dimuat');return r.json();}),loadCensus=()=>fetch('data/dayun-gawangan-details.json',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('Data sensus gagal dimuat');return r.json();})}){
   const L=root.L,T=root.turf,el=(tag,text)=>{const n=document.createElement(tag);if(text)n.textContent=text;return n;},button=text=>{const n=el('button',text);n.type='button';return n;};

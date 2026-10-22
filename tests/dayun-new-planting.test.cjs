@@ -79,5 +79,5 @@ test('missing reference or nonintersecting polygon cannot create an unrestricted
 });
 test('actual A1 revised reference includes all three parts and remains separate from A2',()=>{
  const s=setup(),fn=s.context.window.YG_DAYUN_NEW_PLANTING.boundaryFor,data=JSON.parse(fs.readFileSync('data/dayun-map.geojson'));
- const a1=fn(data,'GT-A-01',T),parts=data.features.filter(f=>f.properties.sourceGawanganId==='GT-A-01');assert.equal(parts.length,3);assert.ok(turf.area(a1)>2000&&turf.area(a1)<2200);assert.notDeepEqual(a1.geometry,fn(data,'GT-A-02',T).geometry);s.control.dispose();
+ const a1=fn(data,'GT-A-01',T),parts=data.features.filter(f=>f.properties.sourceGawanganId==='GT-A-01');assert.equal(parts.length,3);assert.equal(a1.geometry.coordinates.length,3);for(const rings of a1.geometry.coordinates)assert.equal(turf.kinks(turf.polygon(rings)).features.length,0);assert.ok(turf.area(a1)>2000&&turf.area(a1)<2200);assert.notDeepEqual(a1.geometry,fn(data,'GT-A-02',T).geometry);s.control.dispose();
 });
