@@ -2,7 +2,7 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const turf=require('../cloudflare/yg-webgis-public-data/node_modules/@turf/turf');
 const T={...turf,union:(a,b)=>turf.union(turf.featureCollection([a,b]))};
 const square=(x=0)=>turf.polygon([[[x,0],[x+2,0],[x+2,2],[x,2],[x,0]]]);
-function setup(shared={records:new Map()}){
+function setup(shared={records:new Map()},measurementFeatures=[]){
  const nodes=[],listeners={},events={},requests=[],groups=[];let fail=false,allowed=true;
  const el=tag=>{const n={tag,children:[],textContent:'',_value:null,setAttribute(){},append(...xs){this.children.push(...xs)},prepend(n){this.children.unshift(n)},replaceChildren(){this.children=[];this._value=null},remove(){},get options(){return this.children},get value(){return this._value??this.children[0]?.value??''},set value(v){this._value=v}};nodes.push(n);return n;};
  const makeLayer=f=>({toGeoJSON:()=>structuredClone(f)});
@@ -13,7 +13,7 @@ function setup(shared={records:new Map()}){
  const context={window:{turf:T,L:{featureGroup:layerGroup,geoJSON:f=>({getLayers:()=>[makeLayer(f)]}),Draw:{Polygon:function(){this.enable=()=>{};this.disable=()=>{}}},EditToolbar:{Edit:function(){this.enable=()=>{};this.save=()=>{};this.disable=()=>{}}}},confirm:()=>allowed,addEventListener:(n,f)=>events[n]=f,removeEventListener:n=>delete events[n]},document:{createElement:el},Option:function(text,value){return{textContent:text,value}},crypto:webcrypto,Blob};
  vm.runInNewContext(fs.readFileSync('js/dayun-new-planting.js','utf8'),context);
  const api=async(path,options)=>{requests.push({path,options});if(options){const b=JSON.parse(options.body),prior=shared.records.get(b.id);if(prior?.operation_id===b.operation_id)return{json:async()=>({record:prior})};if((prior?.revision||0)!==b.expected_revision)throw Object.assign(Error('conflict'),{status:409});const record={...b,revision:b.expected_revision+1};shared.records.set(b.id,record);if(fail){fail=false;throw Error('response lost')};return{json:async()=>({record})};}const id=new URL('https://x'+path).searchParams.get('id');return{json:async()=>id?{record:shared.records.get(id)}:{items:[...shared.records.values()],cursor:null}};};
- const control=context.window.YG_DAYUN_NEW_PLANTING.mount({host:el('div'),map,api,current:()=>true,getSnapshot:()=>snapshot,save(){},loadCensus:async()=>({objects:[{objectId:'DAYUN-GT-A-02',crops:[{crop:'NANAS',plantingCohorts:[{period:'2026-08',plantedCount:1029}]}]}]})});
+ const control=context.window.YG_DAYUN_NEW_PLANTING.mount({host:el('div'),map,api,current:()=>true,getSnapshot:()=>snapshot,getMeasurements:()=>measurementFeatures,save(){},loadCensus:async()=>({objects:[{objectId:'DAYUN-GT-A-02',crops:[{crop:'NANAS',plantingCohorts:[{period:'2026-08',plantedCount:1029}]}]}]})});
  return{context,control,shared,requests,events,nodes,button:text=>nodes.find(n=>n.textContent===text),select:nodes.filter(n=>n.tag==='select')[1],emit,add:f=>emit('draw:created',{layer:{options:{dayunNewPlanting:true},toGeoJSON:()=>structuredClone(f)}}),fail:()=>fail=true,setSnapshot:s=>{snapshot=s;emit('dayun:plantschanged')},output:()=>nodes.filter(n=>n.tag==='p')[0].textContent,allow:v=>allowed=v};
 }
 const flush=()=>new Promise(r=>setImmediate(r));
@@ -32,3 +32,15 @@ test('lost response retry is idempotent and retains subsequent local polygons as
 });
 test('wrong block and unsynced points show unavailable, never a false zero',async()=>{const s=setup();await flush();s.add(square());s.setSnapshot({block:'B',ready:true,features:[]});assert.match(s.output(),/Hitungan belum tersedia/);s.setSnapshot({block:'A',ready:true,dirty:true,features:[]});assert.match(s.output(),/Hitungan belum tersedia/);await s.button('Simpan layer tanaman baru').onclick();assert.equal([...s.shared.records.values()][0].collection.features[0].properties.pointCount,null);s.control.dispose();});
 test('census cohort selection matches all 29,299 August plants in the real source',()=>{const s=setup(),rows=s.context.window.YG_DAYUN_NEW_PLANTING.censusRows(JSON.parse(fs.readFileSync('data/dayun-gawangan-details.json')));assert.equal(rows.length,16);assert.equal(rows.reduce((a,r)=>a+r.count,0),29299);s.control.dispose();});
+
+test('ordinary map polygon previews its count and can become a saved cohort boundary',async()=>{
+ const s=setup(undefined,[square()]);await flush();
+ s.emit('draw:created',{layer:{options:{},toGeoJSON:()=>square()}});
+ assert.match(s.output(),/Pratinjau poligon peta/);assert.match(s.output(),/Titik dalam batas: 1/);
+ assert.equal(s.button('Simpan layer tanaman baru').disabled,true);
+ s.button('Gunakan poligon yang sudah digambar').onclick();
+ assert.doesNotMatch(s.output(),/Pratinjau/);assert.match(s.output(),/Titik dalam batas: 1/);
+ assert.equal(s.button('Simpan layer tanaman baru').disabled,false);
+ await s.button('Simpan layer tanaman baru').onclick();
+ const record=[...s.shared.records.values()][0];assert.equal(record.collection.features[0].properties.pointCount,1);assert.equal(record.collection.features[0].properties.zoneId,'GT-A-02');s.control.dispose();
+});
