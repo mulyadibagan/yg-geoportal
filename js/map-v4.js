@@ -3813,7 +3813,7 @@ L.control.scale({
     const settled = await Promise.allSettled(
       LOCAL_FALLBACK_LAYERS.map(async layerId => {
         const response = await fetch(
-          "data/" + layerId + ".geojson?v=20260825-maintenance-history2",
+          "data/" + layerId + ".geojson?v=20261022-canals1",
           { cache: "force-cache" }
         );
         if (!response.ok) throw new Error(layerId + " HTTP " + response.status);
@@ -4879,6 +4879,46 @@ L.control.scale({
     return response.json();
   }
 
+  function mergeOfficialCanalPoints(data, canals) {
+    if (!data || !Array.isArray(data.features) || !canals ||
+        canals.type !== "FeatureCollection" || !Array.isArray(canals.features)) return data;
+    const objectId = feature => String(feature && feature.properties &&
+      (feature.properties.Object_ID || feature.properties.objectId) || "").trim().toLowerCase();
+    const official = new Map();
+    canals.features.forEach(feature => {
+      const id = objectId(feature);
+      const geometry = feature && feature.geometry;
+      if (!id || !geometry || geometry.type !== "Point" ||
+          !Array.isArray(geometry.coordinates) || geometry.coordinates.length < 2 ||
+          !geometry.coordinates.slice(0, 2).every(Number.isFinite)) return;
+      official.set(id, feature);
+    });
+    const database = new Map(data.features.map(feature => [objectId(feature), feature]));
+    const restored = Array.from(official, ([id, feature]) => {
+      const current = database.get(id);
+      const currentProps = current && current.properties || {};
+      const props = Object.assign({}, currentProps, feature.properties, {
+        Layer_ID: "sekat_kanal", Source_Layer: "sekat_kanal", Layer_Label: "Sekat Kanal"
+      });
+      // Keep approved photo additions while restoring the reviewed location and status.
+      const photos = [props.Foto, props.Foto_2].concat(
+        Array.isArray(props._ygPhotos) ? props._ygPhotos : [],
+        Array.isArray(currentProps._ygPhotos) ? currentProps._ygPhotos : []
+      ).filter(value => typeof value === "string" && value.trim());
+      if (photos.length) props._ygPhotos = Array.from(new Set(photos));
+      return Object.assign({}, feature, { properties: props });
+    });
+    data.features = data.features.filter(feature => !official.has(objectId(feature))).concat(restored);
+    if ("featureCount" in data) data.featureCount = data.features.length;
+    return data;
+  }
+
+  async function loadOfficialCanalPoints() {
+    const response = await fetch("data/sekat_kanal.geojson?v=20261022-canals1", { cache: "no-store" });
+    if (!response.ok) throw new Error("HTTP " + response.status);
+    return response.json();
+  }
+
   async function loadOfficialFdrsPoints() {
     const response = await fetch(
       "data/fdrs.geojson?v=" + Date.now(),
@@ -4913,7 +4953,8 @@ L.control.scale({
       [loadOfficialMangrove, mergeOfficialMangroveData, "area_mangrove.geojson"],
       [loadOfficialCoffeeAreas, mergeOfficialCoffeeAreas, "area_kopi.geojson"],
       [loadOfficialCoffeePoints, mergeOfficialCoffeePoints, "kopi.geojson"],
-      [loadOfficialFdrsPoints, mergeOfficialFdrsPoints, "fdrs.geojson"]
+      [loadOfficialFdrsPoints, mergeOfficialFdrsPoints, "fdrs.geojson"],
+      [loadOfficialCanalPoints, mergeOfficialCanalPoints, "sekat_kanal.geojson"]
     ];
     const settled = await Promise.allSettled(tasks.map(task => task[0]()));
     settled.forEach((result, index) => {
@@ -4996,6 +5037,12 @@ L.control.scale({
       window.clearTimeout(fetchTimeout);
     }
 
+    try {
+      mergeOfficialCanalPoints(data, await loadOfficialCanalPoints());
+    } catch (error) {
+      console.warn("sekat_kanal.geojson tidak dapat dimuat", error);
+    }
+
     // 2. Selaraskan geometri laporan dengan SHP mangrove resmi terbaru.
     try {
       const mangrove = await loadOfficialMangrove();
@@ -5052,6 +5099,11 @@ L.control.scale({
 
     try {
       const data = await loadByJsonp();
+      try {
+        mergeOfficialCanalPoints(data, await loadOfficialCanalPoints());
+      } catch (error) {
+        console.warn("sekat_kanal.geojson tidak dapat dimuat melalui jalur cadangan", error);
+      }
       try {
         const mangrove = await loadOfficialMangrove();
         mergeOfficialMangroveData(data, mangrove);
