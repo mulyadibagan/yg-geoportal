@@ -13,7 +13,7 @@ test('census adjustment backs up first and persists per-point batches without al
  s.options.save=(blob,name)=>{backups.push({blob,name});if(name.startsWith("cadangan"))backupBeforePosts=posts===0;};
  s.options.api=async(path,config)=>{if(path.includes('/areas'))return{json:async()=>path.includes('?id=')?{record:{id:'area-test',revision:1,collection:{features:[]}}}:{items:[{id:'area-test',name:'Batas nanas baru Blok A'}]}};if(config)posts++;return normalApi(path,config);};
  global.fetch=async()=>({ok:true,json:async()=>({})});
- global.window.YG_DAYUN_CENSUS_RECONCILE={targets:()=>[{zone:'GT-A-01',target:262,area:{}}],plan:async()=>({updates:Array.from({length:260},(_,i)=>point('A-manual-census-test-'+i)),summary:[{zone:'GT-A-01',before:2,target:262,add:260,remove:0}]})};
+ global.window.YG_DAYUN_CENSUS_RECONCILE={fingerprint:points=>JSON.stringify(points),targets:()=>[{zone:'GT-A-01',target:262,area:{}}],plan:async()=>({updates:Array.from({length:260},(_,i)=>point('A-manual-census-test-'+i)),summary:[{zone:'GT-A-01',before:2,target:262,add:260,remove:0}]})};
  const e=await editor.mount(s.options);try{
   await s.button('Siapkan penyesuaian titik sesuai sensus').onclick();assert.equal(posts,0);assert.equal(s.button('Terapkan penyesuaian sensus').disabled,false);
   await s.button('Terapkan penyesuaian sensus').onclick();assert.equal(backups.length,2);assert.equal(backupBeforePosts,true);assert.match(backups[0].name,/cadangan/);assert.equal(JSON.parse(await backups[0].blob.text()).features.length,2);assert.equal(posts,2);assert.equal(s.shared.snapshot().counts.working_total,262);assert.equal(JSON.stringify(s.original),s.before);assert.equal(e.canLeave(),true);
@@ -22,8 +22,15 @@ test('census adjustment backs up first and persists per-point batches without al
 test('census adjustment refuses a changed team revision before writing or downloading a backup',async()=>{
  const s=setup(),normalApi=s.options.api;let backups=0;s.options.save=()=>backups++;
  s.options.api=async(path,config)=>path.includes('/areas')?{json:async()=>path.includes('?id=')?{record:{id:'area-test',revision:1,collection:{features:[]}}}:{items:[{id:'area-test',name:'Batas nanas baru Blok A'}]}}:normalApi(path,config);
- global.fetch=async()=>({ok:true,json:async()=>({})});global.window.YG_DAYUN_CENSUS_RECONCILE={targets:()=>[{zone:'GT-A-01',target:3,area:{}}],plan:async()=>({updates:[point('A-manual-census-test-1')],summary:[{zone:'GT-A-01',before:2,target:3,add:1,remove:0}]})};
+ global.fetch=async()=>({ok:true,json:async()=>({})});global.window.YG_DAYUN_CENSUS_RECONCILE={fingerprint:points=>JSON.stringify(points),targets:()=>[{zone:'GT-A-01',target:3,area:{}}],plan:async()=>({updates:[point('A-manual-census-test-1')],summary:[{zone:'GT-A-01',before:2,target:3,add:1,remove:0}]})};
  const e=await editor.mount(s.options);try{await s.button('Siapkan penyesuaian titik sesuai sensus').onclick();s.shared.remote(point('auto-1','rejected'));await s.button('Terapkan penyesuaian sensus').onclick();assert.equal(backups,0);assert.equal(s.calls.filter(c=>c.config).length,0);assert.equal(s.shared.snapshot().counts.working_total,1);}finally{e.dispose();delete global.fetch;}
+});
+test('census adjustment preserves a new outside team point and backs up the latest revision',async()=>{
+ const s=setup(),normalApi=s.options.api,backups=[];s.options.save=blob=>backups.push(blob);
+ s.options.api=async(path,config)=>path.includes('/areas')?{json:async()=>path.includes('?id=')?{record:{id:'area-test',revision:1,collection:{features:[]}}}:{items:[{id:'area-test',name:'Batas nanas baru Blok A'}]}}:normalApi(path,config);
+ global.fetch=async()=>({ok:true,json:async()=>({})});global.window.turf.booleanPointInPolygon=f=>f.geometry.coordinates[0]===1;
+ global.window.YG_DAYUN_CENSUS_RECONCILE={fingerprint:require('../js/dayun-census-reconcile.js').fingerprint,targets:()=>[{zone:'GT-A-01',target:3,area:{}}],plan:async()=>({updates:[point('A-manual-census-test-1')],summary:[{zone:'GT-A-01',before:2,target:3,add:1,remove:0}]})};
+ const e=await editor.mount(s.options);try{await s.button('Siapkan penyesuaian titik sesuai sensus').onclick();const outside=point('A-manual-outside-team');outside.geometry.coordinates=[2,2];s.shared.remote(outside);await s.button('Terapkan penyesuaian sensus').onclick();const backup=JSON.parse(await backups[0].text());assert.equal(backup.revision,1);assert.equal(backup.features.length,3);assert.equal(s.shared.snapshot().counts.working_total,4);assert.deepEqual(e.features().find(f=>f.properties.id===outside.properties.id),outside);assert.equal(e.canLeave(),true);}finally{e.dispose();delete global.fetch;}
 });
 
 test('ready native pixels select and box-delete locally without repeated inspection or preparation',async()=>{

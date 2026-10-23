@@ -5,6 +5,7 @@
  function parts(f,T){return f.geometry.type==='MultiPolygon'?f.geometry.coordinates.map(c=>T.polygon(c)):[f];}
  // Turf 6 in the viewer and Turf 7 in the tests have different signatures.
  const intersection=(a,b,T)=>T.intersect.length<2?T.intersect(fc([a,b])):T.intersect(a,b);
+ function fingerprint(points,rows,T){return JSON.stringify(points.filter(f=>rows.some(r=>T.booleanPointInPolygon(f,r.area))).map(f=>{const p=f.properties;return[p.id,f.geometry.coordinates,p.status||'candidate',p.origin||'automated',p.note||'',p.rejection_reason||'unspecified',[...(p.zones||[])].sort()];}).sort((a,b)=>a[0].localeCompare(b[0])));}
  function targets({records,census,boundaries,block,T}){
   const zones=new Map();for(const f of boundaries.features){const id=f.properties?.sourceGawanganId;if(id?.startsWith('GT-'+block+'-')){if(!zones.has(id))zones.set(id,[]);zones.get(id).push(f);}}
   const rows=new Map();for(const record of records.filter(r=>new RegExp('^Batas nanas baru Blok '+block+'\\b').test(r.name))){for(const area of record.collection.features){if(!/Polygon$/.test(area.geometry?.type))continue;
@@ -43,5 +44,5 @@
   }
   return{updates,summary};
  }
- const api={PREFIX,targets,plan};root.YG_DAYUN_CENSUS_RECONCILE=api;if(typeof module==='object'&&module.exports)module.exports=api;
+ const api={PREFIX,targets,plan,fingerprint};root.YG_DAYUN_CENSUS_RECONCILE=api;if(typeof module==='object'&&module.exports)module.exports=api;
 })(typeof window==='object'?window:globalThis);

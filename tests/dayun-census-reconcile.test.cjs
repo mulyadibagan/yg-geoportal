@@ -20,3 +20,5 @@ test('insufficient native image coverage fails before any updates; shared points
  const row={zone:'GT-A-01',target:20,area,allowed:[area]};await assert.rejects(tool.plan({rows:[row],points:[],T,block:'A',validCoordinate:()=>false,yieldWork:()=>Promise.resolve()}),/tidak cukup/);
  await assert.rejects(tool.plan({rows:[{...row,target:1},{...row,zone:'GT-A-02',target:1}],points:[pt('observed')],T,block:'A'}),/tumpang tindih/);
 });
+
+test("area revision fingerprint allows outside team changes but detects any inside correction",()=>{const row={area},points=[pt("inside"),pt("outside",103)],a=tool.fingerprint(points,[row],T);points[1].properties.status="rejected";assert.equal(tool.fingerprint(points,[row],T),a);points.push(pt("outside-new",104));assert.equal(tool.fingerprint(points,[row],T),a);points[0].properties.note="team correction";assert.notEqual(tool.fingerprint(points,[row],T),a);});

@@ -75,11 +75,11 @@
         const records=await Promise.all(selected.map(async r=>(await(await api('/api/staff/drone/analysis/areas?id='+encodeURIComponent(r.id))).json()).record));
         const responses=await Promise.all(['data/dayun-map.geojson','data/dayun-gawangan-details.json'].map(path=>fetch(path,{cache:'no-cache'})));if(responses.some(r=>!r.ok))throw Error('Batas atau sensus gagal dimuat.');
         const [boundaries,census]=await Promise.all(responses.map(r=>r.json())),tool=window.YG_DAYUN_CENSUS_RECONCILE;if(!tool)throw Error('Alat penyesuaian belum dimuat.');
-        const beforeRevision=revision,before=JSON.parse(JSON.stringify(features())),rows=tool.targets({records,census,boundaries,block,T:window.turf});if(!rows.length)throw Error('Tidak ada batas tanaman baru dengan jumlah sensus tersedia.');
+        const before=JSON.parse(JSON.stringify(features())),rows=tool.targets({records,census,boundaries,block,T:window.turf});if(!rows.length)throw Error('Tidak ada batas tanaman baru dengan jumlah sensus tersedia.');const beforeFingerprint=tool.fingerprint(before,rows,window.turf);
         const inside=(c,b)=>c[0]>=b[0]&&c[0]<=b[2]&&c[1]>=b[1]&&c[1]<=b[3];
         const proposed=await tool.plan({rows,points:before,block,T:window.turf,validCoordinate:c=>inside(c,result.bounds)&&result.native_tiles.some(t=>inside(c,t.bounds))});
-        if(!alive()||revision!==beforeRevision||dirty)throw Error('Titik tim berubah saat menghitung. Siapkan ulang.');
-        censusPlan={...proposed,revision:beforeRevision,records:records.map(r=>({id:r.id,revision:r.revision})),before,rows};
+        if(!alive()||dirty||conflicts.size||tool.fingerprint(features(),rows,window.turf)!==beforeFingerprint)throw Error('Titik di dalam area sasaran berubah saat menghitung. Siapkan ulang.');
+        censusPlan={...proposed,revision,fingerprint:beforeFingerprint,records:records.map(r=>({id:r.id,revision:r.revision})),before:JSON.parse(JSON.stringify(features())),rows};
         censusTable.replaceChildren();const table=make('table'),head=make('tr');for(const s of ['Gawangan','Sebelum','Sensus','Tambah perkiraan','Keluarkan'])head.append(make('th',s));table.append(head);for(const r of proposed.summary){const tr=make('tr');for(const k of ['zone','before','target','add','remove'])tr.append(make('td',String(r[k])));table.append(tr);}censusTable.append(table);
         censusApply.disabled=!proposed.updates.length;censusStatus.textContent=proposed.updates.length?proposed.updates.length+' perubahan siap; belum diterapkan.':'Semua area yang memiliki sensus sudah sesuai. Area tanpa sensus dilewati.';
       }catch(e){censusPlan=null;censusStatus.textContent=e.message;}finally{censusRunning=false;censusPrepare.disabled=false;}
@@ -87,8 +87,9 @@
     censusApply.onclick=async()=>{
       if(!alive()||busy||pulling||dirty||censusRunning||!censusPlan)return;censusRunning=true;censusPrepare.disabled=censusApply.disabled=true;
       try{
-        await load();if(!alive()||dirty||conflicts.size||revision!==censusPlan.revision)throw Error('Revisi tim berubah. Siapkan penyesuaian ulang.');
+        await load();if(!alive()||dirty||conflicts.size||window.YG_DAYUN_CENSUS_RECONCILE.fingerprint(features(),censusPlan.rows,window.turf)!==censusPlan.fingerprint)throw Error('Titik di dalam area sasaran berubah. Siapkan penyesuaian ulang.');
         for(const r of censusPlan.records){const data=await(await api('/api/staff/drone/analysis/areas?id='+encodeURIComponent(r.id))).json();if(data.record.revision!==r.revision)throw Error('Batas tanaman baru berubah. Siapkan ulang.');}
+        if(window.YG_DAYUN_CENSUS_RECONCILE.fingerprint(features(),censusPlan.rows,window.turf)!==censusPlan.fingerprint)throw Error('Titik di dalam area sasaran berubah. Siapkan ulang.');censusPlan.before=JSON.parse(JSON.stringify(features()));
         save(new Blob([JSON.stringify({schema:'dayun-census-reconcile-backup-v1',block,source_run:manifest.run,analysis_path:analysisPath,revision,changes,point_versions:pointVersions,features:censusPlan.before,summary:censusPlan.summary,created_at:new Date().toISOString()},null,2)],{type:'application/json'}),'cadangan-sebelum-penyesuaian-sensus-'+block+'-'+revision+'.json');
         const next=new Map(changes.map(f=>[f.properties.id,f]));for(const f of censusPlan.updates){next.set(f.properties.id,f);queue(f,f.properties.id,false);}changes=[...next.values()];cancelBox();announce(localCounts());
         while(alive()&&pending.size&&!conflicts.size){if(busy||pulling){await new Promise(resolve=>setTimeout(resolve,100));continue;}const count=pending.size;await persist();censusStatus.textContent=pending.size+' perubahan menunggu simpan privat…';if(syncError||pending.size===count)throw Error(syncError||'Penyimpanan berhenti; perubahan lokal tetap ada.');}
