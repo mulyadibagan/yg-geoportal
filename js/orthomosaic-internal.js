@@ -34,6 +34,7 @@
     return current && current.token === session?.token && Number(current.expiresAt) > Date.now();
   }
   function lock(message) {
+    document.querySelectorAll('dialog[aria-label="GeoJSON batas analisis"]').forEach(d=>d.remove());
     privateAssets?.clear();
     censusEstimates?.dispose();censusEstimates=null;
     document.querySelector?.('.map-card')?.classList.remove('map-expanded');
@@ -152,7 +153,7 @@
       const label=document.createElement('span');label.textContent=`${p.name}: ${result} · ${count}`;areas.getLayers()[index].bindTooltip(label,{permanent:true,direction:'center'});
     });
     if (!list.length) { const tr=document.createElement('tr'),td=document.createElement('td');td.colSpan=3;td.textContent='Belum ada geometri analisis.';tr.append(td);$('measurements').append(tr); }
-    $('exportAreas').disabled = $('clearAreas').disabled = !list.length;
+    $('exportAreas').disabled = $('clearAreas').disabled = !list.length;if($('viewAreaGeoJSON'))$('viewAreaGeoJSON').disabled=!list.length;
     if(list.length)areaMeter?.showFeature(list.at(-1));else areaMeter?.clear();
     areaStore?.refresh();newPlanting?.refresh();
   }
@@ -394,6 +395,17 @@
     tileLayer.addTo(map);if(rasterLayer)rasterLayer.bringToFront();
   };
   $('exportAreas').onclick=()=>{if(validSession())save(new Blob([JSON.stringify({type:'FeatureCollection',features:features()},null,2)],{type:'application/geo+json'}),'analisis-orthomosaic.geojson');};
+  // A visible read-only export is also usable when browser downloads are blocked.
+  const viewGeometry=document.createElement('button');viewGeometry.id='viewAreaGeoJSON';viewGeometry.type='button';viewGeometry.textContent='Lihat GeoJSON batas';viewGeometry.disabled=true;$('exportAreas').after(viewGeometry);
+  viewGeometry.onclick=()=>{
+    if(!validSession()||!areas?.getLayers().length)return;
+    const dialog=document.createElement('dialog');dialog.setAttribute('aria-label','GeoJSON batas analisis');dialog.style.cssText='width:min(900px,94vw);max-height:90vh;padding:24px;border:1px solid #b5cbbd;border-radius:12px';
+    const title=document.createElement('h2');title.textContent='GeoJSON batas analisis';
+    const note=document.createElement('p');note.textContent='Salinan batas yang sedang dibuka. Membuka tampilan ini tidak mengubah batas tim.';
+    const text=document.createElement('textarea');text.readOnly=true;text.setAttribute('aria-label','Data GeoJSON batas analisis');text.style.cssText='width:100%;height:55vh;font:12px monospace';text.value=JSON.stringify({type:'FeatureCollection',features:features()},null,2);
+    const close=document.createElement('button');close.type='button';close.textContent='Tutup GeoJSON';close.onclick=()=>dialog.close();dialog.append(title,note,text,close);dialog.addEventListener('close',()=>dialog.remove());document.body.append(dialog);dialog.showModal();
+  };
+
   $('clearAreas').onclick=()=>{if(confirm('Hapus seluruh geometri yang belum diekspor?')){areas.clearLayers();updateMeasurements();}};
   $('downloadTiff').onclick=async()=>{
     const selected=source;if(!selected || selected.input instanceof Blob)return;
@@ -416,4 +428,5 @@
   window.addEventListener('beforeunload',event=>{if(areas?.getLayers().length){event.preventDefault();event.returnValue='';}});
   authorize();
 })();
+
 
