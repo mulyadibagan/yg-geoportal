@@ -99,7 +99,7 @@
     }
     const showRejected=el('input');showRejected.type='checkbox';const rejectedLabel=el('label');rejectedLabel.append(showRejected,el('span',' Tampilkan titik yang ditolak'));showRejected.onchange=drawPoints;host.append(rejectedLabel);
     const display=el('select');display.setAttribute('aria-label','Titik yang ditampilkan');display.add(new Option('Semua kandidat untuk koreksi','all'));display.add(new Option('Nanas yang diterima tim saja','accepted'));display.add(new Option('Citra saja tanpa penanda','imagery'));display.value=result.count_reliability==='not_reliable_on_DEF_native_samples'?'accepted':'all';display.onchange=()=>{editor?.cancelSelection?.();if(display.value==='imagery')editor?.setEditing(false);drawPoints();};
-    const boundaryToggle=el('input');boundaryToggle.type='checkbox';const boundaryLabel=el('label');boundaryLabel.append(boundaryToggle,el('span',' Tampilkan batas gawangan dan konflik'));boundaryToggle.onchange=drawBoundaries;
+    const boundaryToggle=el('input');boundaryToggle.type='checkbox';const boundaryLabel=el('label');boundaryLabel.append(boundaryToggle,el('span',' Tampilkan batas gawangan'));boundaryToggle.onchange=drawBoundaries;
     const displayStatus=el('p');displayStatus.setAttribute('role','status');host.insertBefore(display,title);host.insertBefore(boundaryLabel,title);host.append(displayStatus);
     if(manifest.detector_quality_report){try{
       const reportPath=manifest.detector_quality_report;if(!/^[\w-]+\/quality-trial\.json$/.test(reportPath)||!manifest.files.includes(reportPath))throw Error('Laporan uji belum terdaftar.');
@@ -173,7 +173,7 @@
     }
     function drawBoundaries(){boundaries.clearLayers();if(!active()||!boundaryToggle.checked||!zonesData)return;
       L.geoJSON(zonesData,{style:f=>({color:f.properties.kind==='active_source'?'#137f63':'#ad6b32',weight:3,opacity:1,fillOpacity:0}),onEachFeature:(f,l)=>l.bindTooltip(f.properties.id+' · kategori sumber, bukan diagnosis tanaman')}).addTo(boundaries);
-      if(geo?.audit)L.geoJSON(geo.audit,{style:{color:'#c72d40',weight:2,fillOpacity:.1}}).addTo(boundaries);
+      // Display gawangan only, matching the agroforestry map; audit geometry stays available for download.
     }
     const pointMarkers=new Map();
     function drawPoints(){const visibleIds=new Set();if(!active()||!candidates)return;
