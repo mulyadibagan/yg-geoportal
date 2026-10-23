@@ -152,7 +152,7 @@
     const referencePath=manifest.block_comparisons?.[block];
     if(referencePath&&manifest.files.includes(referencePath)){
       try{
-        const ref=await(await api(base+'/files/'+referencePath)).json();if(!current()){map.removeLayer(group);map.removeLayer(points);map.removeLayer(diagnostics);return()=>{};}
+        const ref=await(await api(base+'/files/'+referencePath)).json();if(!current()){map.removeLayer(group);map.removeLayer(points);if(pointRenderer&&map.hasLayer?.(pointRenderer))map.removeLayer(pointRenderer);map.removeLayer(diagnostics);return()=>{};}
         if(ref.schema!=='dayun-ortho-database-comparison-v1'||ref.source_run!==manifest.run||ref.block!==block)throw Error('Pembanding database bukan untuk citra ini.');
         const panel=el('section'),heading=el('h2',`Pembanding database per gawangan — Blok ${block}`);panel.append(heading);if(comparisonHost!==host)comparisonHost.replaceChildren();comparisonHost.hidden=false;
         const jump=el('button','Lihat data pembanding di bawah peta');jump.onclick=()=>{onShowComparison?.();comparisonHost.scrollIntoView?.({behavior:'smooth',block:'start'});};host.append(jump);
@@ -175,7 +175,7 @@
       L.geoJSON(zonesData,{style:f=>({color:f.properties.kind==='active_source'?'#137f63':'#ad6b32',weight:3,opacity:1,fillOpacity:0}),onEachFeature:(f,l)=>l.bindTooltip(f.properties.id+' · kategori sumber, bukan diagnosis tanaman')}).addTo(boundaries);
       // Display gawangan only, matching the agroforestry map; audit geometry stays available for download.
     }
-    const pointMarkers=new Map();
+    const pointMarkers=new Map(),pointRenderer=typeof L.canvas==='function'?L.canvas({padding:.2}):null;
     function drawPoints(){const visibleIds=new Set();if(!active()||!candidates)return;
       const features=(editor?editor.features():candidates.features).filter(f=>!select.value||(select.value==='__UNASSIGNED__'?!f.properties.zones.length:f.properties.zones.includes(select.value))),accepted=features.filter(f=>f.properties.status==='accepted');
       displayStatus.textContent=display.value==='accepted'?accepted.length?`${accepted.length} titik diterima tim. Keputusan tim, belum sensus terverifikasi.`:'Belum ada titik yang diterima tim pada pilihan ini. Kandidat otomatis disembunyikan; ini bukan berarti tidak ada nanas.':display.value==='imagery'?'Citra saja. Penanda disembunyikan tanpa menghapus hasil atau koreksi.':`${features.filter(f=>f.properties.status!=='rejected').length.toLocaleString('id-ID')} titik kerja, termasuk kandidat yang belum diperiksa. Perbesar ke zoom 22 untuk melihat penanda tanpa menutupi citra.`;
@@ -183,7 +183,7 @@
       for(const f of features){if(display.value==='accepted'&&f.properties.status!=='accepted')continue;if(f.properties.status==='rejected'&&!showRejected.checked)continue;const [x,y]=f.geometry.coordinates;if(!b.contains([y,x]))continue;if(count++>=3000)break;
         const p=f.properties,color=p.status==='rejected'?'#c72d40':p.origin==='manual_addition'?'#2563eb':p.status==='accepted'?'#137f63':'#df8e00';
         visibleIds.add(p.id);const signature=JSON.stringify(f);const previous=pointMarkers.get(p.id);if(previous?.signature===signature)continue;if(previous)points.removeLayer(previous.marker);
-        const marker=L.circleMarker([y,x],{radius:5,color,weight:2,fillOpacity:0,bubblingMouseEvents:false}).bindTooltip(p.id+' · '+(p.status||'belum diperiksa')+' · klik untuk citra asli dan koreksi').on('click',async()=>{if(map.orthoMeasuring)return;if(fruitReview?.isPlacing?.()){await fruitReview.placeForPlant(f);return;}if(setWorkMode&&await setWorkMode(false,false)===false)return;onEditMap?.();if(editor)await editor.pick(f);else try{await inspectAt(f.geometry.coordinates);}catch(error){if(active())status.textContent=error.message;}}).addTo(points);pointMarkers.set(p.id,{marker,signature});
+        const marker=L.circleMarker([y,x],{...(pointRenderer?{renderer:pointRenderer}:{}),radius:5,color,weight:2,fillOpacity:0,bubblingMouseEvents:false}).bindTooltip(p.id+' · '+(p.status||'belum diperiksa')+' · klik untuk citra asli dan koreksi').on('click',async()=>{if(map.orthoMeasuring)return;if(fruitReview?.isPlacing?.()){await fruitReview.placeForPlant(f);return;}if(setWorkMode&&await setWorkMode(false,false)===false)return;onEditMap?.();if(editor)await editor.pick(f);else try{await inspectAt(f.geometry.coordinates);}catch(error){if(active())status.textContent=error.message;}}).addTo(points);pointMarkers.set(p.id,{marker,signature});
       }
       for(const [id,value]of pointMarkers)if(!visibleIds.has(id)){points.removeLayer(value.marker);pointMarkers.delete(id);}
     }
