@@ -12,6 +12,14 @@
   const panel=el('details'),title=el('summary','Batas tim tersimpan'),name=el('input'),store=el('button','Simpan batas untuk tim'),select=el('select'),open=el('button','Buka batas tim'),reload=el('button','Perbarui daftar'),next=el('button','Batas berikutnya'),analyze=el('button','Rincian gawangan batas tersimpan'),zoneResults=el('div'),status=el('p');
   name.type='text';name.maxLength=120;name.placeholder='Nama batas, misalnya Batas lahan horti';name.setAttribute('aria-label','Nama batas lahan');select.setAttribute('aria-label','Batas analisis tersimpan privat');status.setAttribute('role','status');for(const b of [store,open,reload,next,analyze])b.type='button';panel.append(title,name,store,select,open,reload,next,analyze,zoneResults,status);host.append(panel);
   let id=null,revision=0,saved=null,busy=false,loaded=false,cursor=null,pending=null,disposed=false;
+  const importer=el('input'),importLabel=el('label','Impor batas GeoJSON');importer.type='file';importer.accept='.geojson,.json,application/geo+json,application/json';importer.setAttribute('aria-label','Impor batas GeoJSON');importLabel.append(importer);panel.append(importLabel);
+  importer.onchange=async()=>{const file=importer.files?.[0];if(!file||busy||!alive())return;try{
+   if(file.size>1024*1024)throw Error('Berkas batas maksimal 1 MB.');const collection=JSON.parse(await file.text());
+   if(collection.type!=='FeatureCollection'||!Array.isArray(collection.features)||!collection.features.length||collection.features.length>50)throw Error('GeoJSON harus berisi 1–50 poligon.');
+   for(const f of collection.features){if(f.type!=='Feature'||!/^(Multi)?Polygon$/.test(f.geometry?.type))throw Error('Impor hanya menerima poligon.');const coordinates=f.geometry.coordinates.flat(Infinity);if(!coordinates.length||!coordinates.every(Number.isFinite))throw Error('Koordinat poligon tidak valid.');if(root.turf?.kinks(f).features.length)throw Error('Batas berpotongan; perbaiki berkas dahulu.');}
+   if(!alive())return;if(dirty()&&!confirm('Ganti gambar lokal dengan batas dari berkas? Salinan tersimpan tim tidak diubah.'))return;
+   showCollection(collection);id=null;revision=0;saved=null;pending=null;name.value=String(collection.name||file.name.replace(/\.(geojson|json)$/i,'')).slice(0,120);refresh();status.textContent=collection.features.length+' poligon diimpor sebagai batas baru; belum tersimpan untuk tim.';
+  }catch(error){if(alive())status.textContent='Impor belum selesai: '+error.message;}finally{importer.value='';}};
   const alive=()=>!disposed&&current(),fingerprint=(collection,label)=>JSON.stringify({name:label.trim(),features:collection.features.map(f=>({geometry:f.geometry,name:f.properties?.name}))});
   const dirty=()=>{const c=getCollection();return Boolean(pending)||(saved!==null||c.features.length>0)&&fingerprint(c,name.value||'')!==saved;};
   function refresh(){if(!alive())return;store.disabled=busy||!getCollection().features.length||!name.value.trim();open.disabled=analyze.disabled=busy||!select.value;reload.disabled=next.disabled=busy;next.hidden=!cursor;}
@@ -25,13 +33,22 @@
  }
  // A read-only map layer, separate from editable measurements and point work.
  // Fetch only on entry or an explicit refresh/save, never on pan or zoom.
- function mountOverlay({host,map,api,current=()=>true,title="Batas horti",matches=item=>/\bhorti\b/i.test(item.name),paneName="ortho-team-boundaries",color="#a21caf"}){
+ function mountOverlay({host,map,api,current=()=>true,title="Batas horti",matches=item=>/\bhorti\b/i.test(item.name),paneName="ortho-team-boundaries",color="#a21caf",getSnapshot}){
   const el=(tag,text)=>{const n=document.createElement(tag);if(text)n.textContent=text;return n;};
   const label=el('label',' '+title),toggle=el('input'),reload=el('button','Perbarui batas'),status=el('small');
   toggle.type='checkbox';toggle.checked=true;reload.type='button';status.setAttribute('role','status');label.prepend(toggle);host.replaceChildren(label,reload,status);
   const pane=map.createPane(paneName);pane.style.zIndex='450';pane.style.pointerEvents='none';
   const layer=root.L.layerGroup().addTo(map);let disposed=false,busy=false,again=false;
   const alive=()=>!disposed&&current();
+  const countsHost=getSnapshot?el('details'):null,annotations=[];let records=[];
+  if(countsHost)host.append(countsHost);
+  function updateCounts(){if(!alive()||!countsHost)return;const snapshot=getSnapshot(),heading=el('summary','Jumlah titik dalam area nanas baru'),table=el('table'),head=el('tr');head.append(el('th','Area'),el('th','Titik nanas'));table.append(head);
+   const count=(polygons,block)=>{if(!snapshot?.ready||block&&block!==snapshot.block)return block?'Buka Blok '+block:'Buka blok terkait';if(snapshot.dirty)return'Menunggu koreksi tersimpan';const value=root.YG_DAYUN_NEW_PLANTING.countPoints(polygons,snapshot.pointsInBounds||snapshot.features,root.turf);return value.total.toLocaleString('id-ID')+' titik';};
+   for(const record of records){const block=record.name.match(/\bBlok\s+([A-F])\b/i)?.[1]?.toUpperCase()||record.collection.features[0]?.properties?.zoneId?.match(/^GT-([A-F])-/)?.[1];for(const f of record.collection.features){if(!/^(Multi)?Polygon$/.test(f.geometry?.type))continue;const row=el('tr');row.append(el('td',f.properties?.name||record.name),el('td',count([f],block)));table.append(row);}const row=el('tr');row.append(el('td',record.name+' · total unik'),el('td',count(record.collection.features,block)));table.append(row);}
+   countsHost.replaceChildren(heading,table,el('small','Titik kerja tersimpan di dalam batas; titik ditolak dikecualikan. Bukan sensus tanaman.'));
+   for(const a of annotations)a.label.textContent=(a.feature.properties?.name||a.name)+' · '+count([a.feature],a.block);
+  }
+  const changed=()=>updateCounts();if(getSnapshot)map.on('dayun:plantschanged',changed);
   toggle.onchange=()=>{if(!alive())return;if(toggle.checked)layer.addTo(map);else map.removeLayer(layer);};
   async function refresh(){
    if(!alive())return;if(busy){again=true;return;}busy=true;reload.disabled=true;status.textContent='Memuat '+title+'…';
@@ -42,19 +59,20 @@
      items.push(...d.items.filter(matches));cursor=d.cursor;if(!cursor)break;
     }
     if(cursor)throw Error('Daftar batas belum lengkap.');
-    const rendered=[];
+    const rendered=[],nextRecords=[],nextAnnotations=[];
     for(const item of new Map(items.map(item=>[item.id,item])).values()){
      const d=await(await api('/api/staff/drone/analysis/areas?id='+encodeURIComponent(item.id))).json();if(!alive())return;
      const polygons=d.record.collection.features.filter(f=>/^(Multi)?Polygon$/.test(f.geometry?.type));
-     if(polygons.length)rendered.push(root.L.geoJSON({type:'FeatureCollection',features:polygons},{pane:paneName,interactive:false,style:{color,weight:3,dashArray:'8 5',fill:false,fillOpacity:0}}));
+     nextRecords.push({...d.record,collection:{type:'FeatureCollection',features:polygons}});
+     if(polygons.length)rendered.push(root.L.geoJSON({type:'FeatureCollection',features:polygons},{pane:paneName,interactive:false,style:{color,weight:3,dashArray:'8 5',fill:false,fillOpacity:0},...(getSnapshot?{onEachFeature:(feature,l)=>{const label=el('span'),block=d.record.name.match(/\bBlok\s+([A-F])\b/i)?.[1]?.toUpperCase()||feature.properties?.zoneId?.match(/^GT-([A-F])-/)?.[1];l.bindTooltip(label,{permanent:true,direction:'center'});nextAnnotations.push({feature,label,block,name:d.record.name});}}:{})}));
     }
-    if(!alive())return;layer.clearLayers();for(const shape of rendered)shape.addTo(layer);
+    if(!alive())return;layer.clearLayers();for(const shape of rendered)shape.addTo(layer);records=nextRecords;annotations.splice(0,annotations.length,...nextAnnotations);updateCounts();
     status.textContent=rendered.length?rendered.length+' '+title+' privat':'Belum ada '+title+' tersimpan.';
    }catch(error){if(alive())status.textContent=title+' belum diperbarui: '+error.message;}
    finally{busy=false;if(alive()){reload.disabled=false;if(again){again=false;refresh();}}}
   }
   reload.onclick=refresh;refresh();
-  return{refresh,dispose(){disposed=true;map.removeLayer(layer);host.replaceChildren();}};
+  return{refresh,updateCounts,dispose(){disposed=true;if(getSnapshot)map.off('dayun:plantschanged',changed);map.removeLayer(layer);host.replaceChildren();}};
  }
  root.YG_ORTHO_AREA_STORE={mount,mountOverlay,matchZones};
 })(window);
