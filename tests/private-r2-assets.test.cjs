@@ -50,5 +50,12 @@ test('an aborted consumer does not cancel a second consumer or poison later cach
 
 test('explicit cache clear frees bytes and forces a fresh authorized transfer',async()=>{const s=setup();await s.client.get(s.path(0));s.client.clear();s.client.register(base,{assetDelivery:'r2-signed-v1',run:'one',files:Array.from({length:130},(_,i)=>`block-A/${i}.tif`)});await s.client.get(s.path(0));assert.equal(s.calls.length,2);assert.equal(s.downloads.length,2);});
 
+test('run-scoped candidate and boundary GeoJSON reuse the existing private byte cache across block visits',async()=>{
+ const s=setup(),files=['block-B/candidates.geojson','block-B/zones.geojson'];s.client.register(base,{assetDelivery:'r2-signed-v1',run:'one',files});
+ for(let visit=0;visit<3;visit++){s.client.register(base,{assetDelivery:'r2-signed-v1',run:'one',files});for(const file of files)await s.client.get(base+'/files/'+file);}
+ assert.equal(s.downloads.length,2);assert.equal(s.calls.length,1);
+ s.client.register(base,{assetDelivery:'r2-signed-v1',run:'two',files});await s.client.get(base+'/files/'+files[0]);assert.equal(s.downloads.length,3);
+});
+
 
 test('unregistering a source never serves bytes from its previous signed-image manifest',async()=>{const s=setup();await s.client.get(s.path(0));s.client.register(base,{run:'new-source',files:['block-A/0.tif']});assert.equal(s.client.eligible(s.path(0)),null);await assert.rejects(s.client.get(s.path(0)),/tidak terdaftar/);assert.equal(s.downloads.length,1);});

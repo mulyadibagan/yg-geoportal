@@ -2,6 +2,13 @@
  'use strict';
  const PREFIX='Nanas baru Agustus 2026 · ';
  function countPoints(polygons,points,T){
+  // Restrict exact polygon checks to nearby indexed points. The same union /
+  // deduplication rules still apply to overlapping and multipart boundaries.
+  if(typeof points==='function'){
+   if(!polygons.length)return{total:0,accepted:0,unreviewed:0,manual:0};
+   const [w,s,e,n]=T.bbox({type:'FeatureCollection',features:polygons});
+   points=points({getWest:()=>w,getSouth:()=>s,getEast:()=>e,getNorth:()=>n});
+  }
   const seen=new Set();let total=0,accepted=0,manual=0;
   for(const f of points||[]){const p=f.properties||{},c=f.geometry?.coordinates;if(f.geometry?.type!=='Point'||!c?.every(Number.isFinite)||p.status==='rejected')continue;
    const key=p.id||c.join(',');if(seen.has(key)||!polygons.some(poly=>T.booleanPointInPolygon(f,poly)))continue;seen.add(key);total++;if(p.status==='accepted')accepted++;if(p.origin==='manual_addition')manual++;
@@ -28,10 +35,10 @@
   const alive=()=>!disposed&&current(),features=()=>parts.getLayers().map(l=>l.toGeoJSON(false)),fingerprint=()=>JSON.stringify({zone:zone.value,geometry:features().map(f=>f.geometry)}),dirty=()=>Boolean(pending)||((saved!==null||features().length>0)&&fingerprint()!==saved);
   function stop(){handler?.disable();handler=null;const edited=!!editing;if(editing){editing.save();editing.disable();editing=null;}map.orthoMeasuring=false;finish.hidden=true;if(edited&&lockBoundary.checked&&features().length)try{replaceParts(constrain(features()));}catch(e){status.textContent=e.message;refresh();return false;}refresh();return true;}
   function refresh(){if(!alive())return;const local=features(),preview=!local.length?getMeasurements().filter(f=>/^(Multi)?Polygon$/.test(f.geometry?.type)):[],polys=local.length?local:preview,snapshot=getSnapshot(),row=rows.find(r=>r.zone===zone.value),block=zone.value.split('-')[1],ready=!!snapshot&&!!block&&snapshot.block===block&&snapshot.ready&&!snapshot.dirty;
-   const valid=polys.length&&polys.every(f=>!T.kinks(f).features.length);lastCount=valid&&ready?countPoints(polys,snapshot.features,T):null;
+   const valid=polys.length&&polys.every(f=>!T.kinks(f).features.length);lastCount=valid&&ready?countPoints(polys,snapshot.pointsInBounds||snapshot.features,T):null;
    let area=0;try{if(polys.length)area=T.area(polys.reduce((a,b)=>a?T.union(a,b):b,null));}catch{lastCount=null;}
    const n=x=>Number(x).toLocaleString('id-ID');output.textContent=polys.length?(preview.length?'Pratinjau poligon peta · ':'')+`${polys.length} bagian · luas gabungan ${n(Math.round(area))} m². Sensus ${zone.value}: ${n(row?.count||0)} tanaman. `+(lastCount?`Titik dalam batas: ${n(lastCount.total)} (${n(lastCount.accepted)} diterima tim; ${n(lastCount.unreviewed)} belum diperiksa). Selisih titik − sensus: ${n(lastCount.total-(row?.count||0))}.`:`Hitungan belum tersedia: buka Blok ${block||'A–C'} dan tunggu koreksi tim tersinkron.`):'Belum ada batas tanaman baru.';
-   parts.getLayers().forEach((layer,i)=>{const f=local[i];if(f)layer.bindTooltip?.(zone.value+' · '+Math.round(T.area(f)).toLocaleString('id-ID')+' m²'+(ready?' · '+countPoints([f],snapshot.features,T).total.toLocaleString('id-ID')+' titik':''));});
+   parts.getLayers().forEach((layer,i)=>{const f=local[i];if(f)layer.bindTooltip?.(zone.value+' · '+Math.round(T.area(f)).toLocaleString('id-ID')+' m²'+(ready?' · '+countPoints([f],snapshot.pointsInBounds||snapshot.features,T).total.toLocaleString('id-ID')+' titik':''));});
    if(polys.length&&!valid)output.textContent+=' Batas berpotongan; perbaiki sudut sebelum menyimpan.';
    full.disabled=busy||!boundary||!!editing||!!handler;align.disabled=busy||!boundary||(!local.length&&!preview.length)||!!editing||!!handler;boundaryInfo.textContent=boundary?'Batas '+zone.value+' · '+Math.round(T.area(boundary)).toLocaleString('id-ID')+' m². Pemotongan diterapkan setelah gambar selesai.':'Memuat batas gawangan…';adopt.disabled=busy||!!editing||!!handler||!getMeasurements().some(f=>/^(Multi)?Polygon$/.test(f.geometry?.type));store.disabled=busy||!local.length||!valid||!row||!!editing||!!handler;draw.disabled=busy||!row||(lockBoundary.checked&&!boundary)||!!editing||!!handler;edit.disabled=busy||!local.length||!!editing||!!handler;clear.disabled=busy||!local.length||!!editing||!!handler;exporter.disabled=!local.length||busy;fresh.disabled=zone.disabled=busy||!!editing||!!handler;open.disabled=busy||!select.value||!!editing||!!handler;reload.disabled=busy;finish.disabled=busy;
   }

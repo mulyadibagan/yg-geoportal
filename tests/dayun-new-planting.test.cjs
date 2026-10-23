@@ -2,6 +2,12 @@ const test=require('node:test'),assert=require('node:assert/strict'),fs=require(
 const turf=require('../cloudflare/yg-webgis-public-data/node_modules/@turf/turf');
 const T={...turf,union:(a,b)=>turf.union(turf.featureCollection([a,b])),intersect:(a,b)=>turf.intersect(turf.featureCollection([a,b]))};
 const square=(x=0)=>turf.polygon([[[x,0],[x+2,0],[x+2,2],[x,2],[x,0]]]);
+test('indexed polygon counts preserve union, accepted/manual totals and rejected exclusions',()=>{
+ const context={window:{},globalThis:{}};vm.runInNewContext(fs.readFileSync('js/dayun-new-planting.js','utf8'),context);const count=context.window.YG_DAYUN_NEW_PLANTING.countPoints;
+ const points=[['a',1,1,'accepted','manual_addition'],['b',2,1,'candidate','automated'],['c',1,1,'rejected','automated'],['d',9,9,'accepted','manual_addition']].map(([id,x,y,status,origin])=>turf.point([x,y],{id,status,origin}));let candidates=0;
+ const query=b=>{assert.equal(b.getWest(),0);assert.equal(b.getEast(),3);const rows=points.filter(f=>f.geometry.coordinates[0]<=b.getEast());candidates=rows.length;return rows;};
+ assert.equal(JSON.stringify(count([square(),square(1)],query,T)),JSON.stringify(count([square(),square(1)],points,T)));assert.equal(candidates,3);
+});
 function setup(shared={records:new Map()},measurementFeatures=[],initialSnapshot,boundaryFeatures){
  const nodes=[],listeners={},events={},requests=[],groups=[];let fail=false,allowed=true;
  const el=tag=>{const n={tag,children:[],textContent:'',_value:null,setAttribute(){},append(...xs){this.children.push(...xs)},prepend(n){this.children.unshift(n)},replaceChildren(){this.children=[];this._value=null},remove(){},get options(){return this.children},get value(){return this._value??this.children[0]?.value??''},set value(v){this._value=v}};nodes.push(n);return n;};

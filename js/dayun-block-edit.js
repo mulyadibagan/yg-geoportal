@@ -1,5 +1,47 @@
 (function(root,factory){const api=factory(typeof module==='object'&&module.exports?require('./dayun-progress-counts.js'):root.YG_DAYUN_PROGRESS_COUNTS);if(typeof module==='object'&&module.exports)module.exports=api;root.YG_DAYUN_BLOCK_EDIT=api;})(typeof window!=='undefined'?window:globalThis,function(progressCounts){
   'use strict';
+  // One mutable index per editor. Full arrays are materialized only for exports
+  // and consumers that need them; pan, selection and local edits use this index.
+  function createPointIndex(original,zoneIds,initialChanges=[],normalizeInitial=f=>f){
+    const initial=new Map(original.map(f=>[f.properties.id,f])),points=new Map(),cells=new Map(),keys=new Map(),overrides=new Map();
+    const size=.0001,empty=()=>({automatic:0,manual_additions:0,rejected:0,accepted_by_staff:0,unreviewed:0,working_total:0});
+    const total={...empty(),unassigned:0},training={positive:0,negative:0,rejected_without_species_label:0};
+    const rows=new Map([...zoneIds,'UNASSIGNED'].map(id=>[id,{zone_id:id,...empty()}]));
+    const progressRow=()=>({initial:0,added:0,removed:0,current:0}),progress=progressRow(),progressZones=new Map([...new Set([...zoneIds,'UNASSIGNED'])].map(id=>[id,{zone_id:id,...progressRow()}]));
+    let array=null,revision=0;
+    const zones=f=>f?.properties.zones?.length?f.properties.zones:['UNASSIGNED'];
+    function contribution(f,sign){if(!f)return;const p=f.properties,m=p.origin==='manual_addition',r=p.status==='rejected',a=p.status==='accepted';
+      const add=row=>{row[m?'manual_additions':'automatic']+=sign;if(r)row.rejected+=sign;else{row.working_total+=sign;row[a?'accepted_by_staff':'unreviewed']+=sign;}};
+      add(total);if(!r&&!p.zones?.length)total.unassigned+=sign;for(const id of zones(f)){const row=rows.get(id);if(row)add(row);}
+      if(a)training.positive+=sign;else if(r)training[p.rejection_reason==='not_pineapple'?'negative':'rejected_without_species_label']+=sign;
+    }
+    function progressContribution(id,f,sign){const old=initial.get(id),live=f&&f.properties.status!=='rejected';
+      const unique=f=>{const ids=zones(f);return ids.length<2?ids:[...new Set(ids)];},before=old?unique(old):[],after=live?unique(f):[];
+      const add=(row,was,is)=>{if(was)row.initial+=sign;if(is)row.current+=sign;if(is&&!was)row.added+=sign;if(was&&!is)row.removed+=sign;};
+      add(progress,!!old,!!live);for(const zone of before){const row=progressZones.get(zone);if(row)add(row,true,after.includes(zone));}for(const zone of after)if(!before.includes(zone)){const row=progressZones.get(zone);if(row)add(row,false,true);}
+    }
+    function removeCell(id){const key=keys.get(id);if(key!==undefined){const cell=cells.get(key);cell.delete(id);if(!cell.size)cells.delete(key);keys.delete(id);}}
+    function put(id,f){const previous=points.get(id);if(previous===f)return;contribution(previous,-1);if(previous||initial.has(id))progressContribution(id,previous,-1);removeCell(id);
+      if(f){points.set(id,f);const [x,y]=f.geometry.coordinates,key=Math.floor(x/size)+','+Math.floor(y/size);if(!cells.has(key))cells.set(key,new Map());cells.get(key).set(id,f);keys.set(id,key);}else points.delete(id);
+      contribution(f,1);if(f||initial.has(id))progressContribution(id,f,1);array=null;revision++;
+    }
+    // Initial progress is installed with its point, rather than subtracted
+    // before a point has ever entered the index.
+    for(const raw of initialChanges)overrides.set(raw.properties.id,{raw,feature:normalizeInitial(raw)});
+    function install(value){const id=value.properties.id;points.set(id,value);contribution(value,1);progressContribution(id,value,1);const [x,y]=value.geometry.coordinates,key=Math.floor(x/size)+','+Math.floor(y/size);if(!cells.has(key))cells.set(key,new Map());cells.get(key).set(id,value);keys.set(id,key);}
+    for(const f of original)install(overrides.get(f.properties.id)?.feature||{...f,properties:{...f.properties,status:'candidate',origin:'automated'}});
+    for(const [id,value]of overrides)if(!initial.has(id))install(value.feature);
+    function reconcile(changes,normalize=f=>f){const next=new Map();for(const raw of changes){const id=raw.properties.id,previous=overrides.get(id);let f=previous&&(previous.raw===raw||JSON.stringify(previous.raw)===JSON.stringify(raw))?previous.feature:normalize(raw);next.set(id,{raw,feature:f});if(previous?.feature!==f)put(id,f);}
+      for(const id of overrides.keys())if(!next.has(id)){const f=initial.get(id);put(id,f?{...f,properties:{...f.properties,status:'candidate',origin:'automated'}}:null);}overrides.clear();for(const [id,value]of next)overrides.set(id,value);
+    }
+    function query(bounds){if(!bounds?.getWest)return [...points.values()].filter(f=>bounds.contains([f.geometry.coordinates[1],f.geometry.coordinates[0]]));const w=bounds.getWest(),e=bounds.getEast(),s=bounds.getSouth(),n=bounds.getNorth(),out=[];
+      const x0=Math.floor(w/size),x1=Math.floor(e/size),y0=Math.floor(s/size),y1=Math.floor(n/size);
+      const visit=cell=>{for(const f of cell.values()){const [x,y]=f.geometry.coordinates;if(x>=w&&x<=e&&y>=s&&y<=n)out.push(f);}};
+      if((x1-x0+1)*(y1-y0+1)>cells.size*4){for(const cell of cells.values())visit(cell);}else for(let x=x0;x<=x1;x++)for(let y=y0;y<=y1;y++){const cell=cells.get(x+','+y);if(cell)visit(cell);}return out;
+    }
+    function patch(id,feature,raw=feature){if(feature){overrides.set(id,{raw,feature});put(id,feature);}else{overrides.delete(id);const f=initial.get(id);put(id,f?{...f,properties:{...f.properties,status:'candidate',origin:'automated'}}:null);}}
+    return{reconcile,patch,query,get:id=>points.get(id),get revision(){return revision;},features:()=>array||(array=[...points.values()]),counts:()=>({automatic_original:original.length,manual_additions:total.manual_additions,rejected:total.rejected,accepted_by_staff:total.accepted_by_staff,unreviewed:total.unreviewed,working_total:total.working_total,unassigned:total.unassigned,training_examples:{...training},zones:[...rows.values()].map(r=>({...r})),progress:{schema:'dayun-team-progress-v1',...progress,zones:[...progressZones.values()].map(r=>({...r})),census_changed:false}})};
+  }
   function effective(original,changes){const map=new Map(changes.map(f=>[f.properties.id,f])),ids=new Set(original.map(f=>f.properties.id));return original.map(f=>map.get(f.properties.id)||{...f,properties:{...f.properties,status:'candidate',origin:'automated'}}).concat(changes.filter(f=>!ids.has(f.properties.id)));}
   function summarize(features,originalCount,zoneIds,originalFeatures){const rows=new Map(zoneIds.map(id=>[id,{zone_id:id,automatic:0,manual_additions:0,rejected:0,accepted_by_staff:0,unreviewed:0,working_total:0}]));rows.set('UNASSIGNED',{zone_id:'UNASSIGNED',automatic:0,manual_additions:0,rejected:0,accepted_by_staff:0,unreviewed:0,working_total:0});const sum={automatic_original:originalCount,manual_additions:0,rejected:0,accepted_by_staff:0,unreviewed:0,working_total:0,unassigned:0};
     for(const f of features){const p=f.properties,m=p.origin==='manual_addition',r=p.status==='rejected',a=p.status==='accepted';if(m)sum.manual_additions++;if(r)sum.rejected++;else{sum.working_total++;if(a)sum.accepted_by_staff++;else sum.unreviewed++;if(!p.zones?.length)sum.unassigned++;}for(const id of p.zones?.length?p.zones:['UNASSIGNED']){const row=rows.get(id);if(!row)continue;if(m)row.manual_additions++;else row.automatic++;if(r)row.rejected++;else{row.working_total++;if(a)row.accepted_by_staff++;else row.unreviewed++;}}}const training={positive:0,negative:0,rejected_without_species_label:0};for(const f of features){const p=f.properties;if(p.status==='accepted')training.positive++;else if(p.status==='rejected'){if(p.rejection_reason==='not_pineapple')training.negative++;else training.rejected_without_species_label++;}}return{...sum,training_examples:training,zones:[...rows.values()],progress:originalFeatures&&progressCounts?progressCounts.compute(originalFeatures,features,zoneIds):null};}
@@ -24,14 +66,14 @@
     if(host.insertBefore)host.insertBefore(undo,compactExtra||box);else host.append(undo);
     const signature=f=>f?JSON.stringify([f.geometry.coordinates,f.properties.status,f.properties.origin,f.properties.note||'',f.properties.rejection_reason||'unspecified',[...(f.properties.zones||[])].sort()]):null;
     function rememberDeletion(before){
-      const after=new Map(features().map(f=>[f.properties.id,f]));
+      const after={get:pointById,has:id=>!!pointById(id)};
       undoStack.push(before.map(f=>{const id=f.properties.id;return {id,before:JSON.parse(JSON.stringify(f)),after:signature(after.get(id)),operation:pending.get(id)?.operation_id||null,version:pointVersions[id]||0};}));
       if(undoStack.length>20)undoStack.shift();undo.disabled=false;shortcuts?.focus();
     }
     function undoDelete(){
       if(!alive()||!ready||boxBusy||!directSelectionEnabled())return false;
       const action=undoStack.at(-1);if(!action){status.textContent='Tidak ada penghapusan pada sesi peta ini yang dapat dibatalkan.';return false;}
-      const currentPoints=new Map(features().map(f=>[f.properties.id,f]));
+      const currentPoints={get:pointById,has:id=>!!pointById(id)};
       const changed=action.some(p=>{
         const local=pending.get(p.id);
         return conflicts.has(p.id)||signature(currentPoints.get(p.id))!==p.after||(local?local.operation_id!==p.operation:p.operation?pointOperations[p.id]!==p.operation:(pointVersions[p.id]||0)!==p.version);
@@ -51,7 +93,7 @@
     box.onclick=()=>{if(!alive()||!ready||boxBusy)return;if(map.getZoom()<22){status.textContent='Perbesar peta hingga detail citra asli sebelum memilih area.';return;}if(!L.Draw?.Rectangle){status.textContent='Alat kotak belum tersedia. Muat ulang setelah koreksi tersimpan.';return;}setEditing(true);cancelBox();selected=null;drawSelected();boxPanel.hidden=false;boxText.textContent='Tarik kotak pada peta. Belum ada titik yang dihapus.';boxDraw=new L.Draw.Rectangle(map,{shapeOptions:{dayunPlantSelection:true,color:'#2563eb',weight:2,fillOpacity:.08}});boxDraw.enable();};
     function selectBounds(bounds){
       if(!alive()||!ready||boxBusy)return;if(!editing)setEditing(true);cancelBox();adding=false;add.textContent='Tambah titik nanas';selected=null;drawSelected();
-      const unique=new Map();for(const f of features())if(boxAllowed(f)&&bounds.contains([f.geometry.coordinates[1],f.geometry.coordinates[0]]))unique.set(f.properties.id,f);
+      const unique=new Map();for(const f of pointsInBounds(bounds))if(boxAllowed(f))unique.set(f.properties.id,f);
       boxPoints=[...unique.values()].map(f=>({id:f.properties.id,snapshot:JSON.stringify(f)}));boxPanel.hidden=false;boxDelete.disabled=!boxPoints.length||boxPoints.length>250;
       boxText.textContent=boxPoints.length>250?`${boxPoints.length} titik terpilih. Perkecil kotak hingga maksimal 250 titik.`:`${boxPoints.length} titik nanas terpilih. Tekan Delete untuk menghapus dari hitungan; Esc untuk batal. Titik buah tetap utuh.`;
       if(boxPoints.length<=250)for(const f of unique.values())L.circleMarker([f.geometry.coordinates[1],f.geometry.coordinates[0]],{radius:8,color:'#2563eb',weight:3,fillOpacity:0,interactive:false}).addTo(boxHighlights);
@@ -61,27 +103,36 @@
     map.on('draw:created',boxCreated);
     boxCancel.onclick=()=>{if(!boxBusy)cancelBox();};
     boxDelete.onclick=async()=>{if(!alive()||!editing||boxBusy||boxDelete.disabled||!boxPoints.length)return;boxBusy=true;boxDelete.disabled=boxCancel.disabled=box.disabled=true;const chosen=boxPoints.slice();try{
-      const beforeRead=new Map(features().map(f=>[f.properties.id,f]));for(const p of chosen){const f=beforeRead.get(p.id);if(!f||!boxAllowed(f)||JSON.stringify(f)!==p.snapshot){status.textContent='Pilihan berubah karena koreksi tim atau filter peta. Pilih area kembali.';cancelBox();return;}if(map.getZoom()<22||!(isPointReady?.(f.geometry.coordinates)===true)&&preparePoint&&!await preparePoint(f.geometry.coordinates)){status.textContent='Tunggu seluruh citra asli pada pilihan siap, lalu klik Hapus titik terpilih lagi.';return;}if(!alive()||!editing||chosen.length!==boxPoints.length)return;}
+      const beforeRead={get:pointById,has:id=>!!pointById(id)};for(const p of chosen){const f=beforeRead.get(p.id);if(!f||!boxAllowed(f)||JSON.stringify(f)!==p.snapshot){status.textContent='Pilihan berubah karena koreksi tim atau filter peta. Pilih area kembali.';cancelBox();return;}if(map.getZoom()<22||!(isPointReady?.(f.geometry.coordinates)===true)&&preparePoint&&!await preparePoint(f.geometry.coordinates)){status.textContent='Tunggu seluruh citra asli pada pilihan siap, lalu klik Hapus titik terpilih lagi.';return;}if(!alive()||!editing||chosen.length!==boxPoints.length)return;}
       if(!alive()||!editing||chosen.length!==boxPoints.length||chosen.some((p,i)=>boxPoints[i]?.snapshot!==p.snapshot))return;
-      const all=new Map(features().map(f=>[f.properties.id,f]));
+      const all={get:pointById,has:id=>!!pointById(id)};
       if(chosen.some(p=>!all.has(p.id)||!boxAllowed(all.get(p.id))||JSON.stringify(all.get(p.id))!==p.snapshot)){status.textContent='Titik berubah saat citra dimuat. Pilih area kembali.';cancelBox();return;}
       const next=new Map(changes.map(f=>[f.properties.id,f]));for(const p of chosen){const f=JSON.parse(p.snapshot);if(f.properties.origin==='manual_addition'){next.delete(p.id);queue(null,p.id,false);}else{f.properties.status='rejected';f.properties.rejection_reason='unspecified';if(f.properties.note===undefined)f.properties.note='';next.set(p.id,f);queue(f,p.id,false);}}
       changes=[...next.values()];rememberDeletion(chosen.map(p=>JSON.parse(p.snapshot)));selected=null;cancelBox();drawSelected();announce(localCounts());schedule();status.textContent=`${chosen.length} titik dikeluarkan dari hitungan kerja; Ctrl+Z untuk membatalkan. Menyimpan privat otomatis…`;
     }catch(error){if(alive())status.textContent=error.message;}finally{boxBusy=false;if(alive()){box.disabled=boxCancel.disabled=false;boxDelete.disabled=!boxPoints.length||boxPoints.length>250;}}};
     const boxEscape=event=>{if(event.key==='Escape'&&!boxBusy)cancelBox();};window.addEventListener('keydown',boxEscape);
-    let featureCache=null;
-    const features=()=>{
+    let featureCache=null,pointIndex=null,reconcileAll=true;
+    const indexPatches=new Map();
+    const normalizedChanges=new WeakMap();
+    function index(){
       const original=getCandidates()?.features,zones=getZones()?.features;
-      if(featureCache&&featureCache.original===original&&featureCache.zones===zones&&featureCache.changes===changes&&featureCache.version===version)return featureCache.value;
-      const value=effective(original||[],result.boundary_revision&&zones?.length?changes.map(f=>({...f,properties:{...f.properties,zones:locate(f)}})):changes);
-      featureCache={original,zones,changes,version,value};return value;
-    };
-    function localCounts(){return summarize(features(),getCandidates()?.features?.length??result.candidate_count,result.zones.map(z=>z.id),getCandidates()?.features);}
-    function announce(counts){if(!alive())return;totals.textContent=`Otomatis awal ${counts.automatic_original.toLocaleString('id-ID')} · tambahan tim ${counts.manual_additions} · ditolak ${counts.rejected} · diterima tim ${counts.accepted_by_staff} · hitungan kerja ${counts.working_total.toLocaleString('id-ID')}. Belum sensus terverifikasi.`;const t=counts.training_examples||localCounts().training_examples;trainingStatus.textContent=`Contoh untuk perbaikan detektor: ${t.positive} nanas diterima tim; ${t.negative} bukan nanas; ${t.rejected_without_species_label} penolakan belum menjadi contoh negatif spesies. Contoh ini belum mengukur akurasi seluruh blok.`;onChanged?.({features:features(),counts,revision,dirty});reportSync();}
+      if(featureCache&&featureCache.original===original&&featureCache.zones===zones&&featureCache.changes===changes&&featureCache.version===version)return pointIndex;
+      if(!pointIndex||featureCache?.original!==original||featureCache?.zones!==zones){pointIndex=createPointIndex(original||[],result.zones.map(z=>z.id));reconcileAll=true;}
+      const normalize=f=>{if(!result.boundary_revision||!zones?.length)return f;const old=normalizedChanges.get(f);if(old?.zones===zones)return old.value;const value={...f,properties:{...f.properties,zones:locate(f)}};normalizedChanges.set(f,{zones,value});return value;};
+      if(!pointIndex||featureCache?.original!==original||featureCache?.zones!==zones){pointIndex=createPointIndex(original||[],result.zones.map(z=>z.id),changes,normalize);reconcileAll=false;indexPatches.clear();}
+      if(reconcileAll)pointIndex.reconcile(changes,normalize);else for(const [id,f]of indexPatches)pointIndex.patch(id,f?normalize(f):null,f);
+      indexPatches.clear();reconcileAll=false;
+      featureCache={original,zones,changes,version};return pointIndex;
+    }
+    const features=()=>index().features();
+    const pointById=id=>index().get(id);
+    const pointsInBounds=bounds=>index().query(bounds);
+    function localCounts(){return index().counts();}
+    function announce(counts){if(!alive())return;totals.textContent=`Otomatis awal ${counts.automatic_original.toLocaleString('id-ID')} · tambahan tim ${counts.manual_additions} · ditolak ${counts.rejected} · diterima tim ${counts.accepted_by_staff} · hitungan kerja ${counts.working_total.toLocaleString('id-ID')}. Belum sensus terverifikasi.`;const t=counts.training_examples||localCounts().training_examples;trainingStatus.textContent=`Contoh untuk perbaikan detektor: ${t.positive} nanas diterima tim; ${t.negative} bukan nanas; ${t.rejected_without_species_label} penolakan belum menjadi contoh negatif spesies. Contoh ini belum mengukur akurasi seluruh blok.`;onChanged?.({get features(){return features();},counts,revision,dirty});reportSync();}
     function reportSync(){if(alive())onSyncState?.({ready,revision,dirty,saving:busy,loading:pulling,conflicts:conflicts.size,error:syncError});}
     function drawConflicts(){reportSync();if(conflicts.size&&compactExtra)compactExtra.open=true;conflictPanel.hidden=!conflicts.size;const previous=conflictSelect.value;conflictSelect.replaceChildren();for(const id of conflicts){const option=make('option',id);option.value=id;conflictSelect.append(option);}conflictSelect.value=conflicts.has(previous)?previous:[...conflicts][0]||'';}
     function schedule(){clearTimeout(timer);if(alive()&&[...pending.keys()].some(id=>!conflicts.has(id)))timer=setTimeout(()=>persist(),2000);}
-    function queue(feature,id=feature?.properties.id,notify=true){const previous=pending.get(id);if(feature===null&&!pointVersions[id]&&!inFlight.has(id)){pending.delete(id);conflicts.delete(id);}else pending.set(id,{id,expected_version:previous?.expected_version??pointVersions[id]??0,operation_id:crypto.randomUUID(),feature:feature?JSON.parse(JSON.stringify(feature)):null});version++;dirty=pending.size>0;if(notify){status.textContent=dirty?'Perubahan lokal; menyimpan titik privat otomatis…':'Tidak ada perubahan lokal yang belum tersimpan.';drawConflicts();announce(localCounts());schedule();}}
+    function queue(feature,id=feature?.properties.id,notify=true){indexPatches.set(id,feature);const previous=pending.get(id);if(feature===null&&!pointVersions[id]&&!inFlight.has(id)){pending.delete(id);conflicts.delete(id);}else pending.set(id,{id,expected_version:previous?.expected_version??pointVersions[id]??0,operation_id:crypto.randomUUID(),feature:feature?JSON.parse(JSON.stringify(feature)):null});version++;dirty=pending.size>0;if(notify){status.textContent=dirty?'Perubahan lokal; menyimpan titik privat otomatis…':'Tidak ada perubahan lokal yang belum tersimpan.';drawConflicts();announce(localCounts());schedule();}}
     const membershipCache=new WeakMap();
     function locate(f){const zones=getZones()?.features,coordinates=f.geometry.coordinates,cached=membershipCache.get(f);if(cached&&cached.zones===zones&&cached.x===coordinates[0]&&cached.y===coordinates[1])return cached.ids;const ids=(zones||[]).filter(z=>window.turf.booleanPointInPolygon(f,z)).map(z=>z.properties.id);membershipCache.set(f,{zones,x:coordinates[0],y:coordinates[1],ids});return ids;}
     function edit(feature,mutate){const f=JSON.parse(JSON.stringify(feature));if(f.properties.note===undefined)f.properties.note='';mutate(f);f.properties.zones=locate(f);const index=changes.findIndex(p=>p.properties.id===f.properties.id);if(index<0)changes.push(f);else changes[index]=f;selected=f;queue(f);drawSelected();}
@@ -91,7 +142,7 @@
     function apply(response,sent=[],discardId){if(!alive())return;if(response.analysis_path!==analysisPath||response.review&&(response.review.analysis_path!==analysisPath||response.review.source_run!==manifest.run))throw Error('Versi koreksi berbeda dari analisis peta.');if((response.revision||0)<revision)return;if(ready&&(response.revision||0)===revision&&!sent.length&&!pending.size&&!discardId){reportSync();return;}if(discardId){pending.delete(discardId);conflicts.delete(discardId);version++;}ready=true;feedbackReady=response.feedback_schema==='dayun-rejection-reason-v1';pointOperations=response.point_operations||{};revision=response.revision||0;pointVersions=response.point_versions||Object.fromEntries((response.review?.changes||[]).map(f=>[f.properties.id,revision]));
       for(const op of sent){if(response.point_operations?.[op.id]===op.operation_id)receipts.delete(op.id);const local=pending.get(op.id);if(!local)continue;if(local.operation_id===op.operation_id){pending.delete(op.id);conflicts.delete(op.id);}else local.expected_version=pointVersions[op.id]||0;}
       for(const [id,op]of pending){const serverOperation=response.point_operations?.[id];if(serverOperation===receipts.get(id)&&receipts.has(id)){op.expected_version=pointVersions[id]||0;conflicts.delete(id);}if(serverOperation===op.operation_id){pending.delete(id);conflicts.delete(id);}else if((pointVersions[id]||0)!==op.expected_version)conflicts.add(id);}for(const [id,operation]of receipts)if(response.point_operations?.[id]===operation)receipts.delete(id);
-      const merged=new Map((response.review?.changes||[]).map(f=>[f.properties.id,f]));for(const op of pending.values()){if(op.feature===null)merged.delete(op.id);else merged.set(op.id,op.feature);}changes=[...merged.values()];dirty=pending.size>0;if(selected)selected=features().find(f=>f.properties.id===selected.properties.id)||null;drawSelected();drawConflicts();announce(dirty?localCounts():response.counts);
+      const merged=new Map((response.review?.changes||[]).map(f=>[f.properties.id,f]));for(const op of pending.values()){if(op.feature===null)merged.delete(op.id);else merged.set(op.id,op.feature);}changes=[...merged.values()];reconcileAll=true;dirty=pending.size>0;if(selected)selected=features().find(f=>f.properties.id===selected.properties.id)||null;drawSelected();drawConflicts();announce(dirty?localCounts():response.counts);
     }
     async function load({discardId}={}){if(pulling)return;pulling=true;reportSync();try{const response=await(await api(endpoint)).json();syncError=null;apply(response,[],discardId);if(alive())status.textContent=conflicts.size?`${conflicts.size} titik berbenturan dengan perubahan tim; pilih penyelesaian. Perubahan lokal tetap ada.`:dirty?`Revisi tim ${revision} dimuat; perubahan lokal tetap menunggu penyimpanan.`:`Revisi ${revision} tersimpan privat dan tersinkron. Sensus tidak berubah.`;}catch(error){syncError=error.message;throw error;}finally{pulling=false;reportSync();}}
     async function persist(){if(!alive()||!dirty||busy||pulling)return;const sent=[...pending.values()].filter(op=>!conflicts.has(op.id)).slice(0,250).map(op=>JSON.parse(JSON.stringify(op)));if(!sent.length)return;clearTimeout(timer);syncError=null;busy=true;reportSync();store.disabled=true;sent.forEach(op=>{inFlight.add(op.id);if(!receipts.has(op.id))receipts.set(op.id,op.operation_id);});
@@ -135,7 +186,7 @@
     // Saving remains immediate; only passive reads back off on service errors.
     let nextPollAt=syncError?Date.now()+300000:0;
     if(alive())poll=setInterval(()=>{if(alive()&&!busy&&!pulling&&document.visibilityState!=='hidden'&&Date.now()>=nextPollAt){nextPollAt=Date.now()+60000;load().then(()=>{nextPollAt=Date.now()+60000;schedule();}).catch(()=>{nextPollAt=Date.now()+300000;});}},60000);
-    return{pick,undoDelete,cancelSelection:cancelBox,reviewSuggestion,hasReviewedSuggestion:id=>!ready||Boolean(pointVersions[id]||pending.has(id)),setEditing,isEditing:()=>editing,features,refresh:()=>{if(alive()){cancelBox();announce(localCounts());}},canLeave:()=>!dirty||exported===version,dispose:()=>{shortcuts?.dispose();cancelBox();disposed=true;clearTimeout(timer);clearInterval(poll);window.removeEventListener('keydown',boxEscape);window.removeEventListener('beforeunload',beforeUnload);map.off('draw:created',boxCreated);map.off('click',click);map.removeLayer(boxHighlights);map.removeLayer(layer);host.replaceChildren();host.hidden=true;}};
+    return{pick,undoDelete,cancelSelection:cancelBox,reviewSuggestion,hasReviewedSuggestion:id=>!ready||Boolean(pointVersions[id]||pending.has(id)),setEditing,isEditing:()=>editing,features,counts:localCounts,pointsInBounds,pointById,get pointRevision(){return index().revision;},refresh:()=>{if(alive()){cancelBox();announce(localCounts());}},canLeave:()=>!dirty||exported===version,dispose:()=>{shortcuts?.dispose();cancelBox();disposed=true;clearTimeout(timer);clearInterval(poll);window.removeEventListener('keydown',boxEscape);window.removeEventListener('beforeunload',beforeUnload);map.off('draw:created',boxCreated);map.off('click',click);map.removeLayer(boxHighlights);map.removeLayer(layer);host.replaceChildren();host.hidden=true;}};
   }
-  return{effective,summarize,mount};
+  return{effective,summarize,createPointIndex,mount};
 });
