@@ -25,6 +25,13 @@ test('census adjustment refuses a changed team revision before writing or downlo
  global.fetch=async()=>({ok:true,json:async()=>({})});global.window.YG_DAYUN_CENSUS_RECONCILE={fingerprint:points=>JSON.stringify(points),targets:()=>[{zone:'GT-A-01',target:3,area:{}}],plan:async()=>({updates:[point('A-manual-census-test-1')],summary:[{zone:'GT-A-01',before:2,target:3,add:1,remove:0}]})};
  const e=await editor.mount(s.options);try{await s.button('Siapkan penyesuaian titik sesuai sensus').onclick();s.shared.remote(point('auto-1','rejected'));await s.button('Terapkan penyesuaian sensus').onclick();assert.equal(backups,0);assert.equal(s.calls.filter(c=>c.config).length,0);assert.equal(s.shared.snapshot().counts.working_total,1);}finally{e.dispose();delete global.fetch;}
 });
+test('census adjustment preserves a new outside team point and backs up the latest revision',async()=>{
+ const s=setup(),normalApi=s.options.api,backups=[];s.options.save=blob=>backups.push(blob);
+ s.options.api=async(path,config)=>path.includes('/areas')?{json:async()=>path.includes('?id=')?{record:{id:'area-test',revision:1,collection:{features:[]}}}:{items:[{id:'area-test',name:'Batas nanas baru Blok A'}]}}:normalApi(path,config);
+ global.fetch=async()=>({ok:true,json:async()=>({})});global.window.turf.booleanPointInPolygon=f=>f.geometry.coordinates[0]===1;
+ global.window.YG_DAYUN_CENSUS_RECONCILE={fingerprint:require('../js/dayun-census-reconcile.js').fingerprint,targets:()=>[{zone:'GT-A-01',target:3,area:{}}],plan:async()=>({updates:[point('A-manual-census-test-1')],summary:[{zone:'GT-A-01',before:2,target:3,add:1,remove:0}]})};
+ const e=await editor.mount(s.options);try{await s.button('Siapkan penyesuaian titik sesuai sensus').onclick();const outside=point('A-manual-outside-team');outside.geometry.coordinates=[2,2];s.shared.remote(outside);await s.button('Terapkan penyesuaian sensus').onclick();const backup=JSON.parse(await backups[0].text());assert.equal(backup.revision,1);assert.equal(backup.features.length,3);assert.equal(s.shared.snapshot().counts.working_total,4);assert.deepEqual(e.features().find(f=>f.properties.id===outside.properties.id),outside);assert.equal(e.canLeave(),true);}finally{e.dispose();delete global.fetch;}
+});
 
 test('ready native pixels select and box-delete locally without repeated inspection or preparation',async()=>{
  const s=setup();let inspected=0,prepared=0,bindings,focused=0;
