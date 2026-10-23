@@ -26,6 +26,16 @@ function setup(){
  return{mount:context.window.YG_DAYUN_BLOCK.mount,options,host,requests,events,result,layers,overlays,context,find:text=>host.children.find(x=>x.textContent===text)};
 }
 
+test('panning queries only the viewport, retains stable markers and changes only the edited point',async()=>{
+ const s=setup(),events={};s.options.map.on=(name,fn)=>(events[name]??=[]).push(fn);s.options.map.off=()=>{};s.options.autoOpen=true;
+ const point=(id,x=.5)=>({type:'Feature',geometry:{type:'Point',coordinates:[x,.5]},properties:{id,zones:['GT-A-01'],status:'accepted',origin:'manual_addition'}});
+ let values=[point('one'),point('two')],revision=1,queries=0,fullReads=0;
+ s.context.window.YG_DAYUN_BLOCK_EDIT={mount:async()=>({features(){fullReads++;return values;},counts:()=>({accepted_by_staff:2,working_total:2,zones:[]}),get pointRevision(){return revision;},pointsInBounds(){queries++;return values;},refresh(){},dispose(){},setEditing(){}})};
+ const stop=await s.mount(s.options);try{const created=s.layers.length;fullReads=0;for(let i=0;i<10;i++)for(const fn of events['moveend zoomend'])fn();assert.equal(fullReads,0);assert.equal(s.layers.length,created);assert.ok(queries>=10);
+ values=[{...values[0],geometry:{type:'Point',coordinates:[.6,.5]}},values[1]];revision++;for(const fn of events['moveend zoomend'])fn();assert.equal(s.layers.length,created+1);assert.equal(fullReads,0);
+ }finally{stop();}
+});
+
 test('negative controls show independent failures and distinguish upstream sensitivity from filtered counts',async()=>{
  const s=setup();s.result.negative_comparison={schema:'dayun-negative-comparison-summary-v1',input_candidates:2400,retained_candidates:1200,unknown_context_retained:12,evaluation:{'1_heldout':{samples:7,retained:7},'0_heldout':{samples:600,retained:7}}};s.result.full_block_count={processed_tiles:99,candidate_count:1200,threshold:.393,threshold_025_count:3100,threshold_040_count:1500};
  const dispose=await s.mount(s.options),text=JSON.stringify(s.host.children);assert.match(text,/2.400 usulan awal/);assert.match(text,/593 disaring dan 7 masih lolos/);assert.match(text,/belum mengukur presisi/);assert.match(text,/sebelum penyaring tambahan/);assert.ok(s.requests.every(r=>!r.config));dispose();

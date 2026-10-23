@@ -86,9 +86,9 @@
       if(options.signal?.aborted)throw options.signal.reason||Error('Pembacaan citra dibatalkan.');
       const match=eligible(path),manifest=match&&manifests.get(match[1]);
       if(!match||!manifest.files.includes(match[2]))throw Error('Berkas citra tidak terdaftar.');
-      // JSON contains evolving analysis/review data; ranges must retain their
-      // exact status and content-range. Only complete immutable image files reuse bytes.
-      if(new Headers(options.headers).has('range')||! /\.(?:tiff?|png|jpe?g)$/i.test(match[2]))return transfer(path,options);
+      // Run-scoped GeoJSON candidates/boundaries are immutable like imagery.
+      // Review JSON remains live; ranges retain their exact status/content-range.
+      if(new Headers(options.headers).has('range')||! /\.(?:tiff?|png|jpe?g|geojson)$/i.test(match[2]))return transfer(path,options);
       const cached=images.get(path);
       if(cached&&cached.until>now()){images.delete(path);images.set(path,cached);return replay(cached);}
       forget(path);

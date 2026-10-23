@@ -145,7 +145,7 @@
     list.forEach((feature,index) => {
       const p=feature.properties, result=p.areaHa !== undefined ? `${number(p.areaM2)} m² · ${number(p.areaHa,4)} ha` : `${number(p.lengthM)} m`;
       const snapshot=disposeBlockReview?.getPlantSnapshot?.();
-      const count=p.areaHa===undefined?'—':!snapshot?.ready?'Menunggu titik nanas dimuat':snapshot.dirty?'Menunggu koreksi tersimpan':window.YG_DAYUN_NEW_PLANTING?number(window.YG_DAYUN_NEW_PLANTING.countPoints([feature],snapshot.features,turf).total)+' titik · Blok '+snapshot.block:'Penghitung belum dimuat';
+      const count=p.areaHa===undefined?'—':!snapshot?.ready?'Menunggu titik nanas dimuat':snapshot.dirty?'Menunggu koreksi tersimpan':window.YG_DAYUN_NEW_PLANTING?number(window.YG_DAYUN_NEW_PLANTING.countPoints([feature],snapshot.pointsInBounds||snapshot.features,turf).total)+' titik · Blok '+snapshot.block:'Penghitung belum dimuat';
       const tr=document.createElement('tr'); [p.name,result,count].forEach(value => {const td=document.createElement('td');td.textContent=value;tr.append(td);}); $('measurements').append(tr);
       const label=document.createElement('span');label.textContent=`${p.name}: ${result} · ${count}`;areas.getLayers()[index].bindTooltip(label,{permanent:true,direction:'center'});
     });
@@ -345,7 +345,7 @@
         dayunLayer=L.geoJSON(geo,{style:f=>({color:(f.properties.valid_coverage_percent??0)<95?'#d97706':'#137f63',weight:2,fillOpacity:.12}),onEachFeature:(f,l)=>l.bindTooltip(String(f.properties.gawangan))}).addTo(map);
         map.fitBounds(dayunLayer.getBounds());
       }
-      if(!target&&manifest.files.includes('overview.jpg')){
+      if(!target&&!(blockTarget&&manifest.block_analyses?.[block])&&manifest.files.includes('overview.jpg')){
         const blob=await(await api(base+'/files/overview.jpg')).blob();if(!current())return;
         const url=URL.createObjectURL(blob);dayunUrls.push(url);const img=document.createElement('img');img.src=url;img.alt='Pratinjau orthomosaic Dayun';img.style.width='100%';$('dayunResults').append(img);
       }
