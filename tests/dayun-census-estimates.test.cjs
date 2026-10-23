@@ -1,6 +1,6 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const T=require('../cloudflare/yg-webgis-public-data/node_modules/@turf/turf');
-const context={window:{},setTimeout,console};vm.createContext(context);vm.runInContext(fs.readFileSync(require.resolve('../js/dayun-new-planting.js'),'utf8'),context);vm.runInContext(fs.readFileSync(require.resolve('../js/dayun-census-estimates.js'),'utf8'),context);const api=context.window.YG_DAYUN_CENSUS_ESTIMATES;
+const context={window:{},setTimeout,clearTimeout,console};vm.createContext(context);vm.runInContext(fs.readFileSync(require.resolve('../js/dayun-new-planting.js'),'utf8'),context);vm.runInContext(fs.readFileSync(require.resolve('../js/dayun-census-estimates.js'),'utf8'),context);const api=context.window.YG_DAYUN_CENSUS_ESTIMATES;
 const zone='GT-C-08',boundary=T.polygon([[[102,0],[102.0001,0],[102.0001,.0001],[102,.0001],[102,0]]],{sourceGawanganId:zone});
 const point=(id,x,y,status='candidate')=>T.point([x,y],{id,zones:[zone],status});
 test('estimates reconcile with census without modifying observed points and avoid all existing/rejected positions',async()=>{
@@ -26,4 +26,14 @@ test('real C8 C9 C10 boundary containers pass private area validation requiremen
  const boundaries=JSON.parse(fs.readFileSync(require.resolve('../data/dayun-map.geojson'),'utf8'));
  const result=await api.generate({rows:['GT-C-08','GT-C-09','GT-C-10'].map(zone=>({zone,count:10})),boundaries,points:[],T,revision:1,sourceRun:'test',yieldWork:()=>Promise.resolve()});
  for(const f of result.features){assert.equal(T.booleanValid(f),true);assert.equal(T.kinks(f).features.length,0);}
+});
+test('private layer save and reopen preserves estimates without any plant-review or census write',async()=>{
+ const boundaries=JSON.parse(fs.readFileSync(require.resolve('../data/dayun-map.geojson'),'utf8')),census=JSON.parse(fs.readFileSync(require.resolve('../data/dayun-gawangan-details.json'),'utf8'));
+ const nodes=[],element=tag=>{const n={tag,children:[],textContent:'',append(...xs){this.children.push(...xs)},prepend(x){this.children.unshift(x)},replaceChildren(...xs){this.children=xs},setAttribute(){}};nodes.push(n);return n;};context.document={createElement:element};context.fetch=async path=>({ok:true,json:async()=>path.includes('details')?census:boundaries});context.crypto=require('node:crypto').webcrypto;context.Blob=Blob;
+ context.window.turf=T;context.window.L={layerGroup:()=>({addTo(){return this},clearLayers(){}})};context.window.addEventListener=()=>{};context.window.removeEventListener=()=>{};
+ const map={on(){},off(){},removeLayer(){},getZoom:()=>18},snapshot={block:'C',ready:true,revision:77,sourceRun:'run-C',features:[]},calls=[];let record=null;
+ const server=async(path,options)=>{calls.push({path,options});if(options){assert.equal(path,'/api/staff/drone/analysis/areas');const body=JSON.parse(options.body);assert.equal(body.expected_revision,record?.revision||0);record={id:body.id,name:body.name,revision:1,collection:body.collection,updated_at:new Date().toISOString()};return{json:async()=>({record})};}return{json:async()=>path.includes('?id=')?{record}:{items:record?[record]:[],cursor:null}};};
+ const a=api.mount({host:element('section'),map,api:server,current:()=>true,getSnapshot:()=>snapshot,save(){}});for(let i=0;i<4;i++)await new Promise(r=>setTimeout(r,0));
+ await nodes.find(n=>n.textContent==='Buat perkiraan C8–C10').onclick();const saveButton=nodes.find(n=>n.textContent==='Simpan layer perkiraan privat');assert.equal(saveButton.disabled,false);await saveButton.onclick();assert.equal(record.collection.features.reduce((n,f)=>n+f.properties.estimatedCount,0),14617);assert.equal(calls.filter(c=>c.options).length,1);a.dispose();
+ const b=api.mount({host:element('section'),map,api:server,current:()=>true,getSnapshot:()=>snapshot,save(){}});for(let i=0;i<4;i++)await new Promise(r=>setTimeout(r,0));assert.ok(nodes.some(n=>n.textContent.includes('Layer perkiraan privat dimuat')));assert.equal(calls.filter(c=>c.options).length,1);b.dispose();
 });
