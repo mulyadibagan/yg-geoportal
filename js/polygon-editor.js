@@ -33,6 +33,7 @@
   let selectedLayer = null;
   let overviewLayer = null;
   let originalFeature = null;
+  let selectionBaseline = null;
   let editing = false;
   let creatingNew = false;
   let saveInProgress = false;
@@ -82,6 +83,8 @@
   }
 
   function clearSession(message) {
+    if (saveInProgress) return;
+    clearSelection();
     editorSession = null;
     sessionStorage.removeItem(sessionStorageKey);
     editorUser.textContent = "";
@@ -153,6 +156,7 @@
   }
 
   async function logoutEditor() {
+    if (saveInProgress) return;
     const token = editorSession && editorSession.token;
     clearSession("Anda sudah keluar.");
     if (!token) return;
@@ -233,6 +237,7 @@
   }
 
   async function loadObjects() {
+    if (saveInProgress) return;
     setStatus("Memuat Master Database…");
     clearSelection();
 
@@ -250,9 +255,26 @@
           !["monitoring_reports", "community_reports", "kawasan_hutan_sk_903", "gambut_bbsdlp_2019"].includes(id);
       });
 
+      // Reviewed supplements remain unsaved drafts until an editor explicitly saves.
+      // Never silently create database rows or rewrite existing coordinates.
+      try {
+        const response = await fetch("data/sekat_kanal.geojson?v=20261023-point-position1", { cache: "no-store" });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        const supplement = await response.json();
+        const existing = new Set(objects.map(f => String(props(f).Object_ID)));
+        (supplement.features || []).forEach(feature => {
+          const id = String(props(feature).Object_ID || "");
+          if (!id || existing.has(id)) return;
+          const draft = clone(feature);
+          draft.properties._ygPendingSync = true;
+          objects.push(draft);
+          existing.add(id);
+        });
+      } catch (error) { console.warn("Draf sekat kanal belum dapat dimuat", error); }
       buildLayerFilter();
       applyFilter();
-      setStatus(objects.length + " objek berhasil dimuat dari Master Database.", "ok");
+      const drafts = objects.filter(f => props(f)._ygPendingSync).length;
+      setStatus((objects.length - drafts) + " objek database" + (drafts ? " · " + drafts + " draf belum disimpan" : ""), "ok");
     } catch (error) {
       setStatus(error.message, "error");
     }
@@ -370,6 +392,8 @@
   }
 
   function showFeature(feature, options) {
+    if (saveInProgress) return;
+    editing = false;
     options = options || {};
     map.pm.disableDraw();
     if (selectedLayer) {
@@ -377,8 +401,9 @@
       selectedLayer = null;
     }
 
+    selectionBaseline = clone(feature);
     selectedFeature = clone(feature);
-    creatingNew = Boolean(options.newObject);
+    creatingNew = Boolean(options.newObject || props(feature)._ygPendingSync);
     originalFeature = creatingNew ? null : clone(feature);
 
     selectedLayer = L.geoJSON(selectedFeature, {
@@ -396,9 +421,12 @@
     });
 
     fillForm();
+    syncPositionFields();
     toggleButtons(true);
     renderList();
-    if (window.innerWidth <= 1200) {
+    if (isPointSelection()) {
+      setStatus(creatingNew ? "Titik ini belum ada di database. Periksa koordinat dan alasan perubahan, lalu Simpan Posisi." : "Mode lihat. Posisi terkunci; pilih Edit posisi untuk membuat draf.", "ok");
+    } else if (window.innerWidth <= 1200) {
       setStatus(
         "Objek dipilih. Klik “Edit atribut objek” untuk membuka seluruh atribut.",
         "ok"
@@ -414,12 +442,16 @@
   }
 
   function startEdit() {
+    if (saveInProgress) return;
     const layer = editableLeafletLayer();
     if (!layer || !layer.pm) return;
 
     editing = true;
     if (layer instanceof L.Marker || layer instanceof L.CircleMarker) {
-      layer.pm.enableLayerDrag();
+      // Point positions are entered explicitly, never dragged by a touch/pan gesture.
+      if (layer.dragging) layer.dragging.disable();
+      if (layer.pm.disableLayerDrag) layer.pm.disableLayerDrag();
+      syncPositionFields();
     } else {
       layer.pm.enable({
         allowSelfIntersection: false,
@@ -428,24 +460,26 @@
       });
     }
     toggleButtons(true);
-    setStatus("Mode edit aktif. Geser titik/objek pada peta.");
+    setStatus(isPointSelection() ? "Mode edit posisi. Isi lintang dan bujur, lalu Simpan Posisi. Peta tetap dapat digeser." : "Mode edit aktif. Geser simpul objek pada peta.");
   }
 
   function finishEdit() {
     const layer = editableLeafletLayer();
     if (!layer || !layer.pm) return;
 
-    updateFromMap({ target: layer });
+    if (isPointSelection() && !applyPositionFields()) return false;
+    if (!isPointSelection()) updateFromMap({ target: layer });
     layer.pm.disable();
     if (layer.pm.disableLayerDrag) layer.pm.disableLayerDrag();
     editing = false;
+    syncPositionFields();
     toggleButtons(true);
     setStatus("Geometri diperbarui secara lokal. Klik Simpan ke Master Database.", "ok");
   }
 
   function updateFromMap(event) {
     const layer = event.target || editableLeafletLayer();
-    if (!layer || !selectedFeature) return;
+    if (!layer || !selectedFeature || !editing || saveInProgress || isPointSelection()) return;
 
     const geo = layer.toGeoJSON();
     selectedFeature.geometry = geo.geometry;
@@ -454,9 +488,43 @@
     updateMetrics();
   }
 
+  function isPointSelection() {
+    return selectedFeature && selectedFeature.geometry && selectedFeature.geometry.type === "Point";
+  }
+
+  function syncPositionFields() {
+    const panel = document.getElementById("point-position");
+    const point = isPointSelection();
+    panel.hidden = !point;
+    document.getElementById("save-object").textContent = point ? "Simpan Posisi" : "Simpan ke Master Database";
+    document.getElementById("start-edit").textContent = point ? "Edit posisi" : "Edit geometri";
+    if (!point) return;
+    const c = selectedFeature.geometry.coordinates;
+    document.getElementById("position-lat").value = c[1];
+    document.getElementById("position-lng").value = c[0];
+    document.getElementById("position-lat").disabled = !editing;
+    document.getElementById("position-lng").disabled = !editing;
+    document.getElementById("position-mode").textContent = editing ? "Mode edit · perubahan belum disimpan" : (creatingNew ? "Mode lihat · belum tersimpan di database; periksa lalu Simpan Posisi" : "Mode lihat · posisi database terkunci");
+  }
+
+  function applyPositionFields() {
+    const latText = document.getElementById("position-lat").value.trim();
+    const lngText = document.getElementById("position-lng").value.trim();
+    const lat = Number(latText), lng = Number(lngText);
+    if (!latText || !lngText || !Number.isFinite(lat) || !Number.isFinite(lng) ||
+        Math.abs(lat) > 90 || Math.abs(lng) > 180) {
+      setStatus("Lintang/bujur tidak valid. Gunakan derajat desimal WGS 84.", "error");
+      return false;
+    }
+    selectedFeature.geometry.coordinates = [lng, lat].concat(selectedFeature.geometry.coordinates.slice(2));
+    editableLeafletLayer().setLatLng([lat, lng]);
+    document.getElementById("geometry-json").textContent = JSON.stringify(selectedFeature.geometry, null, 2);
+    return true;
+  }
+
   function resetGeometry() {
-    if (!originalFeature) return;
-    showFeature(originalFeature);
+    if (!selectionBaseline) return;
+    showFeature(selectionBaseline);
     setStatus("Geometri dikembalikan ke kondisi saat objek dipilih.", "ok");
   }
 
@@ -603,6 +671,11 @@
   function buildObjectData() {
     syncFormToFeature();
     const p = props(selectedFeature);
+    if (isPointSelection()) {
+      p.X = selectedFeature.geometry.coordinates[0];
+      p.Y = selectedFeature.geometry.coordinates[1];
+    }
+    delete p._ygPendingSync;
     return {
       objectId: p.Object_ID,
       layerId: p.Layer_ID || p.Source_Layer || "",
@@ -729,9 +802,11 @@
 
   async function verifySavedObject(attempt) {
     if (!saveInProgress || !pendingSave) return;
+    const request = pendingSave;
 
     try {
       const result = await callbackLoad(api + "?page=objects");
+      if (!saveInProgress || pendingSave !== request) return;
       const features = Array.isArray(result.features) ? result.features : [];
       const match = features.find(feature =>
         String(props(feature).Object_ID || "") === String(pendingSave.objectId)
@@ -745,7 +820,7 @@
         // Revisi saja belum membuktikan nilai yang diminta benar-benar
         // tersimpan. Sukses hanya jika atribut dan geometry yang dibaca dari
         // endpoint OBJECTS sama dengan data yang baru dikirim.
-        if (dataMatches) {
+        if (dataMatches && (creatingNew || revision > pendingSave.beforeRevision)) {
           finishSaveSuccess(revision);
           return;
         }
@@ -795,10 +870,9 @@
 
   async function saveObject(event) {
     event.preventDefault();
-    syncDynamicPropertiesToFeature(); // Ambil nilai dari field dinamis
-
     if (saveInProgress || !selectedFeature) return;
-    if (editing) finishEdit();
+    syncDynamicPropertiesToFeature();
+    if (editing && finishEdit() === false) return;
 
     const reason = document.getElementById("change-reason").value.trim();
 
@@ -834,13 +908,25 @@
     );
 
     try {
+      // Refuse a stale draft before sending any mutation. Backend confirmation
+      // still requires a newer revision and exact read-back, never an opaque POST.
+      const latest = await callbackLoad(api + "?page=objects");
+      if (!latest || !Array.isArray(latest.features)) throw new Error("Database belum dapat diverifikasi. Penyimpanan tidak dikirim.");
+      const current = latest.features.find(f => String(props(f).Object_ID) === String(data.objectId));
+      if (!originalFeature && current) throw new Error("Object ID sudah ada di database. Muat ulang sebelum menyimpan.");
+      if (originalFeature) {
+        if (!current || stableStringify(featureComparable(current)) !== stableStringify(featureComparable(originalFeature)) ||
+            Number(props(current).Revision || 0) !== Number(props(originalFeature).Revision || 0)) {
+          throw new Error("Data database telah berubah. Muat ulang dan periksa posisi terbaru sebelum menyimpan.");
+        }
+      }
       await sendSaveRequest(data, editorSession.token, reason);
       setStatus("POST dikirim. Memverifikasi Master Database…", "saving");
       saveOverlayText.textContent =
         "POST sudah dikirim. Menunggu perubahan muncul di OBJECTS…";
       setTimeout(() => verifySavedObject(0), 1800);
     } catch (error) {
-      finishSaveError("POST gagal dikirim: " + error.message);
+      finishSaveError(error.message);
     }
   }
 
@@ -900,10 +986,13 @@
   }
 
   function clearSelection() {
+    if (saveInProgress) return;
+    editing = false;
     if (selectedLayer) map.removeLayer(selectedLayer);
     selectedLayer = null;
     selectedFeature = null;
     originalFeature = null;
+    selectionBaseline = null;
     creatingNew = false;
     form.hidden = true;
     document.getElementById("empty-state").hidden = false;
@@ -1082,3 +1171,4 @@
     clearSession("");
   }
 })();
+

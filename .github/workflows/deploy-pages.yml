@@ -77,6 +77,7 @@ jobs:
           node scripts/assert-public-pbph-private.mjs _site
           node scripts/assert-repository-pbph-data-private.mjs
           node scripts/assert-riau-geoportal-private.mjs _site
+          node --test tests/map-canal-source.test.cjs tests/point-position-editor.test.cjs
           node --test tests/staff-auth.test.cjs
           node --test tests/riau-reference-workspace.test.cjs tests/riau-geoportal-internal.test.cjs
 
@@ -96,3 +97,4 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+

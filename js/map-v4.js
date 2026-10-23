@@ -1329,6 +1329,13 @@ L.control.scale({
         valueOf(["Riwayat_Penanaman"])
       );
 
+      if (config.id === "sekat_kanal") {
+        rows += row("Sumber posisi", valueOf(["_ygCoordinateSource"]) || "Master Database");
+        const c = feature.geometry && feature.geometry.coordinates;
+        if (feature.geometry && feature.geometry.type === "Point" && Array.isArray(c)) {
+          rows += row("Lintang · Bujur", c[1] + " · " + c[0]);
+        }
+      }
       rows += row(
         "Status koordinat",
         valueOf(["Koordinat_Status"])
@@ -1601,15 +1608,9 @@ L.control.scale({
   function pointFor(config, latlng, pane, feature) {
     const visibleSize = config.id === "monitoring_reports" ? 18 : 14;
     const symbol = pointSymbolFor(config.id);
-    // Display linked canal markers beside their FDRS reference; never move geometry.
+    // All symbols are anchored on the actual coordinate, including linked FDRS.
     const linkedReference = config.id === "sekat_kanal" &&
       Boolean(feature && feature.properties && feature.properties.Referensi_Object_ID);
-    const linkedCanal = linkedReference || (config.id === "sekat_kanal" &&
-      Boolean(feature && feature.properties && feature.properties.FDRS_Terkait_Object_ID));
-    const referenceLeader = linkedCanal
-      ? '<span aria-hidden="true" style="position:absolute;left:20px;top:19px;width:32px;border-top:2px dashed #00838f;pointer-events:none"></span>'
-      : "";
-
     /*
      * Marker HTML memberi setiap titik sasaran klik 40 x 40 piksel.
      * Lingkaran yang terlihat tetap kecil sehingga peta tidak menjadi penuh,
@@ -1619,20 +1620,21 @@ L.control.scale({
       pane: pane,
       title: linkedReference ? "Sekat kanal — lokasi referensi FDRS; posisi tepat belum diukur" : config.label,
       interactive: true,
+      draggable: false,
       bubblingMouseEvents: false,
       keyboard: true,
       icon: L.divIcon({
         className: "yg-point-hit-marker",
         html:
-          referenceLeader + '<span class="yg-point-dot" style="--yg-point-color:' +
+          '<span class="yg-point-dot" style="--yg-point-color:' +
           escapeHtml(config.color) +
           ";--yg-point-size:" + visibleSize +
           'px"><span class="yg-point-dot__symbol">' +
           escapeHtml(symbol) +
           '</span></span>',
         iconSize: [40, 40],
-        iconAnchor: linkedCanal ? [52, 20] : [20, 20],
-        popupAnchor: linkedCanal ? [-32, -16] : [0, -16]
+        iconAnchor: [20, 20],
+        popupAnchor: [0, -16]
       })
     });
   }
@@ -4899,16 +4901,17 @@ L.control.scale({
     const restored = Array.from(official, ([id, feature]) => {
       const current = database.get(id);
       const currentProps = current && current.properties || {};
-      const props = Object.assign({}, currentProps, feature.properties, {
-        Layer_ID: "sekat_kanal", Source_Layer: "sekat_kanal", Layer_Label: "Sekat Kanal"
+      const props = Object.assign({}, feature.properties, currentProps, {
+        Layer_ID: "sekat_kanal", Source_Layer: "sekat_kanal", Layer_Label: "Sekat Kanal",
+        _ygCoordinateSource: current ? "Master Database" : "GeoJSON terverifikasi · belum tersimpan di database"
       });
-      // Keep approved photo additions while restoring the reviewed location and status.
+      // Database geometry wins. Static reviewed points only fill missing objects.
       const photos = [props.Foto, props.Foto_2].concat(
         Array.isArray(props._ygPhotos) ? props._ygPhotos : [],
         Array.isArray(currentProps._ygPhotos) ? currentProps._ygPhotos : []
       ).filter(value => typeof value === "string" && value.trim());
       if (photos.length) props._ygPhotos = Array.from(new Set(photos));
-      return Object.assign({}, feature, { properties: props });
+      return Object.assign({}, current || feature, { properties: props });
     });
     data.features = data.features.filter(feature => !official.has(objectId(feature))).concat(restored);
     if ("featureCount" in data) data.featureCount = data.features.length;
@@ -4985,6 +4988,34 @@ L.control.scale({
     return data;
   }
 
+  async function refreshCanalPositionsFromDatabase(data) {
+    let live;
+    try {
+      const controller = new AbortController();
+      const timer = window.setTimeout(() => controller.abort(), 12000);
+      try {
+        const response = await fetch(API + "&t=" + Date.now(), {
+          cache: "no-store", signal: controller.signal
+        });
+        if (!response.ok) throw new Error("HTTP " + response.status);
+        live = await response.json();
+      } finally { window.clearTimeout(timer); }
+    } catch (error) {
+      live = await loadByJsonp();
+    }
+    if (!live || !Array.isArray(live.features)) throw new Error("Database sekat kanal tidak valid.");
+    const isCanal = feature => {
+      const p = feature && feature.properties || {};
+      return (p.Layer_ID || p.Source_Layer) === "sekat_kanal" ||
+        /^SEKAT-/i.test(String(p.Object_ID || ""));
+    };
+    const byId = new Map(live.features.filter(isCanal).map(f => [String(f.properties.Object_ID), f]));
+    // Replace only canal objects; keep all unrelated snapshot content intact.
+    data.features = data.features.filter(f => !isCanal(f)).concat([...byId.values()]);
+    if ("featureCount" in data) data.featureCount = data.features.length;
+    return data;
+  }
+
   async function loadDatabase() {
     setStatus("Memuat snapshot Master Database...", false);
     try {
@@ -5009,6 +5040,7 @@ L.control.scale({
       if (!snapshotData || !Array.isArray(snapshotData.features)) {
         throw new Error("Snapshot Master Database tidak valid");
       }
+      await refreshCanalPositionsFromDatabase(snapshotData);
       await enrichDatabaseData(snapshotData);
       initialize(snapshotData);
       return;
@@ -5172,6 +5204,10 @@ L.control.scale({
       );
       try {
         const localData = await loadLocalSnapshot();
+        localData.features = localData.features.filter(feature => {
+          const p = feature.properties || {};
+          return (p.Layer_ID || p.Source_Layer) !== "sekat_kanal" && !/^SEKAT-/i.test(String(p.Object_ID || ""));
+        });
         initialize(localData);
         setStatus(
           localData.features.length + " objek dimuat dari cadangan lokal",
@@ -5348,3 +5384,4 @@ L.control.scale({
   });
   loadDatabase().finally(startPublishedSnapshotWatch);
 })();
+

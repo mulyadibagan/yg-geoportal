@@ -8,7 +8,7 @@
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.css">
   <link rel="stylesheet" href="css/site-brand.css?v=20260720-program-dashboard1">
-  <link rel="stylesheet" href="css/polygon-editor.css?v=20260720-editor-attributes1">
+  <link rel="stylesheet" href="css/polygon-editor.css?v=20261023-point-position1">
   <meta name="theme-color" content="#087653">
 </head>
 <body class="auth-pending">
@@ -111,6 +111,14 @@
             <div><small>Revisi</small><strong id="revision-number">—</strong></div>
           </div>
 
+          <fieldset id="point-position" hidden>
+            <legend>Posisi titik · WGS 84</legend>
+            <p id="position-mode" role="status">Mode lihat · posisi terkunci</p>
+            <label>Lintang <input id="position-lat" type="number" step="any" min="-90" max="90" inputmode="decimal" disabled></label>
+            <label>Bujur <input id="position-lng" type="number" step="any" min="-180" max="180" inputmode="decimal" disabled></label>
+            <p>Gunakan koordinat hasil verifikasi lapangan. Geser peta tidak mengubah posisi titik. Simpan setelah pemeriksaan.</p>
+          </fieldset>
+
           <div class="form-grid">
             <label>Layer ID
               <input name="layerId" readonly>
@@ -130,6 +138,7 @@
             <label>Status
               <select name="status">
                 <option value="Aktif">Aktif</option>
+                <option value="Sedang dibangun">Sedang dibangun</option>
                 <option value="Tidak Aktif">Tidak Aktif</option>
                 <option value="Arsip">Arsip</option>
               </select>
@@ -232,6 +241,7 @@
   <script src="https://unpkg.com/@geoman-io/leaflet-geoman-free@2.18.0/dist/leaflet-geoman.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/@turf/turf@7.2.0/turf.min.js"></script>
   <script src="js/auth.js?v=20260920-session5"></script>
-  <script src="js/polygon-editor.js?v=20260722-manual-area2"></script>
+  <script src="js/polygon-editor.js?v=20261023-point-position1"></script>
 </body>
 </html>
+
