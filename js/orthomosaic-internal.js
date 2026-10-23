@@ -13,7 +13,7 @@
   if(requestedSample){const q=new URLSearchParams(requestedSample.block?{source:requestedSample.source,block:requestedSample.block}:{source:requestedSample.source,trial:requestedSample.trial,sample:requestedSample.sample});if(requestedSample.point)q.set('point',requestedSample.point);$('sampleLogin').href='staff-login.html?return='+encodeURIComponent('orthomosaic-internal.html?'+q.toString());}
   let initialLinkOpened=false;
   let session, map, areas, rasterLayer, rasterBounds, tileLayer, jobs = [], source = null, rasterContext = null, sequence = 0;
-  let teamProgress=null,nextZoneTarget=null,areaMeter=null,areaStore=null,teamBoundaries=null,newPlanting=null,newPlantingOverlay=null;
+  let censusEstimates=null,teamProgress=null,nextZoneTarget=null,areaMeter=null,areaStore=null,teamBoundaries=null,newPlanting=null,newPlantingOverlay=null;
   let disposeMeritechExport = null, disposeCandidateReview=null, disposeBlockReview=null, dayunLayer = null, dayunUrls = [], dayunRequest=0;
   const nativeRasters=new Set();
   function clearNativeRasters(){for(const raster of [...nativeRasters])raster.dispose();}
@@ -35,6 +35,7 @@
   }
   function lock(message) {
     privateAssets?.clear();
+    censusEstimates?.dispose();censusEstimates=null;
     document.querySelector?.('.map-card')?.classList.remove('map-expanded');
     document.body?.classList.remove('map-expanded-open');
     $('focusMap').textContent='Perbesar ruang peta';
@@ -118,6 +119,7 @@
     areaMeter=window.YG_ORTHO_MEASURE?.mount({map,areas,container:$('measureTools'),onChanged:updateMeasurements,beforeDraw:()=>{if(disposeBlockReview?.canLeave?.()===false){$('mapStatus').textContent='Tunggu koreksi titik tersimpan sebelum mengukur.';return false;}return true;}});
     teamBoundaries=window.YG_ORTHO_AREA_STORE?.mountOverlay?.({host:$('teamBoundaryTools'),map,api,current:validSession});
     newPlantingOverlay=window.YG_ORTHO_AREA_STORE?.mountOverlay?.({host:$('newPlantingLayer'),map,api,current:validSession,title:'Nanas baru Agustus 2026',matches:item=>item.name.startsWith('Nanas baru Agustus 2026 · '),paneName:'ortho-new-planting',color:'#0891b2'});
+    censusEstimates=window.YG_DAYUN_CENSUS_ESTIMATES?.mount({host:$('censusEstimateTools'),map,api,current:validSession,getSnapshot:()=>disposeBlockReview?.getPlantSnapshot?.(),save});
     newPlanting=window.YG_DAYUN_NEW_PLANTING?.mount({host:$('newPlantingTools'),map,api,current:validSession,getSnapshot:()=>disposeBlockReview?.getPlantSnapshot?.(),getMeasurements:features,beforeDraw:()=>{if(disposeBlockReview?.canLeave?.()===false)return false;return true;},save,onSaved:()=>newPlantingOverlay?.refresh()});
     if(areaMeter?.element&&window.YG_ORTHO_AREA_STORE)areaStore=window.YG_ORTHO_AREA_STORE.mount({host:areaMeter.element,api,current:validSession,onSaved:()=>teamBoundaries?.refresh(),getCollection:()=>({type:'FeatureCollection',features:features()}),showCollection:collection=>{areas.clearLayers();for(const f of collection.features){const layer=L.geoJSON(f,{style:{color:'#2563eb',weight:3,fillOpacity:.08}}).getLayers()[0];areas.addLayer(layer);}updateMeasurements();if(areas.getLayers().length)map.fitBounds(areas.getBounds());}});
     map.on('mousemove', event => { $('coordinate').textContent = `${event.latlng.lat.toFixed(6)}, ${event.latlng.lng.toFixed(6)}`; });
