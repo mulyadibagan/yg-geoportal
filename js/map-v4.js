@@ -1621,6 +1621,7 @@ L.control.scale({
       title: linkedReference ? "Sekat kanal — lokasi referensi FDRS; posisi tepat belum diukur" : config.label,
       interactive: true,
       draggable: false,
+      zIndexOffset: config.id === "sekat_kanal" ? 400 : 0,
       bubblingMouseEvents: false,
       keyboard: true,
       icon: L.divIcon({

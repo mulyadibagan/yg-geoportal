@@ -48,6 +48,7 @@ test('linked Pedekik symbol is centered on its actual database coordinate', () =
   assert.equal(marker.options.title,'Sekat Kanal');
   assert.doesNotMatch(marker.options.icon.html,/dashed/);
   assert.equal(marker.options.draggable,false);
+  assert.equal(marker.options.zIndexOffset,400);
 });
 
 test('stale snapshots on reload and independent clients use the same live database geometry',async()=>{
