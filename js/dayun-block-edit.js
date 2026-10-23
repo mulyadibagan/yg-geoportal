@@ -69,7 +69,13 @@
       changes=[...next.values()];rememberDeletion(chosen.map(p=>JSON.parse(p.snapshot)));selected=null;cancelBox();drawSelected();announce(localCounts());schedule();status.textContent=`${chosen.length} titik dikeluarkan dari hitungan kerja; Ctrl+Z untuk membatalkan. Menyimpan privat otomatis…`;
     }catch(error){if(alive())status.textContent=error.message;}finally{boxBusy=false;if(alive()){box.disabled=boxCancel.disabled=false;boxDelete.disabled=!boxPoints.length||boxPoints.length>250;}}};
     const boxEscape=event=>{if(event.key==='Escape'&&!boxBusy)cancelBox();};window.addEventListener('keydown',boxEscape);
-    const features=()=>effective(getCandidates()?.features||[],result.boundary_revision&&getZones()?.features?.length?changes.map(f=>({...f,properties:{...f.properties,zones:locate(f)}})):changes);
+    let featureCache=null;
+    const features=()=>{
+      const original=getCandidates()?.features,zones=getZones()?.features;
+      if(featureCache&&featureCache.original===original&&featureCache.zones===zones&&featureCache.changes===changes&&featureCache.version===version)return featureCache.value;
+      const value=effective(original||[],result.boundary_revision&&zones?.length?changes.map(f=>({...f,properties:{...f.properties,zones:locate(f)}})):changes);
+      featureCache={original,zones,changes,version,value};return value;
+    };
     function localCounts(){return summarize(features(),getCandidates()?.features?.length??result.candidate_count,result.zones.map(z=>z.id),getCandidates()?.features);}
     function announce(counts){if(!alive())return;totals.textContent=`Otomatis awal ${counts.automatic_original.toLocaleString('id-ID')} · tambahan tim ${counts.manual_additions} · ditolak ${counts.rejected} · diterima tim ${counts.accepted_by_staff} · hitungan kerja ${counts.working_total.toLocaleString('id-ID')}. Belum sensus terverifikasi.`;const t=counts.training_examples||localCounts().training_examples;trainingStatus.textContent=`Contoh untuk perbaikan detektor: ${t.positive} nanas diterima tim; ${t.negative} bukan nanas; ${t.rejected_without_species_label} penolakan belum menjadi contoh negatif spesies. Contoh ini belum mengukur akurasi seluruh blok.`;onChanged?.({features:features(),counts,revision,dirty});reportSync();}
     function reportSync(){if(alive())onSyncState?.({ready,revision,dirty,saving:busy,loading:pulling,conflicts:conflicts.size,error:syncError});}
