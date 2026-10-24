@@ -17,7 +17,7 @@ test('July B5-B8 planting update leaves original census and planting period inta
  }
  assert.equal(data.rows.find(r=>r.zone==='GT-A-12').newPlants,0);
 });
-test('all requested web surfaces use the same summary source with explicit snapshot labeling',()=>{
- for(const file of ['dayun-gawangan.html','dayun-blok.html','orthomosaic-internal.html']){const html=fs.readFileSync(file,'utf8');assert.match(html,/data-dayun-work-summary=/);assert.match(html,/dayun-work-summary\.js\?v=20261024-unified1/);}
- const js=fs.readFileSync('js/dayun-work-summary.js','utf8');assert.match(js,/cache:'no-cache'/);assert.match(js,/Snapshot titik 23 Oktober 2026/);assert.match(js,/setelah snapshot belum masuk/);
+test('all requested web surfaces refresh live counts without falling back to frozen snapshots',()=>{
+ for(const file of ['dayun-gawangan.html','dayun-blok.html','orthomosaic-internal.html']){const html=fs.readFileSync(file,'utf8');assert.match(html,/data-dayun-work-summary=/);assert.match(html,/dayun-work-summary\.js\?v=20261024-live1/);}
+ const js=fs.readFileSync('js/dayun-work-summary.js','utf8');assert.match(js,/cache:'no-store'/);assert.match(js,/live-work-counts\.json/);assert.match(js,/dayun:work-saved/);assert.match(js,/15000/);assert.doesNotMatch(js,/fetch\('data\/dayun-work-counts/);
 });

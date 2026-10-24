@@ -74,6 +74,7 @@
     const response = await fetch(API + path, {...options, headers: {...options.headers, Authorization: `Bearer ${session.token}`}, cache: 'no-store', signal: options.signal || AbortSignal.timeout(30000)});
     if (response.status === 401 || response.status === 403) { lock('Akses staf tidak valid. Silakan masuk kembali.'); throw Error('Akses ditolak.'); }
     if (!response.ok) {const error=Error(`Layanan mengembalikan HTTP ${response.status}.`);error.status=response.status;const retryAfter=Number(response.headers?.get('retry-after'));if(Number.isFinite(retryAfter)&&retryAfter>0)error.retryAfterMs=retryAfter*1000;try{error.details=await response.json();}catch{}throw error;}
+    if(options.method==='POST'&&/\/(block-review|fruiting-review|areas)(\?|\/|$)/.test(path))document.dispatchEvent(new Event('dayun:work-saved'));
     return response;
   }
   async function authorize() {

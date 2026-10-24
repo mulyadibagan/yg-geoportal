@@ -1,4 +1,5 @@
 import {analysisAreasOperation} from './dayun-analysis-areas.js';
+import {LiveDayunCounts} from './dayun-live-counts.js';
 import {reviewOperation} from './dayun-feedback.js';
 import {blockReviewOperation} from './dayun-block-corrections.js';
 import {fruitingOperation} from './dayun-fruiting.js';
@@ -15,6 +16,10 @@ export class DroneQueue {
     return response;
   }
   async handleRequest(request){
+    if(new URL(request.url).pathname==='/dayun-live-counts'){
+      try{this.liveCounts??=new LiveDayunCounts(this.env);return Response.json(await this.liveCounts.load());}
+      catch{this.liveCounts=null;return Response.json({ok:false,error:'live_counts_unavailable'},{status:503});}
+    }
     if(new URL(request.url).pathname==='/dayun-analysis-areas'){
       try{return Response.json(await analysisAreasOperation(this.env,await request.json()));}
       catch(error){return Response.json({ok:false,error:error.status?error.message:'private_area_storage_failed'},{status:error.status||503});}
