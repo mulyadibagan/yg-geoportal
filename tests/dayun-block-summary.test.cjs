@@ -16,8 +16,8 @@ test('carries the Dayun dataset update timestamp into the summary', () => {
 test('estate summary is the sum of block summaries built from unique gawangan', () => {
   assert.deepEqual(summary.codes, ['A', 'B', 'C', 'D', 'E', 'F']);
   assert.equal(summary.all.mappedGawangan, 60);
-  assert.equal(summary.all.gawanganWithData, 59);
-  assert.deepEqual(summary.all.missingGawangan, ['DAYUN-GT-B-15']);
+  assert.equal(summary.all.gawanganWithData, 60);
+  assert.deepEqual(summary.all.missingGawangan, []);
   assert.equal(summary.codes.reduce((total, code) => total + summary.blocks[code].mappedGawangan, 0), 60);
   assert.equal(summary.codes.reduce((total, code) => total + summary.blocks[code].pineappleHarvest, 0), summary.all.pineappleHarvest);
   assert.equal(summary.codes.reduce((total, code) => total + summary.blocks[code].mptsPlants, 0), summary.all.mptsPlants);

@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-23",
+  "updatedAt": "2026-10-24",
   "title": "Data gawangan agroforestri KUPS Rimba Sejahtera",
   "notes": [
     "Satu gawangan dapat memuat lebih dari satu komoditas.",
@@ -9,11 +9,9 @@
   ],
   "summary": {
     "spreadsheetRows": 140,
-    "gawanganWithData": 59,
+    "gawanganWithData": 60,
     "mappedGawangan": 60,
-    "missingObjectIds": [
-      "DAYUN-GT-B-15"
-    ]
+    "missingObjectIds": []
   },
   "objects": [
     {
@@ -1857,6 +1855,18 @@
           "ethrelTotal": 0,
           "notes": "layak ethrel",
           "variety": "Queen"
+        }
+      ]
+    },
+    {
+      "objectId": "DAYUN-GT-B-15",
+      "block": "B",
+      "gawangan": 15,
+      "crops": [
+        {
+          "crop": "NANAS",
+          "plantingPeriod": "Desember 2024",
+          "notes": "Bulan tanam dikonfirmasi Mulyadi pada 24 Oktober 2026. Jumlah sensus belum tersedia."
         }
       ]
     },

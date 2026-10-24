@@ -13,16 +13,16 @@ test('public Dayun details match the official gawangan polygons', () => {
   const mapIds = new Set(map.features
     .filter(feature => feature.properties && feature.properties.category === 'Gawangan Tanam')
     .map(feature => feature.properties.objectId));
-  assert.equal(detailIds.size, 59);
+  assert.equal(detailIds.size, 60);
   assert.equal(mapIds.size, 60);
-  assert.deepEqual([...mapIds].filter(id => !detailIds.has(id)), ['DAYUN-GT-B-15']);
+  assert.deepEqual([...mapIds].filter(id => !detailIds.has(id)), []);
   assert.deepEqual([...detailIds].filter(id => !mapIds.has(id)), []);
-  assert.deepEqual(details.summary.missingObjectIds, ['DAYUN-GT-B-15']);
+  assert.deepEqual(details.summary.missingObjectIds, []);
 });
 
 test('every published crop belongs to one gawangan and has a crop name', () => {
   assert.equal(details.source, undefined);
-  assert.equal(details.objects.reduce((total, item) => total + item.crops.length, 0), 140);
+  assert.equal(details.objects.reduce((total, item) => total + item.crops.length, 0), 141);
   for (const item of details.objects) {
     assert.match(item.objectId, /^DAYUN-GT-[A-F]-\d{2}$/);
     assert.ok(item.crops.length > 0, item.objectId);
