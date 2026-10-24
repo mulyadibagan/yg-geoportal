@@ -125,5 +125,6 @@ test('analysis page and map expose the Queen commodity entry point and field saf
   assert.match(script, /dayun-gawangan\.html\?object=/);
   assert.doesNotMatch(script, /buildProjection/);
   assert.doesNotMatch(script, /open-meteo\.com/);
-  assert.match(map, /id="dayun-pineapple-entry"/);
+  assert.doesNotMatch(map, /id="dayun-pineapple-entry"/);
+  assert.match(map, /id="dayun-plant-data"/);
 });
