@@ -18,6 +18,7 @@ async function fixture(){
  const live=new LiveDayunCounts(env),load=()=>{live.checkedAt=0;return live.load();};return{live,env,values,gets,set,keys,load,prefix};
 }
 test('nearest polygon edge allocation is unique including GM and unassigned points',()=>{const a=allocator([box('GT-A-01',0),box('GM-A-01',.001),box('GT-A-02',.002)]);assert.deepEqual(a(point('p',.0019)),{zone:'GT-A-02',outside:true});assert.deepEqual(a(point('p',.001)),{zone:'GT-A-01',outside:false});});
+test('explicit download refresh bypasses the short coordinator cache and reads a just-saved revision',async()=>{const f=await fixture();const first=await f.live.load();f.set(f.keys.A.plant,{revision:2,review:{changes:[point('p1',.0005,.0005,'rejected')]},point_versions:{p1:2}});assert.equal((await f.live.load()).revisions.A.plants,1);const fresh=await f.live.load({force:true});assert.equal(fresh.revisions.A.plants,2);assert.equal(fresh.rows.find(r=>r.zone==='GT-A-01').plants,0);assert.equal(first.rows.find(r=>r.zone==='GT-A-01').plants,1);});
 test('add, reject, undo, move, and delete update only the changed plant contribution',async()=>{
  const f=await fixture(),row=(d,id)=>d.rows.find(r=>r.zone===id);let d=await f.load();assert.equal(row(d,'GT-A-01').plants,1);assert.equal(row(d,'GT-A-01').newPlants,1);assert.equal(row(d,'GT-A-02').allocated,1);
  const initial=f.live.counts.classifications,reads=[...f.gets.values()].reduce((a,b)=>a+b,0);await f.load();assert.equal(f.live.counts.classifications,initial);assert.equal([...f.gets.values()].reduce((a,b)=>a+b,0),reads);

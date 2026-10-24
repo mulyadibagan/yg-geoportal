@@ -14,7 +14,7 @@ export default {
       if(request.method==='OPTIONS')return new Response(null,{status:204,headers});
       if(!['GET','HEAD'].includes(request.method))return new Response(null,{status:405,headers});
       const stub=env.DRONE_QUEUE.get(env.DRONE_QUEUE.idFromName('dayun-live-counts-Agro_ABC'));
-      const response=await stub.fetch(new Request('https://queue.internal/dayun-live-counts'));
+      const response=await stub.fetch(new Request('https://queue.internal/dayun-live-counts'+(url.searchParams.get('refresh')==='1'?'?refresh=1':'')));
       return new Response(request.method==='HEAD'?null:response.body,{status:response.status,headers});
     }
     if(url.pathname.startsWith('/api/staff/meritech/tile/')) return meritechTile(request, env, validStaffToken);
