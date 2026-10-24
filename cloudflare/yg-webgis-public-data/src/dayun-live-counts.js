@@ -1,6 +1,7 @@
 import {booleanPointInPolygon} from '@turf/turf';
 import {expandCandidateGrid} from './dayun-block-corrections.js';
 import {linkedFruitFeatures,distance} from './dayun-fruit-links.js';
+import plantingDetails from '../../../data/dayun-gawangan-details.json' with {type:'json'};
 const root='drone/analysis/dayun/',inside=(p,b)=>p[0]>=b[0]&&p[0]<=b[2]&&p[1]>=b[1]&&p[1]<=b[3];
 function index(f){const coords=[];function visit(x){if(typeof x[0]==='number')coords.push(x);else x.forEach(visit);}visit(f.geometry.coordinates);const b=coords.reduce((b,p)=>[Math.min(b[0],p[0]),Math.min(b[1],p[1]),Math.max(b[2],p[0]),Math.max(b[3],p[1])],[Infinity,Infinity,-Infinity,-Infinity]);const rings=f.geometry.type==='Polygon'?f.geometry.coordinates:f.geometry.coordinates.flat();return{f,b,rings};}
 // Local metric projection at Dayun's latitude; use distance to polygon edges,
@@ -25,7 +26,9 @@ export class LiveDayunCounts{
  async value(key){return(await this.read(key)).value;}
  async load(){if(this.last&&Date.now()-this.checkedAt<2000)return this.last;
   const manifest=await this.value(root+'results/Agro_ABC/index.json');if(!manifest?.run||!/^drone\/analysis\/dayun\/results\/Agro_ABC\/[\w-]+$/.test(manifest.prefix))throw Error('Analysis unavailable');
-  const detailsEntry=await this.read('dayun/gawangan-details.json');if(!detailsEntry.value)throw Error('Planting data unavailable');
+  // Planting months are canonical published metadata, not point-count snapshots.
+  // Bundle them with the Worker so an older R2 census mirror cannot regress July.
+  const detailsEntry={value:plantingDetails,etag:plantingDetails.updatedAt};
   const list=[];let cursor;do{const page=await this.env.PUBLIC_SNAPSHOTS.list({prefix:root+'areas/heads/',limit:1000,...(cursor?{cursor}:{})});list.push(...page.objects);cursor=page.truncated?page.cursor:null;}while(cursor);
   const records=await Promise.all(list.map(o=>this.value(o.key))),areas=records.filter(r=>/^Batas nanas baru Blok [ABC]\b/.test(r?.name||''));if(!areas.length)throw Error('Planting boundaries unavailable');
   const zoneEntries=await Promise.all('ABC'.split('').map(b=>{const path=manifest.block_analyses?.[b];if(!manifest.files?.includes(path))throw Error('Block unavailable');return this.read(manifest.prefix+'/'+path.slice(0,path.lastIndexOf('/')+1)+'zones.geojson');}));
