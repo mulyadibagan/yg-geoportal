@@ -17,7 +17,7 @@ export class DroneQueue {
   }
   async handleRequest(request){
     if(new URL(request.url).pathname==='/dayun-live-counts'){
-      try{this.liveCounts??=new LiveDayunCounts(this.env);return Response.json(await this.liveCounts.load());}
+      try{this.liveCounts??=new LiveDayunCounts(this.env);return Response.json(await this.liveCounts.load({force:new URL(request.url).searchParams.get('refresh')==='1'}));}
       catch{this.liveCounts=null;return Response.json({ok:false,error:'live_counts_unavailable'},{status:503});}
     }
     if(new URL(request.url).pathname==='/dayun-analysis-areas'){

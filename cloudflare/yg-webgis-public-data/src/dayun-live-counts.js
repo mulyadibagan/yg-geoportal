@@ -24,7 +24,7 @@ export class LiveDayunCounts{
  constructor(env){this.env=env;this.cache=new Map();this.blocks=new Map();this.last=null;this.checkedAt=0;}
  async read(key){const meta=await this.env.PUBLIC_SNAPSHOTS.head(key),etag=meta?.etag||null,old=this.cache.get(key);if(old&&old.etag===etag)return old;if(!meta){const entry={etag:null,value:null};this.cache.set(key,entry);return entry;}const o=await this.env.PUBLIC_SNAPSHOTS.get(key);if(!o)throw Error('Source changed while reading');const entry={etag:o.etag||etag,value:JSON.parse(await o.text())};this.cache.set(key,entry);return entry;}
  async value(key){return(await this.read(key)).value;}
- async load(){if(this.last&&Date.now()-this.checkedAt<2000)return this.last;
+ async load({force=false}={}){if(!force&&this.last&&Date.now()-this.checkedAt<2000)return this.last;
   const manifest=await this.value(root+'results/Agro_ABC/index.json');if(!manifest?.run||!/^drone\/analysis\/dayun\/results\/Agro_ABC\/[\w-]+$/.test(manifest.prefix))throw Error('Analysis unavailable');
   // Planting months are canonical published metadata, not point-count snapshots.
   // Bundle them with the Worker so an older R2 census mirror cannot regress July.
