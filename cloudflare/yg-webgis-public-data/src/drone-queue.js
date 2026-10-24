@@ -16,8 +16,8 @@ export class DroneQueue {
     return response;
   }
   async handleRequest(request){
-    if(new URL(request.url).pathname==='/dayun-live-counts'){
-      try{this.liveCounts??=new LiveDayunCounts(this.env);return Response.json(await this.liveCounts.load({force:new URL(request.url).searchParams.get('refresh')==='1'}));}
+    if(['/dayun-live-counts','/dayun-agro-map'].includes(new URL(request.url).pathname)){
+      try{this.liveCounts??=new LiveDayunCounts(this.env);return Response.json(new URL(request.url).pathname==='/dayun-agro-map'?await this.liveCounts.mapData():await this.liveCounts.load({force:new URL(request.url).searchParams.get('refresh')==='1'}));}
       catch{this.liveCounts=null;return Response.json({ok:false,error:'live_counts_unavailable'},{status:503});}
     }
     if(new URL(request.url).pathname==='/dayun-analysis-areas'){
