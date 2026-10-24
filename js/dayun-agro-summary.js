@@ -247,5 +247,14 @@
     })});
   }
 
-  return {build: build, population: population, boundaryLegend: boundaryLegend, outerBlockBoundaries: outerBlockBoundaries, MPTS: MPTS.slice(), HORTICULTURE: HORTICULTURE.slice()};
+  function plantAge(value, now) {
+    var unknown={months:null,approximate:true,label:'Bulan tanam belum tercatat'},text=String(value||'').trim().toLowerCase(),iso=/^(\d{4})-(\d{2})(?:-(\d{2}))?$/.exec(text),words=/^(?:(\d{1,2})\s+)?([a-z]+)\s+(\d{4})$/.exec(text);
+    var names={jan:1,januari:1,january:1,feb:2,februari:2,february:2,mar:3,maret:3,march:3,apr:4,april:4,mei:5,may:5,jun:6,juni:6,june:6,jul:7,juli:7,july:7,agu:8,agustus:8,aug:8,august:8,sep:9,sept:9,september:9,okt:10,oktober:10,oct:10,october:10,nov:11,november:11,des:12,desember:12,dec:12,december:12};
+    if(!iso&&!words)return unknown;var year=+(iso?iso[1]:words[3]),month=iso?+iso[2]:names[words[2]],day=+(iso?iso[3]||1:words[1]||1),approximate=!(iso?iso[3]:words[1]);if(!year||month<1||month>12||!month||day<1||day>new Date(Date.UTC(year,month,0)).getUTCDate())return unknown;
+    var date=now===undefined?new Date():new Date(now);if(!Number.isFinite(date.getTime()))return unknown;var parts=new Intl.DateTimeFormat('en-CA',{timeZone:'Asia/Jakarta',year:'numeric',month:'numeric',day:'numeric'}).formatToParts(date),today={};parts.forEach(function(p){if(p.type!=='literal')today[p.type]=+p.value;});
+    if(year*10000+month*100+day>today.year*10000+today.month*100+today.day)return{months:null,approximate:approximate,label:'Tanggal tanam belum tiba'};
+    var months=(today.year-year)*12+today.month-month;if(!approximate&&today.day<day)months--;months=Math.max(0,months);return{months:months,approximate:approximate,label:(approximate?'± ':'')+months+' bulan'};
+  }
+
+  return {plantAge: plantAge, build: build, population: population, boundaryLegend: boundaryLegend, outerBlockBoundaries: outerBlockBoundaries, MPTS: MPTS.slice(), HORTICULTURE: HORTICULTURE.slice()};
 });
