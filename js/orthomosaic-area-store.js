@@ -33,7 +33,7 @@
  }
  // A read-only map layer, separate from editable measurements and point work.
  // Fetch only on entry or an explicit refresh/save, never on pan or zoom.
- function mountOverlay({host,map,api,current=()=>true,title="Batas horti",matches=item=>/\bhorti\b/i.test(item.name),paneName="ortho-team-boundaries",color="#a21caf",getSnapshot}){
+ function mountOverlay({host,map,api,current=()=>true,title="Batas horti",matches=item=>/\bhorti\b/i.test(item.name),paneName="ortho-team-boundaries",color="#a21caf",getSnapshot,publicLabels=false}){
   const el=(tag,text)=>{const n=document.createElement(tag);if(text)n.textContent=text;return n;};
   const label=el('label',' '+title),toggle=el('input'),reload=el('button','Perbarui batas'),status=el('small');
   toggle.type='checkbox';toggle.checked=true;reload.type='button';status.setAttribute('role','status');label.prepend(toggle);host.replaceChildren(label,reload,status);
@@ -68,8 +68,8 @@
      if(polygons.length)rendered.push(root.L.geoJSON({type:'FeatureCollection',features:polygons},{pane:paneName,interactive:false,style:{color,weight:3,dashArray:'8 5',fill:false,fillOpacity:0},...(getSnapshot?{onEachFeature:(feature,l)=>{const label=el('span'),block=d.record.name.match(/\bBlok\s+([A-F])\b/i)?.[1]?.toUpperCase()||feature.properties?.zoneId?.match(/^GT-([A-F])-/)?.[1];l.bindTooltip(label,{permanent:true,direction:'center'});nextAnnotations.push({feature,label,block,layer:l,name:d.record.name});}}:{})}));
     }
     if(!alive())return;layer.clearLayers();for(const shape of rendered)shape.addTo(layer);records=nextRecords;annotations.splice(0,annotations.length,...nextAnnotations);updateCounts();
-    status.textContent=rendered.length?rendered.length+' '+title+' privat':'Belum ada '+title+' tersimpan.';
-   }catch(error){if(alive())status.textContent=title+' belum diperbarui: '+error.message;}
+    status.textContent=publicLabels?(rendered.length?rendered.length+' area':'Belum ada area tersimpan.'):(rendered.length?rendered.length+' '+title+' privat':'Belum ada '+title+' tersimpan.');
+   }catch(error){if(alive())status.textContent=publicLabels?'Area belum dapat diperbarui.':title+' belum diperbarui: '+error.message;}
    finally{busy=false;if(alive()){reload.disabled=false;if(again){again=false;refresh();}}}
   }
   reload.onclick=refresh;refresh();

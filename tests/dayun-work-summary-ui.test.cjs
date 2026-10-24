@@ -17,3 +17,10 @@ test('recap paginates and filters without changing source counts or exporting on
 test('visible copy omits implementation details and month/gawangan labels are readable',async()=>{
  const s=setup();await flush();const text=s.nodes.map(n=>n.textContent).join(' ');assert.doesNotMatch(text,/Tersinkron|titik r\d|buah r\d|Dari luar GT|Buah tim|snapshot|geometri/i);assert.match(text,/Desember 2024/);assert.match(text,/Agustus 2026/);assert.match(text,/Diperbarui/);assert.ok(s.find('Data nanas dan buah'));
 });
+test('map context does not render historical pineapple populations as current totals',()=>{
+ const text=fs.readFileSync(require.resolve('../js/dayun-public.js'),'utf8'),start=text.indexOf('  function renderAgroSummary('),end=text.indexOf('\n  function ',start+5),nodes={'dayun-agro-summary':{},'dayun-block-overview':{}};
+ const render=vm.runInNewContext('('+text.slice(start,end)+')',{document:{getElementById:id=>nodes[id]},fmtArea:n=>n+' ha',fmtInteger:String,cropGroupHtml:()=>'',window:{DayunAgroSummary:{MPTS:[],HORTICULTURE:['NANAS']}}});
+ render({all:{blockAreaHa:28,gawanganAreaHa:20,mappedGawangan:60,mptsPlants:1954,pineappleRecorded:987654321,pineapplePlants:876543210},codes:['A'],blocks:{A:{name:'Blok A',mappedGawangan:15,blockAreaHa:4,gawanganAreaHa:3,mptsPlants:100,pineappleRecorded:987654321}}});
+ assert.doesNotMatch(nodes['dayun-agro-summary'].innerHTML+nodes['dayun-block-overview'].innerHTML,/987654321|876543210|Nanas pada data sumber/);
+ const html=fs.readFileSync(require.resolve('../dayun-map.html'),'utf8');assert.equal((html.match(/data-dayun-work-summary=/g)||[]).length,1);assert.doesNotMatch(html,/id="dayun-pineapple-entry"/);
+});
