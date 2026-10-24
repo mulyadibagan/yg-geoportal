@@ -1,0 +1,15 @@
+(function(root){
+ 'use strict';
+ function rowsFor(d,object,block){return d.rows.filter(r=>(!object||r.objectId===object)&&(!block||r.block===block));}
+ function totals(rows){return rows.reduce((a,r)=>({plants:a.plants+r.plants,newPlants:a.newPlants+r.newPlants,fruits:a.fruits+r.fruits,allocated:a.allocated+r.allocated}),{plants:0,newPlants:0,fruits:0,allocated:0});}
+ const api={rowsFor,totals};if(typeof module==='object'&&module.exports)module.exports=api;root.YG_DAYUN_WORK_SUMMARY=api;
+ if(typeof document==='undefined')return;const host=document.querySelector('[data-dayun-work-summary]');if(!host)return;
+ const make=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;},num=v=>v.toLocaleString('id-ID');host.append(make('p','Memuat rekap nanas dan buah per gawangan…'));
+ fetch('data/dayun-work-counts.json?v=20261024-unified1',{cache:'no-cache'}).then(r=>{if(!r.ok)throw Error('HTTP '+r.status);return r.json();}).then(data=>{
+  const p=new URLSearchParams(location.search),all=host.dataset.dayunWorkSummary==='all',rows=rowsFor(data,all?null:p.get('object'),all?null:p.get('block'));host.replaceChildren();if(!rows.length){host.hidden=true;return;}
+  const t=totals(rows);host.append(make('h2','Rekap terpadu nanas dan buah'),make('p','Sesuai Excel 24 Oktober 2026. Snapshot titik 23 Oktober 2026. Termasuk titik luar yang dialokasikan ke gawangan tanam terdekat.'),make('p',num(t.plants)+' nanas · termasuk '+num(t.newPlants)+' nanas baru · '+num(t.fruits)+' buah tim'));
+  const wrap=make('div'),table=make('table'),head=make('tr');wrap.style.overflowX='auto';table.style.width='100%';table.style.borderCollapse='collapse';['Gawangan','Jumlah nanas','Dari luar GT','Nanas baru','Buah tim','Tanam lama','Tanam baru'].forEach(x=>head.append(make('th',x)));table.append(head);
+  for(const r of rows){const tr=make('tr'),cell=make('td'),link=make('a',r.zone);link.href='dayun-gawangan.html?object='+encodeURIComponent(r.objectId);cell.append(link);tr.append(cell);[num(r.plants),num(r.allocated),num(r.newPlants),num(r.fruits),r.plantingMonth||'Belum tercatat',r.newPlantingMonth||'—'].forEach(x=>tr.append(make('td',x)));table.append(tr);}
+  const foot=make('tr');['TOTAL',num(t.plants),num(t.allocated),num(t.newPlants),num(t.fruits),'',''].forEach(x=>foot.append(make('th',x)));table.append(foot);table.querySelectorAll('th,td').forEach(n=>{n.style.padding='10px';n.style.borderBottom='1px solid #ddd';n.style.textAlign='left';});wrap.append(table);host.append(wrap,make('p','Setiap titik dihitung sekali. Buah GM-B-P017 masuk B15 (229 buah). Tanaman baru merupakan bagian dari total. Sensus, geometri dan koreksi titik tim tetap terpisah.'),make('p','Tanam baru B5–B8: Juli 2026. Posisi tambahan penyesuaian sensus tetap perkiraan. Perubahan titik setelah snapshot belum masuk rekap ini.'));
+ }).catch(()=>host.replaceChildren(make('p','Rekap terpadu belum dapat dimuat. Muat ulang halaman.')));
+})(typeof window!=='undefined'?window:globalThis);
