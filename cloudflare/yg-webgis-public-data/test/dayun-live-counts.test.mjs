@@ -1,6 +1,6 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import {LiveDayunCounts,IncrementalCounts,allocator} from '../src/dayun-live-counts.js';
+import {LiveDayunCounts,IncrementalCounts,allocator,publicPlantingAreas} from '../src/dayun-live-counts.js';
 import worker from '../src/main.js';
 const point=(id,x,y=.0005,status='candidate')=>({type:'Feature',geometry:{type:'Point',coordinates:[x,y]},properties:{id,status}});
 const box=(id,x)=>({type:'Feature',properties:{id},geometry:{type:'Polygon',coordinates:[[[x,0],[x+.001,0],[x+.001,.001],[x,.001],[x,0]]]}});
@@ -18,6 +18,15 @@ async function fixture(){
  const live=new LiveDayunCounts(env),load=()=>{live.checkedAt=0;return live.load();};return{live,env,values,gets,set,keys,load,prefix};
 }
 test('nearest polygon edge allocation is unique including GM and unassigned points',()=>{const a=allocator([box('GT-A-01',0),box('GM-A-01',.001),box('GT-A-02',.002)]);assert.deepEqual(a(point('p',.0019)),{zone:'GT-A-02',outside:true});assert.deepEqual(a(point('p',.001)),{zone:'GT-A-01',outside:false});});
+test('public planting layer preserves all nine A polygons exactly and excludes other records and private metadata',()=>{
+ const features=Array.from({length:9},(_,i)=>({...box('area'+i,i*.003),properties:{source:'private-image.tif',note:'staff correction',sourceId:'private-run'}})),records=[{name:'Batas nanas baru Blok A sampai A9',collection:{features}},{name:'Batas horti privat',collection:{features:[box('horti',.1)]}},{name:'Perkiraan sensus nanas C',collection:{features:[box('estimate',.2)]}},{name:'Batas nanas baru Blok A duplikat',collection:{features:[features[0]]}}];
+ const result=publicPlantingAreas(records,features.map((f,i)=>({...f,properties:{id:'GT-A-'+String(i+1).padStart(2,'0')}})));assert.equal(result.length,9);assert.deepEqual(result.map(f=>f.geometry),features.map(f=>f.geometry));assert(!JSON.stringify(result).includes('private'));assert(!JSON.stringify(result).includes('staff correction'));assert.equal(result[0].properties.zoneId,'GT-A-01');
+});
+test('map output keeps only requested planting geometry and updates polygon counts on reject and undo',async()=>{
+ const f=await fixture();let d=await f.live.mapData();assert.equal(d.type,'FeatureCollection');assert.equal(d.features.length,1);assert.equal(d.features[0].properties.pointCount,1);const geometry=d.features[0].geometry,revision=d.geometryRevision;
+ f.set(f.keys.A.plant,{revision:2,review:{changes:[point('p1',.0005,.0005,'rejected')]},point_versions:{p1:2}});f.live.checkedAt=0;d=await f.live.mapData();assert.equal(d.features[0].properties.pointCount,0);assert.equal(d.geometryRevision,revision);assert.deepEqual(d.features[0].geometry,geometry);
+ f.set(f.keys.A.plant,{revision:3,review:{changes:[point('p1',.0005)]},point_versions:{p1:3}});f.live.checkedAt=0;d=await f.live.mapData();assert.equal(d.features[0].properties.pointCount,1);assert.equal(d.geometryRevision,revision);assert(!JSON.stringify(d.features).includes('source_run'));
+});
 test('explicit download refresh bypasses the short coordinator cache and reads a just-saved revision',async()=>{const f=await fixture();const first=await f.live.load();f.set(f.keys.A.plant,{revision:2,review:{changes:[point('p1',.0005,.0005,'rejected')]},point_versions:{p1:2}});assert.equal((await f.live.load()).revisions.A.plants,1);const fresh=await f.live.load({force:true});assert.equal(fresh.revisions.A.plants,2);assert.equal(fresh.rows.find(r=>r.zone==='GT-A-01').plants,0);assert.equal(first.rows.find(r=>r.zone==='GT-A-01').plants,1);});
 test('add, reject, undo, move, and delete update only the changed plant contribution',async()=>{
  const f=await fixture(),row=(d,id)=>d.rows.find(r=>r.zone===id);let d=await f.load();assert.equal(row(d,'GT-A-01').plants,1);assert.equal(row(d,'GT-A-01').newPlants,1);assert.equal(row(d,'GT-A-02').allocated,1);

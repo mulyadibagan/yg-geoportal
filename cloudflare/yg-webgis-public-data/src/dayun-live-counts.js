@@ -1,4 +1,4 @@
-import {booleanPointInPolygon} from '@turf/turf';
+import {booleanPointInPolygon,area,intersect,featureCollection} from '@turf/turf';
 import {expandCandidateGrid} from './dayun-block-corrections.js';
 import {linkedFruitFeatures,distance} from './dayun-fruit-links.js';
 import plantingDetails from '../../../data/dayun-gawangan-details.json' with {type:'json'};
@@ -17,8 +17,20 @@ class Plants{
  match(c){const [x,y]=this.key(c),found=[];for(let dx=-1;dx<=1;dx++)for(let dy=-1;dy<=1;dy++)for(const f of this.cells.get([x+dx,y+dy].join('/'))?.values()||[]){const d=distance(c,f.geometry.coordinates);if(d<=.45)found.push({f,d});}found.sort((a,b)=>a.d-b.d||a.f.properties.id.localeCompare(b.f.properties.id));return found[0]?.d<=.2&&(!found[1]||found[1].d-found[0].d>=.15)?found[0].f:null;}
 }
 export class IncrementalCounts{
- constructor(zones,masks){this.allocate=allocator(zones);this.masks=masks.map(index);this.rows=new Map(zones.filter(f=>/^GT-[ABC]-\d+$/.test(f.properties.id)).map(f=>[f.properties.id,{objectId:'DAYUN-'+f.properties.id,zone:f.properties.id,block:f.properties.id.split('-')[1],plants:0,newPlants:0,allocated:0,fruits:0}]));this.entries=new Map();this.classifications=0;}
- set(key,f,kind='plants'){const old=this.entries.get(key);if(old){const r=this.rows.get(old.zone);r[kind]--;if(kind==='plants'){r.newPlants-=old.fresh;r.allocated-=old.outside;}this.entries.delete(key);}if(!f)return;this.classifications++;const a=this.allocate(f),fresh=kind==='plants'&&this.masks.some(m=>inside(f.geometry.coordinates,m.b)&&booleanPointInPolygon(f,m.f))?1:0,r=this.rows.get(a.zone);r[kind]++;if(kind==='plants'){r.newPlants+=fresh;r.allocated+=Number(a.outside);}this.entries.set(key,{zone:a.zone,fresh,outside:Number(a.outside)});}
+ constructor(zones,masks){this.allocate=allocator(zones);this.masks=masks.map(f=>({...index(f),count:0}));this.rows=new Map(zones.filter(f=>/^GT-[ABC]-\d+$/.test(f.properties.id)).map(f=>[f.properties.id,{objectId:'DAYUN-'+f.properties.id,zone:f.properties.id,block:f.properties.id.split('-')[1],plants:0,newPlants:0,allocated:0,fruits:0}]));this.entries=new Map();this.classifications=0;}
+ set(key,f,kind='plants'){const old=this.entries.get(key);if(old){const r=this.rows.get(old.zone);r[kind]--;if(kind==='plants'){r.newPlants-=old.fresh;r.allocated-=old.outside;old.masks.forEach(m=>m.count--);}this.entries.delete(key);}if(!f)return;this.classifications++;const a=this.allocate(f),masks=kind==='plants'?this.masks.filter(m=>inside(f.geometry.coordinates,m.b)&&booleanPointInPolygon(f,m.f)):[],fresh=masks.length?1:0,r=this.rows.get(a.zone);r[kind]++;if(kind==='plants'){r.newPlants+=fresh;r.allocated+=Number(a.outside);masks.forEach(m=>m.count++);}this.entries.set(key,{zone:a.zone,fresh,outside:Number(a.outside),masks});}
+}
+// Publish only the requested planting geometry and display metadata. Never leak
+// private record IDs, source-image paths, notes, staff identities or other areas.
+export function publicPlantingAreas(records,zones){
+ const gt=zones.filter(f=>/^GT-[ABC]-\d+$/.test(f.properties.id)).map(index),seen=new Set(),features=[],counts={};
+ for(const record of records){const match=/^Batas nanas baru Blok ([ABC])\b/.exec(record?.name||'');if(!match)continue;
+  for(const f of record.collection.features){if(!['Polygon','MultiPolygon'].includes(f.geometry.type))continue;const key=JSON.stringify(f.geometry);if(seen.has(key))continue;seen.add(key);const b=index(f).b;let zone=null,best=0;
+   for(const z of gt){if(b[0]>z.b[2]||b[2]<z.b[0]||b[1]>z.b[3]||b[3]<z.b[1])continue;const hit=intersect(featureCollection([f,z.f])),size=hit?area(hit):0;if(size>best){best=size;zone=z.f.properties.id;}}
+   const block=zone?.split('-')[1]||match[1],n=counts[block]=(counts[block]||0)+1;
+   features.push({type:'Feature',id:`new-${block}-${n}`,geometry:f.geometry,properties:{id:`new-${block}-${n}`,block,zoneId:zone,name:zone?'Tanaman baru '+zone:'Tanaman baru Blok '+block+' · Area '+n,areaM2:Number.isFinite(f.properties?.areaM2)?f.properties.areaM2:area(f)*(6378137/6371008.8)**2}});
+  }
+ }return features;
 }
 export class LiveDayunCounts{
  constructor(env){this.env=env;this.cache=new Map();this.blocks=new Map();this.last=null;this.checkedAt=0;}
@@ -33,7 +45,7 @@ export class LiveDayunCounts{
   const records=await Promise.all(list.map(o=>this.value(o.key))),areas=records.filter(r=>/^Batas nanas baru Blok [ABC]\b/.test(r?.name||''));if(!areas.length)throw Error('Planting boundaries unavailable');
   const zoneEntries=await Promise.all('ABC'.split('').map(b=>{const path=manifest.block_analyses?.[b];if(!manifest.files?.includes(path))throw Error('Block unavailable');return this.read(manifest.prefix+'/'+path.slice(0,path.lastIndexOf('/')+1)+'zones.geojson');}));
   const geometryKey=JSON.stringify([manifest.run,zoneEntries.map(z=>z.etag),areas.map(r=>[r.id,r.revision]).sort()]),reset=geometryKey!==this.geometryKey;
-  if(reset){const zones=zoneEntries.flatMap(e=>e.value.features);this.counts=new IncrementalCounts(zones,areas.flatMap(r=>r.collection.features.filter(f=>['Polygon','MultiPolygon'].includes(f.geometry.type))));this.blocks.clear();this.geometryKey=geometryKey;}
+  if(reset){const zones=zoneEntries.flatMap(e=>e.value.features);this.counts=new IncrementalCounts(zones,publicPlantingAreas(areas,zones));this.blocks.clear();this.geometryKey=geometryKey;this.geometryRevision=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(geometryKey))),b=>b.toString(16).padStart(2,'0')).join('');}
   const revisions={};let changed=reset;
   for(const block of 'ABC'){
    const path=manifest.block_analyses[block],folder=path.slice(0,path.lastIndexOf('/')+1),anchor=manifest.block_review_bases?.[block]||path,hash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(anchor))),b=>b.toString(16).padStart(2,'0')).join('');
@@ -48,4 +60,5 @@ export class LiveDayunCounts{
   const rows=[...this.counts.rows.values()].sort((a,b)=>a.zone.localeCompare(b.zone)).map(r=>{const crop=details.objects.find(o=>o.objectId===r.objectId)?.crops.find(c=>c.crop==='NANAS'),period=crop?.newPlantingIndication?.plantingPeriod||crop?.plantingCohorts?.at(-1)?.period;return{...r,plantingMonth:crop?.plantingPeriod||null,newPlantingMonth:r.newPlants?month(period):null};});
   const signature=JSON.stringify([revisions,geometryKey,detailsEntry.etag]);this.last={schema:'dayun-live-work-counts-v1',live:true,updatedAt:signature===this.signature?this.last.updatedAt:new Date().toISOString(),checkedAt:new Date().toISOString(),sourceRun:manifest.run,revisions,rows};this.signature=signature;this.checkedAt=Date.now();return this.last;
  }
+ async mapData(){const data=await this.load();return{type:'FeatureCollection',schema:'dayun-agro-map-live-v1',live:true,checkedAt:data.checkedAt,revisions:data.revisions,rows:data.rows,geometryRevision:this.geometryRevision,features:this.counts.masks.map(m=>({...m.f,properties:{...m.f.properties,pointCount:m.count,plantingMonth:data.rows.find(r=>r.zone===m.f.properties.zoneId)?.newPlantingMonth||null}}))};}
 }
