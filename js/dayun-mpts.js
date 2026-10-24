@@ -2,7 +2,8 @@
   'use strict';
   function esc(value) { return String(value || '').replace(/[&<>"']/g, function (c) { return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
   window.YGDayunMpts = {
-    attach: function (map, legend) {
+    attach: function (map, legend, options) {
+      options=options||{};
       var points = null, records = [], error = false, visible = true, markerById = {};
       map.createPane('dayunMpts');
       map.getPane('dayunMpts').style.zIndex = 450;
@@ -53,6 +54,7 @@
         .then(function (response) { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); })
         .then(function (data) {
           records = data.features;
+          if(options.onData)options.onData(data);
           var displayData = Object.assign({}, data, {features:records.map(function (feature) {
             return Object.assign({}, feature, {geometry:{type:'Point', coordinates:feature.properties.displayCoordinates || feature.geometry.coordinates}});
           })});
