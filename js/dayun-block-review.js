@@ -3,26 +3,26 @@
   const countOwners=new WeakMap();
   function createLiveSummary({host,block,baseline,zones,onLayout}){
     if(!host)return null;
-    const owner={};countOwners.set(host,owner);let counts=null,filter='',selected=[],change='',state={ready:false},fruitState=null;
+    const owner={};countOwners.set(host,owner);let counts=null,filter='',selected=[],state={ready:false},fruitState=null;
     const make=(tag,text)=>{const n=document.createElement(tag);if(text!==undefined)n.textContent=text;return n;};
-    const heading=make('span','Hitungan kerja • bukan sensus'),blockLine=make('strong'),zoneLine=make('span'),deltaLine=make('span'),syncLine=make('span'),fruitLine=make('span');
-    heading.className='live-count-label';blockLine.className='live-count-block';zoneLine.className='live-count-zone';deltaLine.className='live-count-delta';syncLine.className='live-count-sync';
-    fruitLine.className='live-count-fruit';fruitLine.hidden=true;host.replaceChildren(heading,blockLine,zoneLine,fruitLine,deltaLine,syncLine);host.hidden=false;host.setAttribute('role','status');host.setAttribute('aria-live','polite');
-    const num=n=>n.toLocaleString('id-ID'),signed=n=>(n>0?'+':n<0?'−':'')+num(Math.abs(n));
+    const blockLine=make('strong'),zoneLine=make('span'),syncLine=make('span'),fruitLine=make('span');
+    blockLine.className='live-count-block';zoneLine.className='live-count-zone';syncLine.className='live-count-sync';
+    fruitLine.className='live-count-fruit';fruitLine.hidden=true;host.replaceChildren(blockLine,zoneLine,fruitLine,syncLine);host.hidden=false;host.setAttribute('role','status');host.setAttribute('aria-live','polite');
+    const num=n=>n.toLocaleString('id-ID');
     function render(){if(countOwners.get(host)!==owner)return;
-      blockLine.textContent=counts?`Blok ${block}: ${num(counts.working_total)} titik (awal ${num(baseline)}; Δ ${signed(counts.working_total-baseline)})`:`Blok ${block}: menunggu hitungan tim…`;
+      blockLine.textContent=counts?`Blok ${block}: ${num(counts.working_total)} nanas`:`Blok ${block}: menunggu hitungan tim…`;
       const ids=filter?[filter==='__UNASSIGNED__'?'UNASSIGNED':filter]:selected;
-      zoneLine.textContent=!ids.length?'Gawangan: pilih pada menu atau klik titik.':ids.map(id=>{const row=counts?.zones?.find(r=>r.zone_id===id),original=id==='UNASSIGNED'?0:zones.find(z=>z.id===id)?.candidate_crowns;return(id==='UNASSIGNED'?'Di luar gawangan':id)+': '+(row?num(row.working_total)+' titik'+(Number.isFinite(original)?` (awal ${num(original)}; Δ ${signed(row.working_total-original)})`:''):'menunggu hitungan…');}).join(' / ');
+      zoneLine.hidden=!ids.length;
+      zoneLine.textContent=ids.map(id=>{const row=counts?.zones?.find(r=>r.zone_id===id);return(id==='UNASSIGNED'?'Di luar gawangan':id)+': '+(row?num(row.working_total)+' nanas':'memuat…');}).join(' / ');
       fruitLine.hidden=!fruitState;
-      if(fruitState){const h=fruitState.head;if(!h)fruitLine.textContent=fruitState.error?'Hitungan buah gagal dimuat':'Memuat hitungan buah…';else{const tally=zone=>{const confirmed=new Set();for(const f of h.features){const p=f.properties;if(zone&&(zone==='UNASSIGNED'?p.zones.length:!p.zones.includes(zone)))continue;if(p.status==='confirmed'&&p.counted!==false)confirmed.add(p.id);}return num(confirmed.size)+' buah tim';};fruitLine.textContent='Blok '+block+': '+tally('')+(ids.length?' / '+ids.map(id=>(id==='UNASSIGNED'?'Di luar gawangan':id)+': '+tally(id)).join(' / '):'')+(fruitState.error?' • gagal sinkron; data terakhir':fruitState.saving?' • menyimpan buah…':fruitState.dirty?' • buah belum tersimpan':'');}}
-      deltaLine.textContent=change;deltaLine.hidden=!change;
-      syncLine.textContent=state.conflicts?`${state.conflicts} konflik titik • perubahan lokal belum seluruhnya tersimpan`:state.error?(state.dirty?'Belum tersimpan • ':'Sinkronisasi gagal • ')+state.error:!state.ready?'Memuat koreksi tim…':state.saving?'Menyimpan perubahan privat…':state.dirty?'Perubahan lokal belum tersimpan':state.loading?`Menyinkronkan revisi ${state.revision}…`:`Tersimpan privat • revisi ${state.revision}`;
+      if(fruitState){const h=fruitState.head;if(!h)fruitLine.textContent=fruitState.error?'Hitungan buah gagal dimuat':'Memuat hitungan buah…';else{const tally=zone=>{const confirmed=new Set();for(const f of h.features){const p=f.properties;if(zone&&(zone==='UNASSIGNED'?p.zones.length:!p.zones.includes(zone)))continue;if(p.status==='confirmed'&&p.counted!==false)confirmed.add(p.id);}return num(confirmed.size)+' buah';};fruitLine.textContent='Blok '+block+': '+tally('')+(ids.length?' / '+ids.map(id=>(id==='UNASSIGNED'?'Di luar gawangan':id)+': '+tally(id)).join(' / '):'')+(fruitState.error?' • gagal sinkron; data terakhir':fruitState.saving?' • menyimpan buah…':fruitState.dirty?' • buah belum tersimpan':'');}}
+      syncLine.textContent=state.conflicts?`${state.conflicts} konflik titik • perubahan lokal belum seluruhnya tersimpan`:state.error?(state.dirty?'Belum tersimpan • ':'Sinkronisasi gagal • ')+state.error:!state.ready?'Memuat koreksi tim…':state.saving?'Menyimpan…':state.dirty?'Belum tersimpan':state.loading?'Menyinkronkan…':'Tersimpan';
       host.setAttribute('data-sync-state',state.conflicts?'conflict':state.error?'error':!state.ready?'loading':state.saving?'saving':state.dirty?'pending':state.loading?'syncing':'saved');
     }
     render();
     const observer=typeof ResizeObserver==='function'?new ResizeObserver(()=>onLayout?.()):null;observer?.observe(host);
     return{
-      counts(value){if(counts){const d=value.working_total-counts.working_total,rows=(value.zones||[]).map(r=>({id:r.zone_id,d:r.working_total-(counts.zones?.find(p=>p.zone_id===r.zone_id)?.working_total||0)})).filter(r=>r.d);if(d||rows.length)change=`Perubahan hitungan terakhir: Blok ${block} ${signed(d)}`+(rows.length?' · '+rows.slice(0,3).map(r=>r.id+' '+signed(r.d)).join(' · '):'');}counts=value;render();},
+      counts(value){counts=value;render();},
       fruits(value){if(value.head?.block&&value.head.block!==block)return;fruitState=value;render();},sync(value){state=value;render();},filter(value){filter=value;render();},selection(feature){if(feature)selected=feature.properties.zones?.length?[...new Set(feature.properties.zones)]:['UNASSIGNED'];render();},
       dispose(){observer?.disconnect();if(countOwners.get(host)===owner){countOwners.delete(host);host.replaceChildren();host.hidden=true;}}
     };
