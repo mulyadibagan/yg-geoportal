@@ -81,7 +81,7 @@
     const nextSession=window.YG_AUTH?.readStoredSession();
     if(session?.token!==nextSession?.token)privateAssets?.clear();
     session = nextSession;
-    if (!session) { lock('Masuk sebagai staf untuk membuka analisis internal.'); return; }
+    if (!session) { lock('Masuk sebagai staf untuk membuka peta.'); return; }
     $('gateStatus').textContent = 'Memeriksa akses staf…';
     try {
       const data = await (await api('/api/staff/drone/jobs')).json();
@@ -241,7 +241,7 @@
       state.setOpacity=value=>layer.setOpacity(value);
       layer.addTo(map);
       rasterBounds=details.blockBounds||layer.getBounds();$('fitRaster').disabled=false;$('downloadTiff').disabled=true;
-      metadata([['Sumber',details.title],['Sistem koordinat',`EPSG:${raster.projection}`],['Ukuran piksel (satuan CRS)',`${number(Math.abs(raster.rx),8)}  x  ${number(Math.abs(raster.ry),8)}`],['Akses','Internal staf; pembacaan TIFF bertahap']]);
+      metadata([['Sumber',details.title],['Sistem koordinat',`EPSG:${raster.projection}`],['Ukuran piksel (satuan CRS)',`${number(Math.abs(raster.rx),8)}  x  ${number(Math.abs(raster.ry),8)}`],['Akses','Staf']]);
       return state;
     }catch(error){state.dispose();if(epoch===sequence&&validSession())throw error;return false;}
   }
@@ -265,7 +265,7 @@
       layer.on('load',()=>{rendered=!tileFailed;if(request===sequence){if(source)source.ready=rendered;$('mapStatus').textContent=rendered?(details.nativeReview?'TIFF asli siap diperiksa. Area di luar potongan aktif masih pratinjau; geser peta untuk memuat potongan berikutnya.':'Citra siap ditinjau.'): 'Sebagian piksel citra gagal dimuat; jangan menempatkan titik pada area yang belum jelas.';}});
       layer.addTo(map);rasterLayer=layer;rasterBounds=layer.getBounds();if(!details.preserveView)map.fitBounds(rasterBounds);
       source={...details,input,ready:rendered,renderError:tileFailed};$('fitRaster').disabled=false;$('downloadTiff').disabled=input instanceof Blob;
-      metadata([['Sumber',details.title],['Tanggal survei',details.surveyDate || 'Belum tersedia'],['Sistem koordinat',`EPSG:${projection}`],['Dimensi',`${number(image.getWidth(),0)} × ${number(image.getHeight(),0)} piksel`],['Ukuran piksel (satuan CRS)',`${number(Math.abs(rx),8)} × ${number(Math.abs(ry),8)}`],['Foto digunakan',details.validPhotos ?? 'Tidak tersedia'],['Akses','Internal staf']]);
+      metadata([['Sumber',details.title],['Tanggal survei',details.surveyDate || 'Belum tersedia'],['Sistem koordinat',`EPSG:${projection}`],['Dimensi',`${number(image.getWidth(),0)} × ${number(image.getHeight(),0)} piksel`],['Ukuran piksel (satuan CRS)',`${number(Math.abs(rx),8)} × ${number(Math.abs(ry),8)}`],['Foto digunakan',details.validPhotos ?? 'Tidak tersedia'],['Akses','Staf']]);
       if(!rendered)$('mapStatus').textContent=details.nativeReview?'Memuat TIFF asli; tunggu sampai piksel siap diperiksa…':'Citra siap ditinjau. Pembacaan mengikuti area peta dan tingkat pembesaran.';
       return true;
     } catch(error) { if(request!==sequence)return false;metadata([['Sumber',details.title],['Status','Gagal dibaca']]);$('mapStatus').textContent=`GeoTIFF belum dapat dibuka: ${error.message}`;return false; }
