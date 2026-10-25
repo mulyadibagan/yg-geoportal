@@ -30,3 +30,6 @@
 #teamBoundaryTools{display:flex;flex-wrap:wrap;align-items:center;gap:6px;padding:8px 0;border-top:1px solid #dce6e0}#teamBoundaryTools label{color:#a21caf;font-size:13px;font-weight:700}#teamBoundaryTools input{width:auto}#teamBoundaryTools button{font-size:12px;padding:5px 8px}#teamBoundaryTools small{flex-basis:100%;font-size:11px}#measurementTools{border-top:1px solid #dce6e0}
 
 .key-census::before{border-color:#8b5cf6}
+
+/* Secondary tools stay accessible without crowding the map. */
+.secondary-tools>summary,.map-measurements>summary{cursor:pointer;font-weight:650;color:#315345}.secondary-tools[open]>summary,.map-measurements[open]>summary{margin-bottom:12px}.heading{margin-bottom:16px}.heading h1{font-size:26px;margin:0}.map-measurements{margin-top:12px}
