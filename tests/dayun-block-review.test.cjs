@@ -130,7 +130,7 @@ function viewportFixture({maxRetained=2,concurrency=2,open,...extra}={}){
 
 test('all intersecting native crops load together; panning retains neighbours, reuses pixels and bounds cache memory',async()=>{
  const s=viewportFixture();s.engine.refresh();await s.settle();assert.equal(s.opened.length,2);assert.equal(s.engine.readyAt([.5,.5]),false);
- for(const o of s.opened){o.h.ready=true;o.changed();}assert.equal(s.engine.readyAt([.5,.5]),true);assert.equal(s.engine.readyAt([1.5,.5]),true);assert.match(s.messages.at(-1),/2\/2/);
+ for(const o of s.opened){o.h.ready=true;o.changed();}assert.equal(s.engine.readyAt([.5,.5]),true);assert.equal(s.engine.readyAt([1.5,.5]),true);assert.match(s.messages.at(-1),/Citra siap/);
  s.pan([1,0,3,1]);s.engine.refresh();await s.settle();assert.equal(s.opened.length,3);assert.equal(s.opened[0].h.disposed,true);assert.equal(s.opened[1].h.disposed,false);s.engine.refresh();await s.settle();assert.equal(s.opened.length,3);s.engine.dispose();assert.ok(s.opened.every(o=>o.h.disposed));
 });
 
@@ -141,7 +141,7 @@ test('quick pans cancel stale work, cap concurrent reads, and never attach a lat
 
 test('native read failures stay unready and explicit inspection retries only the failed crop',async()=>{
  let fail=true;const s=viewportFixture({open:async(t,c,signal,h)=>{if(t.file==='native/0.tif'&&fail)throw Error('offline');return h;}});
- s.engine.refresh();await s.settle();assert.match(s.messages.at(-1),/gagal/);assert.equal(s.engine.readyAt([.5,.5]),false);fail=false;const h=await s.engine.ensure([.5,.5]);assert.equal(s.opened.length,3);h.ready=true;s.opened.at(-1).changed();assert.equal(s.engine.readyAt([.5,.5]),true);s.zoom(18);s.engine.refresh();assert.equal(s.opened.at(-1).h.disposed,false);assert.equal(s.engine.readyAt([.5,.5]),false);assert.match(s.messages.at(-1),/pratinjau/);s.engine.dispose();
+ s.engine.refresh();await s.settle();assert.match(s.messages.at(-1),/gagal/);assert.equal(s.engine.readyAt([.5,.5]),false);fail=false;const h=await s.engine.ensure([.5,.5]);assert.equal(s.opened.length,3);h.ready=true;s.opened.at(-1).changed();assert.equal(s.engine.readyAt([.5,.5]),true);s.zoom(18);s.engine.refresh();assert.equal(s.opened.at(-1).h.disposed,false);assert.equal(s.engine.readyAt([.5,.5]),false);assert.match(s.messages.at(-1),/Perbesar peta/);s.engine.dispose();
 });
 
 
