@@ -46,7 +46,7 @@
   function updateCounts(){if(!alive()||!countsHost)return;const snapshot=getSnapshot(),heading=el('summary','Jumlah titik dalam area nanas baru'),table=el('table'),head=el('tr');head.append(el('th','Area'),el('th','Titik nanas'));table.append(head);
    const count=(polygons,block)=>{if(!snapshot?.ready||block&&block!==snapshot.block)return block?'Buka Blok '+block:'Buka blok terkait';if(snapshot.dirty)return'Menunggu koreksi tersimpan';const value=root.YG_DAYUN_NEW_PLANTING.countPoints(polygons,snapshot.pointsInBounds||snapshot.features,root.turf);return value.total.toLocaleString('id-ID')+' titik';};
    for(const record of records){const block=record.name.match(/\bBlok\s+([A-F])\b/i)?.[1]?.toUpperCase()||record.collection.features[0]?.properties?.zoneId?.match(/^GT-([A-F])-/)?.[1];for(const f of record.collection.features){if(!/^(Multi)?Polygon$/.test(f.geometry?.type))continue;const row=el('tr');row.append(el('td',f.properties?.name||record.name),el('td',count([f],block)));table.append(row);}const row=el('tr');row.append(el('td',record.name+' · total unik'),el('td',count(record.collection.features,block)));table.append(row);}
-   countsHost.replaceChildren(heading,table,el('small','Titik kerja tersimpan di dalam batas; titik ditolak dikecualikan. Bukan sensus tanaman.'));
+   countsHost.replaceChildren(heading,table,el('small','Jumlah nanas dalam setiap area.'));
    for(const a of annotations)a.label.textContent=(a.feature.properties?.name||a.name)+' · '+count([a.feature],a.block);updateLabelVisibility();
   }
   const changed=()=>updateCounts();if(getSnapshot){map.on('dayun:plantschanged',changed);map.on('zoomend',updateLabelVisibility);}
@@ -68,7 +68,7 @@
      if(polygons.length)rendered.push(root.L.geoJSON({type:'FeatureCollection',features:polygons},{pane:paneName,interactive:false,style:{color,weight:3,dashArray:'8 5',fill:false,fillOpacity:0},...(getSnapshot?{onEachFeature:(feature,l)=>{const label=el('span'),block=d.record.name.match(/\bBlok\s+([A-F])\b/i)?.[1]?.toUpperCase()||feature.properties?.zoneId?.match(/^GT-([A-F])-/)?.[1];l.bindTooltip(label,{permanent:true,direction:'center'});nextAnnotations.push({feature,label,block,layer:l,name:d.record.name});}}:{})}));
     }
     if(!alive())return;layer.clearLayers();for(const shape of rendered)shape.addTo(layer);records=nextRecords;annotations.splice(0,annotations.length,...nextAnnotations);updateCounts();
-    status.textContent=publicLabels?(rendered.length?rendered.length+' area':'Belum ada area tersimpan.'):(rendered.length?rendered.length+' '+title+' privat':'Belum ada '+title+' tersimpan.');
+    status.textContent=publicLabels?(rendered.length?rendered.length+' area':'Belum ada area tersimpan.'):(rendered.length?rendered.length+' area':'Belum ada '+title+' tersimpan.');
    }catch(error){if(alive())status.textContent=publicLabels?'Area belum dapat diperbarui.':title+' belum diperbarui: '+error.message;}
    finally{busy=false;if(alive()){reload.disabled=false;if(again){again=false;refresh();}}}
   }
