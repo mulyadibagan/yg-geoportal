@@ -1,0 +1,85 @@
+{
+  "date": "2026-10-27",
+  "commodity": "NANAS",
+  "unit": "buah",
+  "sourcePhoto": "assets/dayun/panen-nanas-2026-10-27.jpg",
+  "quantityBeforeDeduction": 211,
+  "deduction": 2,
+  "netQuantity": 209,
+  "rejectQuantity": 56,
+  "totalAsReported": 265,
+  "grossQuantityBeforeDeduction": 267,
+  "note": "Potongan 2 buah tidak dirinci per gawangan dalam catatan sumber. Total 265 mengikuti rekap setelah potongan; jumlah sebelum potongan termasuk reject adalah 267.",
+  "rows": [
+    {
+      "block": "A",
+      "gawangan": 8,
+      "objectId": "DAYUN-GT-A-08",
+      "quantityBeforeDeduction": 13,
+      "rejectQuantity": 4
+    },
+    {
+      "block": "A",
+      "gawangan": 9,
+      "objectId": "DAYUN-GT-A-09",
+      "quantityBeforeDeduction": 10,
+      "rejectQuantity": 5
+    },
+    {
+      "block": "A",
+      "gawangan": 10,
+      "objectId": "DAYUN-GT-A-10",
+      "quantityBeforeDeduction": 14,
+      "rejectQuantity": 4
+    },
+    {
+      "block": "A",
+      "gawangan": 11,
+      "objectId": "DAYUN-GT-A-11",
+      "quantityBeforeDeduction": 8,
+      "rejectQuantity": 3
+    },
+    {
+      "block": "A",
+      "gawangan": 12,
+      "objectId": "DAYUN-GT-A-12",
+      "quantityBeforeDeduction": 25,
+      "rejectQuantity": 8
+    },
+    {
+      "block": "A",
+      "gawangan": 13,
+      "objectId": "DAYUN-GT-A-13",
+      "quantityBeforeDeduction": 31,
+      "rejectQuantity": 7
+    },
+    {
+      "block": "A",
+      "gawangan": 14,
+      "objectId": "DAYUN-GT-A-14",
+      "quantityBeforeDeduction": 8,
+      "rejectQuantity": 4
+    },
+    {
+      "block": "B",
+      "gawangan": 7,
+      "objectId": "DAYUN-GT-B-07",
+      "quantityBeforeDeduction": 64,
+      "rejectQuantity": 10
+    },
+    {
+      "block": "B",
+      "gawangan": 6,
+      "objectId": "DAYUN-GT-B-06",
+      "quantityBeforeDeduction": 5,
+      "rejectQuantity": 2
+    },
+    {
+      "block": "B",
+      "gawangan": 8,
+      "objectId": "DAYUN-GT-B-08",
+      "quantityBeforeDeduction": 33,
+      "rejectQuantity": 9
+    }
+  ]
+}
