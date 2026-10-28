@@ -20,7 +20,7 @@
   function harvestEvidence(crop){
     var rows=(crop.pineappleHarvest||[]).filter(function(row){return row.reconciliationId==='panen-nanas-2026-10-27';});
     if(!rows.length)return '';
-    return '<section class="dg-history"><strong>Rincian panen 27 Oktober 2026</strong>'+rows.map(function(row){return '<p>Gawangan ini: <b>'+esc(integer(row.count,'buah'))+'</b> sebelum potongan; reject: <b>'+esc(integer(row.rejectCount,'buah'))+'</b>.</p>';}).join('')+'<p>Rekap seluruh 10 gawangan: 211 buah sebelum potongan − 2 buah = <b>209 buah bersih</b>, ditambah 56 reject = <b>265 buah</b>. Potongan 2 buah belum dirinci per gawangan; riwayat per gawangan menggunakan jumlah sebelum potongan.</p><a href="assets/dayun/panen-nanas-2026-10-27.jpg" target="_blank" rel="noopener">Lihat catatan panen asli ↗</a></section>';
+    return '<section class="dg-history"><strong>Rincian panen 27 Oktober 2026</strong>'+rows.map(function(row){return '<p>Gawangan ini: <b>'+esc(integer(row.count,'buah'))+'</b> sebelum potongan; reject: <b>'+esc(integer(row.rejectCount,'buah'))+'</b>.</p>';}).join('')+'<p>Rekap seluruh 10 gawangan: 211 buah sebelum potongan − 2 buah = <b>209 buah bersih</b>, ditambah 56 reject = <b>265 buah</b>. Potongan 2 buah belum dirinci per gawangan; riwayat per gawangan menggunakan jumlah sebelum potongan.</p><a href="assets/dayun/panen-nanas-2026-10-27.jpg" target="_blank" rel="noopener">Lihat catatan panen asli ↗</a> · <a href="dayun.html#panen-nanas-20261027">Galeri 10 foto kegiatan dan rekap panen →</a></section>';
   }
   function pineapplePlan(crop){
     var ethrelItems=crop.ethrel||[],lastEthrel=ethrelItems.slice().filter(function(item){return item.period;}).sort(function(a,b){return String(a.period).localeCompare(String(b.period));}).pop()||null;
