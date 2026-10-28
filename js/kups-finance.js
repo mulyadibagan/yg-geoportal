@@ -32,9 +32,12 @@ async function previewEvidence(id,name){
  try{
   const blob=await api('/evidence/'+id+query(),{binary:true});
   if(serial!==evidenceSerial||!evidenceDialog.open)return;
-  const type=blob.type.split(';')[0];
+  const signature=new Uint8Array(await blob.slice(0,12).arrayBuffer());
+  if(serial!==evidenceSerial||!evidenceDialog.open)return;
+  const text=new TextDecoder().decode(signature);
+  const type=text.startsWith('%PDF-')?'application/pdf':signature[0]===255&&signature[1]===216&&signature[2]===255?'image/jpeg':signature[0]===137&&text.slice(1,4)==='PNG'?'image/png':text.startsWith('RIFF')&&text.slice(8,12)==='WEBP'?'image/webp':'';
   if(!['application/pdf','image/jpeg','image/png','image/webp'].includes(type))throw Error('Format bukti tidak dapat ditampilkan.');
-  evidenceUrl=URL.createObjectURL(blob);
+  evidenceUrl=URL.createObjectURL(new Blob([blob],{type}));
   const link=$('evidence-preview-download');link.href=evidenceUrl;link.download=name+(type==='application/pdf'?'.pdf':type==='image/png'?'.png':type==='image/webp'?'.webp':'.jpg');link.hidden=false;
   const view=document.createElement(type==='application/pdf'?'iframe':'img');
   if(type==='application/pdf'){view.title='Preview PDF bukti transaksi';view.style.cssText='width:100%;height:65vh;border:1px solid #d5e5dc;border-radius:8px';}
