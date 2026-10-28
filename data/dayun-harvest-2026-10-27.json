@@ -9,7 +9,7 @@
   "rejectQuantity": 56,
   "totalAsReported": 265,
   "grossQuantityBeforeDeduction": 267,
-  "note": "Potongan 2 buah tidak dirinci per gawangan dalam catatan sumber. Total 265 mengikuti rekap setelah potongan; jumlah sebelum potongan termasuk reject adalah 267.",
+  "note": "Total panen 267 buah: 209 buah terjual, 2 buah dibuka untuk dinikmati bersama, dan 56 buah reject. Penerimaan Rp938.000 terdiri dari penjualan Rp926.000 dan kelebihan pembayaran Rp12.000, sesuai konfirmasi pengguna.",
   "rows": [
     {
       "block": "A",
@@ -124,5 +124,34 @@
       "caption": "Dokumentasi pemanenan nanas di areal agroforestri."
     }
   ],
-  "fieldUpdateUrl": "dayun.html#panen-nanas-20261027"
+  "fieldUpdateUrl": "dayun.html#panen-nanas-20261027",
+  "sales": {
+    "date": "2026-10-28",
+    "harvestDate": "2026-10-27",
+    "grades": [
+      {
+        "grade": "A",
+        "bunches": 43,
+        "fruitPerBunch": 2,
+        "quantity": 86,
+        "pricePerBunch": 12000,
+        "amount": 516000
+      },
+      {
+        "grade": "B",
+        "bunches": 41,
+        "fruitPerBunch": 3,
+        "quantity": 123,
+        "pricePerBunch": 10000,
+        "amount": 410000
+      }
+    ],
+    "soldQuantity": 209,
+    "salesAmount": 926000,
+    "overpayment": 12000,
+    "receivedAmount": 938000,
+    "currency": "IDR",
+    "paymentReference": "180109530627029",
+    "note": "Kelebihan pembayaran Rp12.000 tetap menjadi income KUPS sesuai konfirmasi pengguna. Penerimaan sudah masuk income KUPS; jangan dicatat dua kali. Biaya admin transfer Rp2.500 ditanggung pengirim."
+  }
 }
