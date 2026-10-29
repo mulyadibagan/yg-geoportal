@@ -70,20 +70,28 @@ def attach_public_update_photos(data,updates):
     return data
 
 def merge_program_layer_supplements(data):
-    """Retain director-supplied program objects when the remote master refreshes."""
-    layer_path=ROOT/'data'/'sekat_kanal.geojson'
-    if not layer_path.exists():
-        return data
-    layer=json.loads(layer_path.read_text(encoding='utf-8'))
-    existing={str((f.get('properties') or {}).get('Object_ID') or '').strip().casefold()
-              for f in data.get('features',[])}
-    for feature in layer.get('features',[]):
-        props=feature.get('properties') or {}
-        object_id=str(props.get('Object_ID') or '').strip().casefold()
-        if props.get('Source_Type')!='program_supplement' or not object_id or object_id in existing:
+    """Merge reviewed infrastructure without dropping remote objects or coordinates."""
+    by_id={str((f.get('properties') or {}).get('Object_ID') or '').strip().casefold():f
+           for f in data.get('features',[])}
+    for layer_id in ('sekat_kanal','fdrs'):
+        layer_path=ROOT/'data'/(layer_id+'.geojson')
+        if not layer_path.exists():
             continue
-        data['features'].append(json.loads(json.dumps(feature)))
-        existing.add(object_id)
+        layer=json.loads(layer_path.read_text(encoding='utf-8'))
+        for feature in layer.get('features',[]):
+            props=feature.get('properties') or {}
+            object_id=str(props.get('Object_ID') or '').strip().casefold()
+            if not object_id or (layer_id!='fdrs' and props.get('Source_Type')!='program_supplement'):
+                continue
+            current=by_id.get(object_id)
+            if current is None:
+                current=json.loads(json.dumps(feature))
+                current.setdefault('properties',{}).update(Layer_ID=layer_id,Source_Layer=layer_id)
+                data['features'].append(current)
+                by_id[object_id]=current
+            elif props.get('Source_Type')=='program_supplement':
+                # Reviewed narrative/photos may advance; database coordinates remain authoritative.
+                current.setdefault('properties',{}).update(props)
     if 'featureCount' in data:
         data['featureCount']=len(data['features'])
     return data

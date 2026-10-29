@@ -4,7 +4,7 @@
   const API = "https://script.google.com/macros/s/AKfycbxUe4QyBvSiL9UJsL-nsJ5XrohDabwqhYYR9q5CTgLYiW1ZCfVy429iMlpU-lCDUSvvRg/exec?page=objects";
   const DASHBOARD_SNAPSHOT_URL = "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json";
   const CALLBACK = "ygDashboardV3Callback";
-  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v5_20260924_ma_earth_coffee1";
+  const DASHBOARD_CACHE_KEY = "ygDashboardV3Cache_v6_20261029_infrastructure1";
   const DASHBOARD_CACHE_MAX_AGE_MS = 1000 * 60 * 60 * 24 * 7;
   const DASHBOARD_REQUEST_TIMEOUT_MS = 18000;
   const DASHBOARD_REQUEST_MAX_ATTEMPTS = 3;
@@ -24,6 +24,8 @@
     engagement: { value: 785, unit: "orang", label: "Orang terlibat" }
   };
   const OFFICIAL_LAYERS = [
+    { id: "fdrs", url: "data/fdrs.geojson?v=20261029-dayun1" },
+    { id: "sekat_kanal", url: "data/sekat_kanal.geojson?v=20261029-dayun1" },
     { id: "desa_intervensi", url: "data/desa_intervensi.geojson?v=20260924-17desa-ghimbo" },
     { id: "area_mangrove", url: "data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai-1000-1" },
     { id: "mineral_land_restoration_area", url: "data/mineral_land_restoration_area.geojson?v=20260825-sync1" },
@@ -132,7 +134,7 @@
   async function requestDashboardSnapshot() {
     const response = await fetch(DASHBOARD_SNAPSHOT_URL, {
       method: "GET",
-      cache: "force-cache"
+      cache: "no-store"
     });
     if (!response.ok) throw new Error("Dashboard snapshot HTTP " + response.status);
     const data = await response.json();
@@ -829,7 +831,7 @@
             ).trim().toLowerCase();
             return !sourceReportIds.has(reportId);
           });
-        } else if (source.id === "kopi") {
+        } else if (["kopi", "fdrs", "sekat_kanal"].includes(source.id)) {
           /*
            * Gunakan geometri referensi untuk titik lama, tetapi pertahankan
            * entri kopi baru dari Master Database. Object_ID yang sama diganti
