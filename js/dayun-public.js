@@ -57,6 +57,58 @@
     ]);
   }
 
+
+  function addDroneChoice(map){
+    var layer=L.layerGroup(),urls=[],seq=0,controller=null,sessionToken=null,timer=null;
+    var control=L.control({position:'topright'}),box;
+    control.onAdd=function(){box=L.DomUtil.create('div','leaflet-bar');box.style.cssText='background:white;padding:10px;max-width:230px;font-size:12px;color:#173f32';box.hidden=true;L.DomEvent.disableClickPropagation(box);L.DomEvent.disableScrollPropagation(box);return box;};control.addTo(map);
+    function clear(){seq++;if(controller)controller.abort();controller=null;layer.clearLayers();urls.forEach(function(url){URL.revokeObjectURL(url);});urls=[];clearTimeout(timer);sessionToken=null;}
+    function session(){return window.YG_AUTH&&window.YG_AUTH.readStoredSession();}
+    function valid(){var x=session();return x&&x.token===sessionToken&&Number(x.expiresAt)>Date.now();}
+    async function open(){
+      clear();var id=seq,s=session();box.hidden=false;
+      if(!s||Number(s.expiresAt)<=Date.now()){box.innerHTML='Masuk sebagai staf untuk melihat citra drone. <a href="staff-login.html?return=dayun-map.html">Masuk staf</a>';return;}
+      sessionToken=s.token;controller=new AbortController();var signal=controller.signal;
+      timer=setTimeout(function(){if(map.hasLayer(layer))map.removeLayer(layer);},Math.min(2147483647,Math.max(0,Number(s.expiresAt)-Date.now())));
+      box.textContent='Memuat pratinjau citra drone…';
+      async function get(path){if(!valid())throw Error('Sesi staf berakhir.');var response=await fetch('https://webgis-api.yayasangambut.org'+path,{headers:{Authorization:'Bearer '+sessionToken},credentials:'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer',signal:signal});if(!response.ok)throw Error(response.status===401||response.status===403?'Akses staf diperlukan.':'Citra belum dapat dimuat (HTTP '+response.status+').');return response;}
+      try{
+        var entries=[];
+        for(var source of ['Agro_ABC','Agro_DEF']){
+          var base='/api/staff/drone/analysis/'+source,manifest=await(await get(base)).json();
+          for(var block of Object.keys(manifest.block_analyses||{})){
+            var path=manifest.block_analyses[block];if(!manifest.files.includes(path))continue;
+            var result=await(await get(base+'/files/'+path)).json();
+            if(result.schema!=='dayun-block-analysis-v1'||result.source_run!==manifest.run||result.block!==block)continue;
+            var b=result.bounds;if(!Array.isArray(b)||b.length!==4||!b.every(Number.isFinite)||b[0]>=b[2]||b[1]>=b[3]||b[0]<100||b[2]>104||b[1]<-1||b[3]>3)continue;
+            var folder=path.slice(0,path.lastIndexOf('/')+1),file=folder+result.overview;
+            if(!manifest.files.includes(file))file=(result.asset_folder||'')+result.overview;
+            if(!manifest.files.includes(file))continue;
+            entries.push({path:base+'/files/'+file,bounds:L.latLngBounds([[b[1],b[0]],[b[3],b[2]]]),loaded:false});
+          }
+        }
+        if(id!==seq||!valid()||!map.hasLayer(layer))return;
+        if(!entries.length)throw Error('Pratinjau citra drone belum tersedia.');
+        async function showVisible(){
+          if(id!==seq||!valid()||!map.hasLayer(layer))return;
+          try{for(var item of entries){if(item.loaded||item.loading||!map.getBounds().intersects(item.bounds))continue;item.loading=true;
+            try{var blob=await(await get(item.path)).blob();if(id!==seq||!valid()||!map.hasLayer(layer))return;
+              var url=URL.createObjectURL(blob);urls.push(url);L.imageOverlay(url,item.bounds,{interactive:false,attribution:'Citra drone Dayun · pratinjau'}).addTo(layer);item.loaded=true;
+            }finally{item.loading=false;}
+          }if(id===seq)box.textContent='Citra drone · pratinjau. Tanggal pemotretan belum terverifikasi. Di luar cakupan tetap memakai peta dasar.';
+          }catch(error){if(id===seq&&error.name!=='AbortError')box.textContent=error.message;}
+        }
+        layer._dayunMove=showVisible;map.on('moveend',showVisible);await showVisible();
+      }catch(error){if(id===seq&&error.name!=='AbortError')box.textContent=error.message;}
+    }
+    map.on('layeradd',function(event){if(event.layer===layer)open();});
+    map.on('layerremove',function(event){if(event.layer===layer){if(layer._dayunMove)map.off('moveend',layer._dayunMove);clear();box.hidden=true;}});
+    function check(){if(sessionToken&&!valid()&&map.hasLayer(layer))map.removeLayer(layer);}
+    window.addEventListener('storage',check);window.addEventListener('pageshow',check);document.addEventListener('visibilitychange',check);
+    map.on('unload',function(){clear();window.removeEventListener('storage',check);window.removeEventListener('pageshow',check);document.removeEventListener('visibilitychange',check);});
+    return layer;
+  }
+
   function initDayunMap(data,spatialDataPromise){
     var mapEl=document.getElementById('dayun-map'),legendEl=document.getElementById('dayun-layers');
     if(!mapEl||!legendEl)return;
@@ -95,7 +147,9 @@
       var blockHalo=L.geoJSON(blockDisplay,{pane:'blockBoundaryPane',interactive:false,style:{color:'#ffffff',weight:7,opacity:.9,fill:false,lineCap:'round',lineJoin:'round'}});
       var blockLines=L.geoJSON(blockDisplay,{pane:'blockBoundaryPane',style:function(feature){var p=feature.properties||{};return{color:p.color||'#7c3aed',weight:4,opacity:1,fillColor:p.color||'#7c3aed',fillOpacity:.025,lineCap:'round',lineJoin:'round'};},onEachFeature:function(feature,layer){var p=feature.properties||{},blockName=p.name||'Blok',blockInfo=blockByName[blockName]||{},summary=blockInfo.summary||{};layer.bindTooltip(esc(blockName),{permanent:true,direction:'center',className:'dy-block-label'});layer.bindPopup('<div class="dy-map-popup"><b>'+esc(blockName)+'</b><div class="dy-map-popup-metrics"><span><small>Luas blok</small><strong>'+fmtArea(p.areaHa)+'</strong></span><span><small>Luas gawangan tanam</small><strong>'+fmtArea(blockInfo.gawanganAreaHa)+'</strong></span><span><small>Gawangan memiliki data</small><strong>'+fmtInteger(summary.gawanganWithData)+' / '+fmtInteger(summary.mappedGawangan)+'</strong></span><span><small>MPTS</small><strong>'+fmtInteger(summary.mptsPlants)+' · '+fmtInteger(summary.mptsTypes)+' jenis</strong></span></div><div class="dy-map-popup-actions"><a href="dayun-blok.html?block='+encodeURIComponent(blockInfo.code)+'">Lihat detail blok →</a></div></div>');}});
       var blockLayer=L.layerGroup([blockHalo,blockLines]).addTo(map);contextLayers.blocks=blockLayer;
+      var droneChoice=document.body.dataset.dayunPage==='map'?addDroneChoice(map):null;
       var layerControl=L.control.layers({'Satelit':satellite,'OpenStreetMap':osm},{'Batas Desa Dayun':contextLayers['desa-dayun'],'PS HKm Mandiri Sejahtera':contextLayers['ps-hkm'],'Blok A–F':blockLayer},{position:'topright'}).addTo(map);
+      if(droneChoice)layerControl.addOverlay(droneChoice,'Citra drone');
       var labelIds={};
       function featureStyle(feature){var p=feature.properties||{};return p.line?{color:p.color||'#ef7d00',weight:3,opacity:.92,dashArray:'7 5'}:{color:'#173f32',weight:1.5,opacity:.95,fillColor:p.color||'#6baa91',fillOpacity:.18};}
       L.geoJSON(geojson,{style:featureStyle,onEachFeature:function(feature,layer){
