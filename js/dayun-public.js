@@ -72,12 +72,14 @@
       sessionToken=s.token;controller=new AbortController();var signal=controller.signal;
       timer=setTimeout(function(){if(map.hasLayer(layer))map.removeLayer(layer);},Math.min(2147483647,Math.max(0,Number(s.expiresAt)-Date.now())));
       box.textContent='Memuat pratinjau citra drone…';
-      async function get(path){if(!valid())throw Error('Sesi staf berakhir.');var response=await fetch('https://webgis-api.yayasangambut.org'+path,{headers:{Authorization:'Bearer '+sessionToken},credentials:'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer',signal:signal});if(!response.ok)throw Error(response.status===401||response.status===403?'Akses staf diperlukan.':'Citra belum dapat dimuat (HTTP '+response.status+').');return response;}
+      async function get(path){if(!valid())throw Error('Sesi staf berakhir.');var response=await fetch('https://webgis-api.yayasangambut.org'+path,{headers:{Authorization:'Bearer '+sessionToken},credentials:'omit',cache:'no-store',redirect:'error',referrerPolicy:'no-referrer',signal:AbortSignal.any([signal,AbortSignal.timeout(30000)])});if(!response.ok)throw Error(response.status===401||response.status===403?'Akses staf diperlukan.':'Citra belum dapat dimuat (HTTP '+response.status+').');return response;}
       try{
-        var entries=[];
+        var entries=[],failures=[];
         for(var source of ['Agro_ABC','Agro_DEF']){
+          try{
           var base='/api/staff/drone/analysis/'+source,manifest=await(await get(base)).json();
           for(var block of Object.keys(manifest.block_analyses||{})){
+            try{
             var path=manifest.block_analyses[block];if(!manifest.files.includes(path))continue;
             var result=await(await get(base+'/files/'+path)).json();
             if(result.schema!=='dayun-block-analysis-v1'||result.source_run!==manifest.run||result.block!==block)continue;
@@ -86,17 +88,19 @@
             if(!manifest.files.includes(file))file=(result.asset_folder||'')+result.overview;
             if(!manifest.files.includes(file))continue;
             entries.push({path:base+'/files/'+file,bounds:L.latLngBounds([[b[1],b[0]],[b[3],b[2]]]),loaded:false});
+            }catch(error){if(signal.aborted)throw error;failures.push('Blok '+block+': '+error.message);}
           }
+          }catch(error){if(signal.aborted)throw error;failures.push(source+': '+error.message);}
         }
         if(id!==seq||!valid()||!map.hasLayer(layer))return;
-        if(!entries.length)throw Error('Pratinjau citra drone belum tersedia.');
+        if(!entries.length)throw Error('Pratinjau belum tersedia. '+(failures[0]||'Tidak ada citra blok yang dapat dibaca.'));
         async function showVisible(){
           if(id!==seq||!valid()||!map.hasLayer(layer))return;
           try{for(var item of entries){if(item.loaded||item.loading||!map.getBounds().intersects(item.bounds))continue;item.loading=true;
             try{var blob=await(await get(item.path)).blob();if(id!==seq||!valid()||!map.hasLayer(layer))return;
               var url=URL.createObjectURL(blob);urls.push(url);L.imageOverlay(url,item.bounds,{pane:'dayun-drone-imagery',interactive:false,attribution:'Citra drone Dayun · pratinjau'}).addTo(layer);item.loaded=true;
-            }finally{item.loading=false;}
-          }if(id===seq)box.textContent='Citra drone · pratinjau. Tanggal pemotretan belum terverifikasi. Di luar cakupan tetap memakai peta dasar.';
+            }catch(error){if(signal.aborted)throw error;item.error=error.message;}finally{item.loading=false;}
+          }if(id===seq){var visible=entries.filter(function(e){return map.getBounds().intersects(e.bounds);}),ready=visible.filter(function(e){return e.loaded;}).length,failed=visible.find(function(e){return e.error;});box.textContent=ready?'Citra drone · '+ready+' blok tampil. Tanggal pemotretan belum terverifikasi.'+(failed?' Sebagian citra belum termuat.':''):failed?'Pratinjau gagal: '+failed.error+' Matikan lalu aktifkan Citra drone untuk mencoba kembali.':'Citra tersedia di area blok kebun. Geser atau perbesar peta ke kebun Dayun.';}
           }catch(error){if(id===seq&&error.name!=='AbortError')box.textContent=error.message;}
         }
         layer._dayunMove=showVisible;map.on('moveend',showVisible);await showVisible();
