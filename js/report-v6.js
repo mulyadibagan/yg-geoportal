@@ -806,6 +806,23 @@
     });
   }
 
+  async function readPolygonJSON(url){
+    var controller = new AbortController();
+    var timer = setTimeout(function(){ controller.abort(); },8000);
+    try{
+      var response = await fetch(url,{cache:'no-store',redirect:'follow',signal:controller.signal});
+      if(!response.ok) throw new Error('HTTP ' + response.status);
+      return await response.json();
+    }finally{
+      clearTimeout(timer);
+    }
+  }
+
+  async function readMasterPolygons(){
+    try{ return await readPolygonJSON(OBJECTS_API + '&t=' + Date.now()); }
+    catch(error){ return await jsonpRequest(OBJECTS_API,'ygPolygonObjects_'); }
+  }
+
   async function loadCorrectionLayer(layerId, preferredObjectId){
     clearSelectedCorrectionFeature();
 
@@ -850,16 +867,10 @@
         data = await loadCommunityReports();
       }else{
         var dataPath = config.url || config.dataUrl || config.file || ('data/' + config.id + '.geojson');
-        var response = await fetch(dataPath, {cache:'no-store'});
-        if(response.ok){
-          data = await response.json();
-        }else{
-          var objectsResponse = await fetch(
-            OBJECTS_API + '&t=' + Date.now(),
-            {cache:'no-store',redirect:'follow'}
-          );
-          if(!objectsResponse.ok) throw new Error('HTTP ' + response.status + ' untuk ' + dataPath);
-          var objectsData = await objectsResponse.json();
+        try{
+          data = await readPolygonJSON(dataPath);
+        }catch(staticError){
+          var objectsData = await readMasterPolygons();
           data = {
             type:'FeatureCollection',
             features:(objectsData && Array.isArray(objectsData.features)
@@ -891,12 +902,8 @@
           });
         if(preferredObjectId && !staticHasPreferredObject){
           try{
-            var masterResponse = await fetch(
-              OBJECTS_API + '&t=' + Date.now(),
-              {cache:'no-store',redirect:'follow'}
-            );
-            if(masterResponse.ok){
-              var masterData = await masterResponse.json();
+            var masterData = await readMasterPolygons();
+            if(masterData){
               var masterFeatures = masterData && Array.isArray(masterData.features)
                 ? masterData.features.filter(function(feature){
                     var properties = feature && feature.properties || {};
@@ -1029,7 +1036,10 @@
         map.fitBounds(bounds,{padding:[24,24],maxZoom:14});
       }
 
-      if(!preferredSelection){
+      if(!preferredSelection && normalizedPreferredObjectId){
+        summary.className = 'selected-feature-summary error';
+        summary.textContent = 'Polygon tujuan belum ditemukan. Pilih polygon pada peta atau tekan Muat Layer untuk mencoba kembali. Data isian tetap tersedia.';
+      }else if(!preferredSelection){
         summary.textContent =
           'Layer dimuat. Klik salah satu titik atau poligon pada peta.';
       }
@@ -3530,6 +3540,14 @@
     });
   }
 
+  form.addEventListener('invalid',function(event){
+    var field = event.target;
+    var label = field.closest && field.closest('label');
+    var name = label ? label.textContent.replace(/\s+/g,' ').trim() : 'Isian laporan';
+    statusText.textContent = 'Laporan belum dikirim. Periksa ' + name + ': ' + field.validationMessage;
+    statusText.setAttribute('role','alert');
+  },true);
+
   form.addEventListener('submit',async function(event){
     event.preventDefault();
 
@@ -4299,25 +4317,33 @@
         'js/report-image-worker.js?v=20260720-photo-worker2'
       );
 
+      var settled = false;
+      var timer = setTimeout(function(){
+        fail(new Error('Pemrosesan foto terlalu lama; mencoba cara lain.'));
+      },20000);
+      function fail(error){
+        if(settled) return;
+        settled = true;
+        clearTimeout(timer);
+        worker.terminate();
+        reject(error);
+      }
       worker.onerror = function(event){
-        worker.terminate();
-        reject(new Error(event.message || 'Worker foto gagal dijalankan.'));
+        fail(new Error(event.message || 'Worker foto gagal dijalankan.'));
       };
-
       worker.onmessage = function(event){
+        if(settled) return;
         var result = event.data || {};
-        worker.terminate();
-
         if(!result.ok || !result.blob){
-          reject(new Error(result.error || 'Foto gagal diproses.'));
+          fail(new Error(result.error || 'Foto gagal diproses.'));
           return;
         }
-
+        settled = true;
+        clearTimeout(timer);
+        worker.terminate();
         var reader = new FileReader();
         reader.onerror = reject;
-        reader.onload = function(){
-          resolve(reader.result);
-        };
+        reader.onload = function(){ resolve(reader.result); };
         reader.readAsDataURL(result.blob);
       };
 
