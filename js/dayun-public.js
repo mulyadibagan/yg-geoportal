@@ -59,6 +59,7 @@
 
 
   function addDroneChoice(map){
+    map.createPane('dayun-drone-imagery');map.getPane('dayun-drone-imagery').style.zIndex=250;map.getPane('dayun-drone-imagery').style.pointerEvents='none';
     var layer=L.layerGroup(),urls=[],seq=0,controller=null,sessionToken=null,timer=null;
     var control=L.control({position:'topright'}),box;
     control.onAdd=function(){box=L.DomUtil.create('div','leaflet-bar');box.style.cssText='background:white;padding:10px;max-width:230px;font-size:12px;color:#173f32';box.hidden=true;L.DomEvent.disableClickPropagation(box);L.DomEvent.disableScrollPropagation(box);return box;};control.addTo(map);
@@ -93,7 +94,7 @@
           if(id!==seq||!valid()||!map.hasLayer(layer))return;
           try{for(var item of entries){if(item.loaded||item.loading||!map.getBounds().intersects(item.bounds))continue;item.loading=true;
             try{var blob=await(await get(item.path)).blob();if(id!==seq||!valid()||!map.hasLayer(layer))return;
-              var url=URL.createObjectURL(blob);urls.push(url);L.imageOverlay(url,item.bounds,{interactive:false,attribution:'Citra drone Dayun · pratinjau'}).addTo(layer);item.loaded=true;
+              var url=URL.createObjectURL(blob);urls.push(url);L.imageOverlay(url,item.bounds,{pane:'dayun-drone-imagery',interactive:false,attribution:'Citra drone Dayun · pratinjau'}).addTo(layer);item.loaded=true;
             }finally{item.loading=false;}
           }if(id===seq)box.textContent='Citra drone · pratinjau. Tanggal pemotretan belum terverifikasi. Di luar cakupan tetap memakai peta dasar.';
           }catch(error){if(id===seq&&error.name!=='AbortError')box.textContent=error.message;}
