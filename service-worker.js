@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v32-20261030-tree-month";
+const CACHE_NAME = "yg-geoportal-v33-20261030-default-layers";
 const DAYUN_CACHE_NAME = "yg-dayun-offline-v1";
 const DAYUN_META_URL = "/__dayun_offline_meta__";
 

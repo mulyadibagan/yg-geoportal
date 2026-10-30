@@ -4,7 +4,7 @@ const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&
 const colors={'Rambutan':'#dc2626','Asam Kandis':'#0891b2','Nangka':'#b45309','Jengkol':'#7c3aed','Petai':'#16a34a','Sorean':'#2563eb'};
 function attach(map,legend,options){
  options=options||{};const L=options.L||root.L,doc=options.doc||document,fetchData=options.fetchData||fetch,summary=options.summary||root.DayunMptsSummary;
- const groups={},state={MPTS:true,Sorean:true},records={MPTS:[],Sorean:[]};let original=[],error='',loaded=false,originalLoaded=false;
+ const groups={},state={MPTS:false,Sorean:false},records={MPTS:[],Sorean:[]};let original=[],error='',loaded=false,originalLoaded=false;
  if(!map.getPane('dayunImportedTrees'))map.createPane('dayunImportedTrees');map.getPane('dayunImportedTrees').style.zIndex=451;
  const renderer=L.svg({pane:'dayunImportedTrees'});
  function popup(f){const p=f.properties,periods=summary.plantingPeriods(f,options.gawanganData),month=periods.length?periods.map(r=>r.period+' ('+r.objectId.replace('DAYUN-','')+')').join(' · '):'Belum tercatat untuk jenis ini di lokasi titik';return '<div class="dy-map-popup"><b>'+esc(p.species)+' · '+esc(p.pointId)+'</b><span>Lokasi: '+esc((p.spatialMatches||[]).map(id=>id.replace('DAYUN-','')).join(', ')||'Di luar gawangan')+'</span><span>Kondisi: belum dikonfirmasi</span><span>Bulan tanam: '+esc(month)+'</span><small>Tambahan data 30 Oktober 2026 · koordinat asli</small></div>';}
