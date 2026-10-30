@@ -1,6 +1,6 @@
 {
   "schema": "dayun-work-counts-v1",
-  "publishedAt": "2026-10-24",
+  "publishedAt": "2026-10-30",
   "snapshotDate": "2026-10-23",
   "sourceRevisions": {
     "A": 1517,
@@ -13,12 +13,18 @@
       "objectId": "DAYUN-GT-A-01",
       "zone": "GT-A-01",
       "block": "A",
-      "plants": 1640,
+      "plants": 1658,
       "allocated": 30,
-      "newPlants": 1029,
+      "newPlants": 1047,
       "fruits": 3,
       "plantingMonth": "agustus 2024",
-      "newPlantingMonth": "Agustus 2026"
+      "newPlantingMonth": "Agustus 2026",
+      "newPlantCensus": {
+        "date": "2026-10-27",
+        "count": 1047,
+        "method": "counted",
+        "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
+      }
     },
     {
       "objectId": "DAYUN-GT-A-02",
@@ -123,12 +129,18 @@
       "objectId": "DAYUN-GT-A-11",
       "zone": "GT-A-11",
       "block": "A",
-      "plants": 1351,
+      "plants": 1550,
       "allocated": 4,
-      "newPlants": 1084,
+      "newPlants": 1283,
       "fruits": 23,
       "plantingMonth": "des 2024",
-      "newPlantingMonth": "Agustus 2026"
+      "newPlantingMonth": "Agustus 2026",
+      "newPlantCensus": {
+        "date": "2026-10-27",
+        "count": 1283,
+        "method": "counted",
+        "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
+      }
     },
     {
       "objectId": "DAYUN-GT-A-12",
@@ -222,45 +234,69 @@
       "objectId": "DAYUN-GT-B-05",
       "zone": "GT-B-05",
       "block": "B",
-      "plants": 1174,
+      "plants": 1463,
       "allocated": 31,
-      "newPlants": 467,
+      "newPlants": 756,
       "fruits": 0,
       "plantingMonth": "des 2024",
-      "newPlantingMonth": "Juli 2026"
+      "newPlantingMonth": "Juli 2026",
+      "newPlantCensus": {
+        "date": "2026-10-27",
+        "count": 756,
+        "method": "row_estimate",
+        "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
+      }
     },
     {
       "objectId": "DAYUN-GT-B-06",
       "zone": "GT-B-06",
       "block": "B",
-      "plants": 1739,
+      "plants": 1730,
       "allocated": 187,
-      "newPlants": 1476,
+      "newPlants": 1467,
       "fruits": 0,
       "plantingMonth": "des 2024",
-      "newPlantingMonth": "Juli 2026"
+      "newPlantingMonth": "Juli 2026",
+      "newPlantCensus": {
+        "date": "2026-10-27",
+        "count": 1467,
+        "method": "row_estimate",
+        "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
+      }
     },
     {
       "objectId": "DAYUN-GT-B-07",
       "zone": "GT-B-07",
       "block": "B",
-      "plants": 175,
+      "plants": 938,
       "allocated": 30,
-      "newPlants": 2,
+      "newPlants": 765,
       "fruits": 0,
       "plantingMonth": "des 2024",
-      "newPlantingMonth": "Juli 2026"
+      "newPlantingMonth": "Juli 2026",
+      "newPlantCensus": {
+        "date": "2026-10-27",
+        "count": 765,
+        "method": "row_estimate",
+        "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
+      }
     },
     {
       "objectId": "DAYUN-GT-B-08",
       "zone": "GT-B-08",
       "block": "B",
-      "plants": 1188,
+      "plants": 2386,
       "allocated": 77,
-      "newPlants": 14,
+      "newPlants": 1212,
       "fruits": 123,
       "plantingMonth": "agustus 2024",
-      "newPlantingMonth": "Juli 2026"
+      "newPlantingMonth": "Juli 2026",
+      "newPlantCensus": {
+        "date": "2026-10-27",
+        "count": 1212,
+        "method": "row_estimate",
+        "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
+      }
     },
     {
       "objectId": "DAYUN-GT-B-09",
@@ -449,5 +485,7 @@
       "plantingMonth": "Tidak ada tanaman lama tercatat",
       "newPlantingMonth": "Agustus 2026"
     }
-  ]
+  ],
+  "censusDate": "2026-10-27",
+  "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
 }
