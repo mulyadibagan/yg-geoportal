@@ -18,7 +18,7 @@
         if (!points) {
           panel.textContent = error ? 'Titik MPTS belum dapat dimuat. Muat ulang halaman untuk mencoba lagi.' : 'Memuat titik monitoring MPTS…';
         } else {
-          panel.innerHTML = '<b>Monitoring MPTS · ' + records.length + ' titik</b><p>Petai: 152 titik · Jengkol: 63 titik</p><label><input type="checkbox" ' + (visible ? 'checked' : '') + '> Tampilkan titik MPTS</label><p><span style="color:#16a34a">●</span> Petai tanpa label mati<br><span style="color:#7c3aed">●</span> Jengkol tanpa label mati<br><span style="color:#dc2626">●</span> Petai mati: 55 titik<br><span style="color:#ea580c">●</span> Jengkol mati: 13 titik</p><button type="button" class="dy-btn ghost">Lihat seluruh titik MPTS</button><p><small>Data diperbarui 8 Oktober 2026.</small></p>';
+          panel.innerHTML = '<b>MPTS Blok C · ' + records.length + ' titik</b><p>Petai: 152 titik · Jengkol: 63 titik</p><label><input type="checkbox" ' + (visible ? 'checked' : '') + '> MPTS Blok C · titik lama</label><p><span style="color:#16a34a">●</span> Petai tanpa label mati<br><span style="color:#7c3aed">●</span> Jengkol tanpa label mati<br><span style="color:#dc2626">●</span> Petai mati: 55 titik<br><span style="color:#ea580c">●</span> Jengkol mati: 13 titik</p><button type="button" class="dy-btn ghost">Lihat seluruh titik MPTS</button><p><small>Data diperbarui 8 Oktober 2026.</small></p>';
           panel.querySelector('input').addEventListener('change', function (event) {
             visible = event.target.checked;
             if (visible) points.addTo(map); else map.removeLayer(points);
@@ -73,6 +73,7 @@
               layer.bindPopup('<div class="dy-map-popup"><b>' + esc(p.species) + ' · ' + esc(p.pointId) + '</b><span>Kondisi tercatat: ' + esc(p.condition) + '</span><span>Gawangan: ' + esc(p.spatialMatches.join(', ')) + '</span><span>Tinggi: belum tersedia</span><small>Data diperbarui 8 Oktober 2026.</small><small>Foto dan penyebab kematian belum tersedia.</small>' + gawangan.map(function (id) { return '<a href="dayun-monitoring.html?point='+encodeURIComponent(p.pointId)+'&object='+encodeURIComponent(id)+'">Catat pemeriksaan pohon →</a><br><a href="dayun-monitoring.html?point='+encodeURIComponent(p.pointId)+'&activity=Penyisipan&object='+encodeURIComponent(id)+'">Catat sulam →</a><br><a href="dayun-gawangan.html?object=' + encodeURIComponent(id) + '">Buka profil ' + esc(id.replace('DAYUN-', '')) + '</a>'; }).join('<br>') + '</div>');
             }
           }).addTo(map);
+          if(options.control){options.control.addOverlay(points,'MPTS Blok C · 215 titik');map.on('overlayadd overlayremove',function(event){if(event.layer===points){visible=map.hasLayer(points);render();}});}
           render();
         }).catch(function (failure) { console.error('Monitoring MPTS:', failure); error = true; render(); });
       return render;
