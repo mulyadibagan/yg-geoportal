@@ -190,7 +190,10 @@
         document.head.appendChild(tabStyle);
       }
       var sidebarTab='gawangan';
-      var renderMptsLegend = window.YGDayunMpts ? window.YGDayunMpts.attach(map, legendEl,{onData:function(data){if(liveGawangan)liveGawangan.updateMpts(data);}}) : function () {};
+      var originalMpts={features:[]},additionalMpts={features:[]},treeImports=null;
+      function publishMpts(){if(liveGawangan)liveGawangan.updateMpts({features:originalMpts.features.concat(additionalMpts.features)});}
+      treeImports=window.YGDayunTreeImports?window.YGDayunTreeImports.attach(map,legendEl,{control:layerControl,onData:function(data){additionalMpts=data;publishMpts();}}):null;
+      var renderMptsLegend = window.YGDayunMpts ? window.YGDayunMpts.attach(map, legendEl,{onData:function(data){originalMpts=data;if(treeImports)treeImports.setOriginal(data);publishMpts();}}) : function () {};
       function renderLegend(){
         var layer=window.DayunAgroSummary.boundaryLegend(data.layers.find(function(x){return x.id===active;}),geojson,blockGeojson),items=layer.items||[];
         var gawanganIds=Object.keys(objectProperties).filter(function(id){return /^DAYUN-GT-[A-F]-\d{2}$/.test(id);}).sort(function(a,b){return a.localeCompare(b,'id',{numeric:true});}),cropTypes={};(gawanganData.objects||[]).forEach(function(item){(item.crops||[]).forEach(function(crop){cropTypes[crop.crop]=true;});});
@@ -202,7 +205,7 @@
         legendEl.querySelectorAll('[data-map-layer]').forEach(function(btn){btn.addEventListener('click',function(){switchLayer(btn.getAttribute('data-map-layer'));});});
         legendEl.querySelectorAll('[data-category]').forEach(function(btn){btn.addEventListener('click',function(){var bounds=categoryBounds[btn.getAttribute('data-category')];if(!bounds||!bounds.isValid())return;map.fitBounds(bounds,{padding:[36,36],maxZoom:18});document.querySelectorAll('.dy-object-key').forEach(function(x){x.classList.toggle('active',x===btn);});});});
         legendEl.querySelectorAll('[data-context]').forEach(function(btn){btn.addEventListener('click',function(){var target=btn.getAttribute('data-context');if(target==='objects')map.fitBounds(groups[active].getBounds(),{padding:[24,24]});if(target==='blocks')map.fitBounds(contextLayers.blocks.getBounds(),{padding:[28,28]});if(target==='hkm')map.fitBounds(contextLayers['ps-hkm'].getBounds(),{padding:[28,28]});if(target==='village')map.fitBounds(contextLayers['desa-dayun'].getBounds(),{padding:[28,28]});});});
-        renderMptsLegend();
+        renderMptsLegend();if(treeImports)treeImports.render();
         var nav=document.createElement('div');nav.className='dy-sidebar-tabs';nav.setAttribute('role','group');nav.setAttribute('aria-label','Panel peta');nav.innerHTML=[['gawangan','Gawangan'],['work','Pekerjaan'],['mpts','MPTS']].map(function(t){return '<button type="button" data-sidebar-tab="'+t[0]+'" aria-pressed="'+(sidebarTab===t[0])+'">'+t[1]+'</button>';}).join('');legendEl.prepend(nav);legendEl.dataset.panel=sidebarTab;
         nav.querySelectorAll('button').forEach(function(b){b.addEventListener('click',function(){sidebarTab=b.dataset.sidebarTab;legendEl.dataset.panel=sidebarTab;nav.querySelectorAll('button').forEach(function(x){x.setAttribute('aria-pressed',x===b?'true':'false');});});});
         var shortcut=document.createElement('a');shortcut.className='dy-work-shortcut';shortcut.href='#dayun-field-work';shortcut.textContent='Buka pekerjaan bulan ini dan jadwal →';legendEl.appendChild(shortcut);
