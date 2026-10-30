@@ -30,5 +30,5 @@
  let library;
  function load(){if(root.ExcelJS)return Promise.resolve(root.ExcelJS);if(library)return library;library=new Promise((resolve,reject)=>{const script=document.createElement('script');script.src='assets/vendor/exceljs/exceljs-4.4.0.min.js';script.onload=()=>root.ExcelJS?resolve(root.ExcelJS):reject(Error('Pustaka Excel tidak tersedia'));script.onerror=()=>{script.remove();library=null;reject(Error('Pustaka Excel gagal dimuat. Coba lagi.'));};document.head.append(script);});return library;}
  async function download(data){validate(data);const ExcelJS=await load(),buffer=await workbook(ExcelJS,data).xlsx.writeBuffer(),blob=new Blob([buffer],{type:mime}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download='Rekap_Nanas_Buah_ABC_'+stamp(data.checkedAt).replace(/[ :]/g,'-')+'.xlsx';document.body.append(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),60000);}
- const api={validate,workbook,download,mime};if(typeof module==='object'&&module.exports)module.exports=api;root.YG_DAYUN_WORK_EXCEL=api;
+ const api={validate,workbook,download,mime,load};if(typeof module==='object'&&module.exports)module.exports=api;root.YG_DAYUN_WORK_EXCEL=api;
 })(typeof window!=='undefined'?window:globalThis);

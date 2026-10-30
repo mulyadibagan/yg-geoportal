@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v30-20261030-trees";
+const CACHE_NAME = "yg-geoportal-v31-20261030-tree-recap";
 const DAYUN_CACHE_NAME = "yg-dayun-offline-v1";
 const DAYUN_META_URL = "/__dayun_offline_meta__";
 
@@ -40,6 +40,9 @@ const DAYUN_CORE_ASSETS = [
   "/js/orthomosaic-area-store.js",
   "/js/dayun-mpts.js",
   "/js/dayun-tree-imports.js",
+  "/js/dayun-tree-recap.js",
+  "/js/dayun-work-excel.js",
+  "/assets/vendor/exceljs/exceljs-4.4.0.min.js",
   "/js/dayun-mpts-summary.js",
   "/js/dayun-mpts-profile.js",
   "/js/dayun-ethrel.js",

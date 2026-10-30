@@ -192,8 +192,8 @@
       var sidebarTab='gawangan';
       var originalMpts={features:[]},additionalMpts={features:[]},treeImports=null;
       function publishMpts(){if(liveGawangan)liveGawangan.updateMpts({features:originalMpts.features.concat(additionalMpts.features)});}
-      treeImports=window.YGDayunTreeImports?window.YGDayunTreeImports.attach(map,legendEl,{control:layerControl,onData:function(data){additionalMpts=data;publishMpts();}}):null;
-      var renderMptsLegend = window.YGDayunMpts ? window.YGDayunMpts.attach(map, legendEl,{onData:function(data){originalMpts=data;if(treeImports)treeImports.setOriginal(data);publishMpts();}}) : function () {};
+      treeImports=window.YGDayunTreeImports?window.YGDayunTreeImports.attach(map,legendEl,{control:layerControl,recapHost:document.getElementById('dayun-tree-recap'),locations:(geojson.features||[]).map(function(f){return(f.properties||{}).objectId;}),onData:function(data){additionalMpts=data;publishMpts();}}):null;
+      var renderMptsLegend = window.YGDayunMpts ? window.YGDayunMpts.attach(map, legendEl,{control:layerControl,onData:function(data){originalMpts=data;if(treeImports)treeImports.setOriginal(data);publishMpts();}}) : function () {};
       function renderLegend(){
         var layer=window.DayunAgroSummary.boundaryLegend(data.layers.find(function(x){return x.id===active;}),geojson,blockGeojson),items=layer.items||[];
         var gawanganIds=Object.keys(objectProperties).filter(function(id){return /^DAYUN-GT-[A-F]-\d{2}$/.test(id);}).sort(function(a,b){return a.localeCompare(b,'id',{numeric:true});}),cropTypes={};(gawanganData.objects||[]).forEach(function(item){(item.crops||[]).forEach(function(crop){cropTypes[crop.crop]=true;});});
