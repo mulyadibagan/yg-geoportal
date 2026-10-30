@@ -11,10 +11,10 @@
       // pane captures empty space too and blocks the existing polygon canvas.
       var pointRenderer = L.svg({pane:'dayunMpts'});
       function render() {
-        var old = legend.querySelector('.dy-mpts-panel');
+        var old = legend.querySelector('.dy-mpts-monitoring-panel');
         if (old) old.remove();
         var panel = document.createElement('section');
-        panel.className = 'dy-legend-panel dy-mpts-panel';
+        panel.className = 'dy-legend-panel dy-mpts-panel dy-mpts-monitoring-panel';
         if (!points) {
           panel.textContent = error ? 'Titik MPTS belum dapat dimuat. Muat ulang halaman untuk mencoba lagi.' : 'Memuat titik monitoring MPTS…';
         } else {

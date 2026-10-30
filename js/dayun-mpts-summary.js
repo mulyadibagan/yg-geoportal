@@ -15,7 +15,13 @@
     });
     return {rows:Object.keys(byGawangan).sort().map(function (id) { return byGawangan[id]; }), byGawangan:byGawangan, unassigned:unassigned, total:total};
   }
-  var api = {summarize:summarize};
+  function inventory(features) {
+    var seen=new Set(),species={},byGawangan={},total=0,dead=0,unassigned=0;
+    (features||[]).forEach(function(f){var p=f.properties||{};if(!p.pointId||seen.has(p.pointId))return;seen.add(p.pointId);total++;species[p.species]=(species[p.species]||0)+1;if(p.condition==='Mati')dead++;
+      var ids=Array.from(new Set(p.spatialMatches||[]));if(ids.length!==1){unassigned++;return;}var id=ids[0],row=byGawangan[id]||(byGawangan[id]={total:0,species:{}});row.total++;row.species[p.species]=(row.species[p.species]||0)+1;
+    });return {total:total,dead:dead,unknown:total-dead,species:species,byGawangan:byGawangan,unassigned:unassigned};
+  }
+  var api = {summarize:summarize,inventory:inventory};
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
   else root.DayunMptsSummary = api;
 })(typeof window !== 'undefined' ? window : this);

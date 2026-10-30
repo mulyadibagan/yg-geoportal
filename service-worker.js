@@ -1,4 +1,4 @@
-const CACHE_NAME = "yg-geoportal-v29-20261012-compact";
+const CACHE_NAME = "yg-geoportal-v30-20261030-trees";
 const DAYUN_CACHE_NAME = "yg-dayun-offline-v1";
 const DAYUN_META_URL = "/__dayun_offline_meta__";
 
@@ -39,6 +39,7 @@ const DAYUN_CORE_ASSETS = [
   "/js/dayun-horti-boundary.js",
   "/js/orthomosaic-area-store.js",
   "/js/dayun-mpts.js",
+  "/js/dayun-tree-imports.js",
   "/js/dayun-mpts-summary.js",
   "/js/dayun-mpts-profile.js",
   "/js/dayun-ethrel.js",
@@ -51,6 +52,7 @@ const DAYUN_CORE_ASSETS = [
   "/data/dashboard-summary-snapshot.json",
   "/data/dayun-map.geojson",
   "/data/dayun-mpts-monitoring.geojson",
+  "/data/dayun-trees-20261030.geojson",
   "/data/dayun-context.geojson",
   "/data/dayun-gawangan-details.json",
   "/data/dayun-blocks.geojson",
