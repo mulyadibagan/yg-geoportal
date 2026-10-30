@@ -12,6 +12,8 @@ on:
       - 'cloudflare/yg-webgis-public-data/src/dayun-block-corrections.js'
       - 'cloudflare/yg-webgis-public-data/src/dayun-fruiting.js'
       - 'cloudflare/yg-webgis-public-data/src/dayun-fruit-links.js'
+      - 'cloudflare/yg-webgis-public-data/src/dayun-live-counts.js'
+      - 'data/dayun-gawangan-details.json'
       - 'cloudflare/yg-webgis-public-data/src/dayun-analysis-areas.js'
       - 'cloudflare/yg-webgis-public-data/src/dayun-fruit-link-job.js'
       - 'cloudflare/yg-webgis-public-data/src/main.js'

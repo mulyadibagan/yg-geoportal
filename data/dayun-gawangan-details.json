@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-28",
+  "updatedAt": "2026-10-30",
   "title": "Data gawangan agroforestri KUPS Rimba Sejahtera",
   "notes": [
     "Satu gawangan dapat memuat lebih dari satu komoditas.",
@@ -80,14 +80,20 @@
           "plantingCohorts": [
             {
               "period": "2026-08",
-              "plantedCount": 1029,
+              "plantedCount": 1047,
               "datePrecision": "month",
-              "recordedAt": "2026-10-12",
-              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026; koreksi lokasi oleh Mulyadi, 22 Oktober 2026: A1 menggantikan A2",
+              "recordedAt": "2026-10-27",
+              "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026",
               "locationCorrectedAt": "2026-10-22",
               "previousZoneId": "GT-A-02"
             }
-          ]
+          ],
+          "newPlantCensus": {
+            "date": "2026-10-27",
+            "count": 1047,
+            "method": "counted",
+            "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
+          }
         }
       ]
     },
@@ -841,12 +847,18 @@
           "plantingCohorts": [
             {
               "period": "2026-08",
-              "plantedCount": 1084,
+              "plantedCount": 1283,
               "datePrecision": "month",
-              "recordedAt": "2026-10-12",
-              "source": "Data penanaman disampaikan Mulyadi, 12 Oktober 2026"
+              "recordedAt": "2026-10-27",
+              "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
             }
-          ]
+          ],
+          "newPlantCensus": {
+            "date": "2026-10-27",
+            "count": 1283,
+            "method": "counted",
+            "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
+          }
         }
       ]
     },
@@ -1406,13 +1418,19 @@
           "notes": "layak ethrel; Indikasi tanaman baru di dalam batas yang digambar; bulan tanam dan jumlah belum dilaporkan.",
           "variety": "Queen",
           "newPlantingIndication": {
-            "status": "indicated",
+            "status": "census_recorded",
             "plantingPeriod": "2026-07",
-            "plantCount": null,
-            "recordedAt": "2026-10-23",
-            "source": "Keterangan Mulyadi, 23 Oktober 2026: batas indikasi tanaman baru sudah digambar pada B5 sampai B8.",
+            "plantCount": 756,
+            "recordedAt": "2026-10-27",
+            "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026",
             "scope": "Hanya di dalam batas indikasi tanaman baru yang digambar pengguna; bukan seluruh gawangan.",
-            "notes": "Tanaman baru ditanam Juli 2026, dikonfirmasi Mulyadi 24 Oktober 2026. Jumlah titik kerja ada pada rekap terpadu; jumlah sensus tanaman baru belum dilaporkan."
+            "notes": "Jumlah mengikuti estimasi baris sensus 27 Oktober 2026; bulan tanam Juli 2026. Posisi titik bukan hasil pengukuran setiap tanaman."
+          },
+          "newPlantCensus": {
+            "date": "2026-10-27",
+            "count": 756,
+            "method": "row_estimate",
+            "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
           }
         },
         {
@@ -1495,13 +1513,19 @@
           "notes": "layak ethrel; Indikasi tanaman baru di dalam batas yang digambar; bulan tanam dan jumlah belum dilaporkan.",
           "variety": "Queen",
           "newPlantingIndication": {
-            "status": "indicated",
+            "status": "census_recorded",
             "plantingPeriod": "2026-07",
-            "plantCount": null,
-            "recordedAt": "2026-10-23",
-            "source": "Keterangan Mulyadi, 23 Oktober 2026: batas indikasi tanaman baru sudah digambar pada B5 sampai B8.",
+            "plantCount": 1467,
+            "recordedAt": "2026-10-27",
+            "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026",
             "scope": "Hanya di dalam batas indikasi tanaman baru yang digambar pengguna; bukan seluruh gawangan.",
-            "notes": "Tanaman baru ditanam Juli 2026, dikonfirmasi Mulyadi 24 Oktober 2026. Jumlah titik kerja ada pada rekap terpadu; jumlah sensus tanaman baru belum dilaporkan."
+            "notes": "Jumlah mengikuti estimasi baris sensus 27 Oktober 2026; bulan tanam Juli 2026. Posisi titik bukan hasil pengukuran setiap tanaman."
+          },
+          "newPlantCensus": {
+            "date": "2026-10-27",
+            "count": 1467,
+            "method": "row_estimate",
+            "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
           }
         },
         {
@@ -1573,13 +1597,19 @@
           "notes": "layak ethrel; Indikasi tanaman baru di dalam batas yang digambar; bulan tanam dan jumlah belum dilaporkan.",
           "variety": "Queen",
           "newPlantingIndication": {
-            "status": "indicated",
+            "status": "census_recorded",
             "plantingPeriod": "2026-07",
-            "plantCount": null,
-            "recordedAt": "2026-10-23",
-            "source": "Keterangan Mulyadi, 23 Oktober 2026: batas indikasi tanaman baru sudah digambar pada B5 sampai B8.",
+            "plantCount": 765,
+            "recordedAt": "2026-10-27",
+            "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026",
             "scope": "Hanya di dalam batas indikasi tanaman baru yang digambar pengguna; bukan seluruh gawangan.",
-            "notes": "Tanaman baru ditanam Juli 2026, dikonfirmasi Mulyadi 24 Oktober 2026. Jumlah titik kerja ada pada rekap terpadu; jumlah sensus tanaman baru belum dilaporkan."
+            "notes": "Jumlah mengikuti estimasi baris sensus 27 Oktober 2026; bulan tanam Juli 2026. Posisi titik bukan hasil pengukuran setiap tanaman."
+          },
+          "newPlantCensus": {
+            "date": "2026-10-27",
+            "count": 765,
+            "method": "row_estimate",
+            "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
           }
         }
       ]
@@ -1645,13 +1675,19 @@
           "notes": "layak ethrel; Indikasi tanaman baru di dalam batas yang digambar; bulan tanam dan jumlah belum dilaporkan.",
           "variety": "Queen",
           "newPlantingIndication": {
-            "status": "indicated",
+            "status": "census_recorded",
             "plantingPeriod": "2026-07",
-            "plantCount": null,
-            "recordedAt": "2026-10-23",
-            "source": "Keterangan Mulyadi, 23 Oktober 2026: batas indikasi tanaman baru sudah digambar pada B5 sampai B8.",
+            "plantCount": 1212,
+            "recordedAt": "2026-10-27",
+            "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026",
             "scope": "Hanya di dalam batas indikasi tanaman baru yang digambar pengguna; bukan seluruh gawangan.",
-            "notes": "Tanaman baru ditanam Juli 2026, dikonfirmasi Mulyadi 24 Oktober 2026. Jumlah titik kerja ada pada rekap terpadu; jumlah sensus tanaman baru belum dilaporkan."
+            "notes": "Jumlah mengikuti estimasi baris sensus 27 Oktober 2026; bulan tanam Juli 2026. Posisi titik bukan hasil pengukuran setiap tanaman."
+          },
+          "newPlantCensus": {
+            "date": "2026-10-27",
+            "count": 1212,
+            "method": "row_estimate",
+            "source": "Data Sensus Tanggal 27 Oktober 2026.xlsx; data induk per gawangan diperbarui 30 Oktober 2026"
           }
         }
       ]

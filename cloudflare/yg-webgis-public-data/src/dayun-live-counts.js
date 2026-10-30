@@ -33,14 +33,14 @@ export function publicPlantingAreas(records,zones){
  }return features;
 }
 export class LiveDayunCounts{
- constructor(env){this.env=env;this.cache=new Map();this.blocks=new Map();this.last=null;this.checkedAt=0;}
+ constructor(env,{details=plantingDetails}={}){this.env=env;this.details=details;this.cache=new Map();this.blocks=new Map();this.last=null;this.checkedAt=0;}
  async read(key){const meta=await this.env.PUBLIC_SNAPSHOTS.head(key),etag=meta?.etag||null,old=this.cache.get(key);if(old&&old.etag===etag)return old;if(!meta){const entry={etag:null,value:null};this.cache.set(key,entry);return entry;}const o=await this.env.PUBLIC_SNAPSHOTS.get(key);if(!o)throw Error('Source changed while reading');const entry={etag:o.etag||etag,value:JSON.parse(await o.text())};this.cache.set(key,entry);return entry;}
  async value(key){return(await this.read(key)).value;}
  async load({force=false}={}){if(!force&&this.last&&Date.now()-this.checkedAt<2000)return this.last;
   const manifest=await this.value(root+'results/Agro_ABC/index.json');if(!manifest?.run||!/^drone\/analysis\/dayun\/results\/Agro_ABC\/[\w-]+$/.test(manifest.prefix))throw Error('Analysis unavailable');
   // Planting months are canonical published metadata, not point-count snapshots.
   // Bundle them with the Worker so an older R2 census mirror cannot regress July.
-  const detailsEntry={value:plantingDetails,etag:plantingDetails.updatedAt};
+  const detailsEntry={value:this.details,etag:this.details.updatedAt};
   const list=[];let cursor;do{const page=await this.env.PUBLIC_SNAPSHOTS.list({prefix:root+'areas/heads/',limit:1000,...(cursor?{cursor}:{})});list.push(...page.objects);cursor=page.truncated?page.cursor:null;}while(cursor);
   const records=await Promise.all(list.map(o=>this.value(o.key))),areas=records.filter(r=>/^Batas nanas baru Blok [ABC]\b/.test(r?.name||''));if(!areas.length)throw Error('Planting boundaries unavailable');
   const zoneEntries=await Promise.all('ABC'.split('').map(b=>{const path=manifest.block_analyses?.[b];if(!manifest.files?.includes(path))throw Error('Block unavailable');return this.read(manifest.prefix+'/'+path.slice(0,path.lastIndexOf('/')+1)+'zones.geojson');}));
@@ -57,7 +57,7 @@ export class LiveDayunCounts{
    revisions[block]={plants:head.value?.revision||0,fruits:fruit.value?.revision||0};
   }
   const details=detailsEntry.value,month=p=>/^\d{4}-\d{2}$/.test(p||'')?new Date(p+'-01T12:00:00Z').toLocaleDateString('id-ID',{month:'long',year:'numeric',timeZone:'Asia/Jakarta'}).replace(/^./,c=>c.toUpperCase()):p||null;
-  const rows=[...this.counts.rows.values()].sort((a,b)=>a.zone.localeCompare(b.zone)).map(r=>{const crop=details.objects.find(o=>o.objectId===r.objectId)?.crops.find(c=>c.crop==='NANAS'),period=crop?.newPlantingIndication?.plantingPeriod||crop?.plantingCohorts?.at(-1)?.period;return{...r,plantingMonth:crop?.plantingPeriod||null,newPlantingMonth:r.newPlants?month(period):null};});
+  const rows=[...this.counts.rows.values()].sort((a,b)=>a.zone.localeCompare(b.zone)).map(r=>{const crop=details.objects.find(o=>o.objectId===r.objectId)?.crops.find(c=>c.crop==='NANAS'),period=crop?.newPlantingIndication?.plantingPeriod||crop?.plantingCohorts?.at(-1)?.period,census=crop?.newPlantCensus;return{...r,...(census?{plants:r.plants-r.newPlants+census.count,newPlants:census.count,newPlantCensus:census}:{}),plantingMonth:crop?.plantingPeriod||null,newPlantingMonth:(census?.count||r.newPlants)?month(period):null};});
   const signature=JSON.stringify([revisions,geometryKey,detailsEntry.etag]);this.last={schema:'dayun-live-work-counts-v1',live:true,updatedAt:signature===this.signature?this.last.updatedAt:new Date().toISOString(),checkedAt:new Date().toISOString(),sourceRun:manifest.run,revisions,rows};this.signature=signature;this.checkedAt=Date.now();return this.last;
  }
  async mapData(){const data=await this.load();return{type:'FeatureCollection',schema:'dayun-agro-map-live-v1',live:true,checkedAt:data.checkedAt,revisions:data.revisions,rows:data.rows,geometryRevision:this.geometryRevision,features:this.counts.masks.map(m=>({...m.f,properties:{...m.f.properties,pointCount:m.count,plantingMonth:data.rows.find(r=>r.zone===m.f.properties.zoneId)?.newPlantingMonth||null}}))};}

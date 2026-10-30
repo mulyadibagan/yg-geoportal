@@ -2,7 +2,7 @@
  'use strict';
  const mime='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
  function validate(data){
-  if(data?.schema!=='dayun-live-work-counts-v1'||data.live!==true||!Array.isArray(data.rows)||data.rows.length!==40||new Set(data.rows.map(r=>r.zone)).size!==40||!Number.isFinite(Date.parse(data.checkedAt)))throw Error('Rekap terbaru belum lengkap. Coba lagi.');
+  if(!((data?.schema==='dayun-live-work-counts-v1'&&data.live===true)||(data?.schema==='dayun-work-counts-v1'&&data.live===false&&data.censusDate))||!Array.isArray(data.rows)||data.rows.length!==40||new Set(data.rows.map(r=>r.zone)).size!==40||!Number.isFinite(Date.parse(data.checkedAt)))throw Error('Rekap terbaru belum lengkap. Coba lagi.');
   for(const r of data.rows){if(!/^GT-[ABC]-\d{2}$/.test(r.zone)||r.block!==r.zone.split('-')[1]||['plants','fruits','newPlants','allocated'].some(k=>!Number.isSafeInteger(r[k])||r[k]<0)||r.newPlants>r.plants||r.allocated>r.plants)throw Error('Angka rekap belum valid. Coba lagi.');}
  }
  function stamp(value){return new Intl.DateTimeFormat('sv-SE',{timeZone:'Asia/Jakarta',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',second:'2-digit',hour12:false}).format(new Date(value));}
@@ -12,8 +12,8 @@
   s.columns=[{width:9},{width:19},{width:20},{width:17},{width:21},{width:22},{width:31},{width:29}];
   const line=(n,text)=>{s.mergeCells(n,1,n,8);s.getCell(n,1).value=text;};
   line(1,'Rekap nanas dan buah per gawangan A–C');s.getRow(1).font={name:'Arial',size:16,bold:true};s.getRow(1).height=28;
-  line(2,'Data tersimpan diperiksa '+stamp(data.checkedAt)+' WIB. Diambil langsung saat tombol unduh diklik.');
-  line(3,'Titik di luar batas masuk GT terdekat. Nanas baru merupakan bagian dari jumlah nanas.');
+  line(2,data.live===false?'Data sensus '+data.censusDate+'. Pembaruan titik langsung belum tersedia.':'Data diperiksa '+stamp(data.checkedAt)+' WIB. Sensus tanaman baru '+(data.censusDate||'sesuai catatan sumber')+'.');
+  line(3,'Total tanaman mencakup nanas baru. Enam gawangan disesuaikan dengan sensus 27 Oktober 2026.');
   s.getRow(5).values=['Blok','Gawangan','Jumlah nanas','Buah tim','Nanas baru','Dari luar batas GT','Bulan tanam lama','Bulan tanam baru'];
   const rows=[...data.rows].sort((a,b)=>a.zone.localeCompare(b.zone));
   for(const r of rows)s.addRow([r.block,r.zone,r.plants,r.fruits,r.newPlants,r.allocated,r.plantingMonth||'Belum tercatat',r.newPlantingMonth||'—']);
@@ -23,7 +23,7 @@
   for(const row of [s.getRow(5),total]){row.height=30;row.eachCell(cell=>{cell.font={name:'Arial',size:11,bold:true,color:{argb:row.number===5?'FFFFFFFF':'FF163C2F'}};cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:row.number===5?'FF244A64':'FFE7EEF3'}};});}
   line(n+2,'Buah terhubung mengikuti tanaman induk; buah lain mengikuti posisi penandanya. Setiap titik dihitung sekali.');
   line(n+3,'Revisi sumber: '+Object.entries(data.revisions||{}).map(([b,r])=>`${b}: titik ${r.plants}, buah ${r.fruits}`).join(' · '));
-  line(n+4,'Sumber: https://webgisyg.id — rekap otomatis titik kerja, bukan penggantian sensus lapangan.');
+  line(n+4,'Sumber: https://webgisyg.id — titik kerja dan pembaruan sensus 27 Oktober 2026 (A1, A11, B5–B8).');
   line(n+5,'Posisi tambahan penyesuaian sensus merupakan perkiraan. Bulan tanam mengikuti data tanaman tercatat.');
   return w;
  }
