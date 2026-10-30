@@ -20,8 +20,9 @@ if(code){history.replaceState(null,'',location.pathname+location.search);(async(
  const r=await fetch(broker+'/api/webgis/exchange',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,state:pending.state,verifier:pending.verifier})});const data=await r.json();
  if(!r.ok||data.ok!==true||!data.sessionToken||!['webgis-staff','kups-finance'].includes(data.scope))throw Error(data.error||'Login belum berhasil.');
  const s={token:data.sessionToken,username:data.username,name:data.name,email:data.email,role:data.role,scope:data.scope,expiresAt:data.expiresAt};localStorage.setItem('ygEditorSessionV1',JSON.stringify(s));
- location.replace(data.scope==='kups-finance'?'kups-finance.html':returnTarget(pending.target));
+ location.replace(data.scope==='kups-finance'?(pending.target==='dayun-kegiatan.html'?'dayun-kegiatan.html':'kups-finance.html'):returnTarget(pending.target));
  }catch(e){status.textContent=e.message;button.disabled=false;}
 })();}
 })();
+
 
