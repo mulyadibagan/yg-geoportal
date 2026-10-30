@@ -15,6 +15,7 @@
           var total = records.reduce(function (sum, f) { return sum + f.properties.areaHa; }, 0);
           panel.innerHTML = '<b><span style="color:#f59e0b">■</span> Potensi Penanaman Nanas</b><p>' + records.length + ' bidang · ' + area(total) + '</p><label><input type="checkbox" ' + (visible ? 'checked' : '') + '> Tampilkan potensi nanas</label><p><button type="button" class="dy-btn ghost">Lihat seluruh potensi nanas</button></p><small>Areal potensi penanaman. Luas mengikuti atribut shapefile sumber.</small>';
           panel.querySelector('input').addEventListener('change', function (event) { visible = event.target.checked; if (visible) polygons.addTo(map); else map.removeLayer(polygons); });
+          panel.querySelector('button').style.cssText = 'display:block;min-height:44px;padding:10px 14px;border:1px solid #b45309;border-radius:8px;background:#fff7ed;color:#92400e;font-weight:700;cursor:pointer';
           panel.querySelector('button').addEventListener('click', function () { visible = true; polygons.addTo(map); render(); map.fitBounds(polygons.getBounds(), {padding:[30,30], maxZoom:19}); });
         }
         legend.prepend(panel);
