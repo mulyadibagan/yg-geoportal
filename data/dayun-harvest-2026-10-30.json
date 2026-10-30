@@ -1,0 +1,101 @@
+{
+  "id": "panen-nanas-2026-10-30",
+  "date": "2026-10-30",
+  "commodity": "NANAS",
+  "unit": "buah",
+  "sourcePhoto": "assets/dayun/panen-nanas-2026-10-30.jpg",
+  "goodQuantity": 320,
+  "rejectQuantity": 257,
+  "totalQuantity": 577,
+  "note": "Catatan panen 30 Oktober 2026 disampaikan Mulyadi. Buah bagus dan rijek dicatat terpisah; penjualan dan penerimaan belum dilaporkan. Riwayat count mengikuti buah bagus seperti pencatatan 27 Oktober; totalQuantity mencakup buah rijek.",
+  "rows": [
+    {
+      "block": "B",
+      "gawangan": 9,
+      "objectId": "DAYUN-GT-B-09",
+      "goodQuantity": 36,
+      "rejectQuantity": 9,
+      "totalQuantity": 45
+    },
+    {
+      "block": "B",
+      "gawangan": 10,
+      "objectId": "DAYUN-GT-B-10",
+      "goodQuantity": 72,
+      "rejectQuantity": 57,
+      "totalQuantity": 129
+    },
+    {
+      "block": "B",
+      "gawangan": 11,
+      "objectId": "DAYUN-GT-B-11",
+      "goodQuantity": 40,
+      "rejectQuantity": 37,
+      "totalQuantity": 77
+    },
+    {
+      "block": "B",
+      "gawangan": 12,
+      "objectId": "DAYUN-GT-B-12",
+      "goodQuantity": 34,
+      "rejectQuantity": 27,
+      "totalQuantity": 61
+    },
+    {
+      "block": "B",
+      "gawangan": 13,
+      "objectId": "DAYUN-GT-B-13",
+      "goodQuantity": 26,
+      "rejectQuantity": 23,
+      "totalQuantity": 49
+    },
+    {
+      "block": "C",
+      "gawangan": 1,
+      "objectId": "DAYUN-GT-C-01",
+      "goodQuantity": 14,
+      "rejectQuantity": 14,
+      "totalQuantity": 28
+    },
+    {
+      "block": "C",
+      "gawangan": 2,
+      "objectId": "DAYUN-GT-C-02",
+      "goodQuantity": 41,
+      "rejectQuantity": 31,
+      "totalQuantity": 72
+    },
+    {
+      "block": "C",
+      "gawangan": 3,
+      "objectId": "DAYUN-GT-C-03",
+      "goodQuantity": 23,
+      "rejectQuantity": 13,
+      "totalQuantity": 36
+    },
+    {
+      "block": "C",
+      "gawangan": 4,
+      "objectId": "DAYUN-GT-C-04",
+      "goodQuantity": 4,
+      "rejectQuantity": 6,
+      "totalQuantity": 10
+    },
+    {
+      "block": "C",
+      "gawangan": 5,
+      "objectId": "DAYUN-GT-C-05",
+      "goodQuantity": 10,
+      "rejectQuantity": 9,
+      "totalQuantity": 19
+    },
+    {
+      "block": "C",
+      "gawangan": 7,
+      "objectId": "DAYUN-GT-C-07",
+      "goodQuantity": 20,
+      "rejectQuantity": 31,
+      "totalQuantity": 51
+    }
+  ]
+}
