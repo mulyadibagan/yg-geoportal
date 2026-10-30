@@ -4,7 +4,7 @@
   window.YGDayunMpts = {
     attach: function (map, legend, options) {
       options=options||{};
-      var points = null, records = [], error = false, visible = true, markerById = {};
+      var points = null, records = [], error = false, visible = false, markerById = {};
       map.createPane('dayunMpts');
       map.getPane('dayunMpts').style.zIndex = 450;
       // SVG only captures clicks on the marker paths. A canvas in this upper
@@ -73,7 +73,8 @@
               var gawangan = p.spatialMatches.filter(function (id) { return /^DAYUN-GT-[A-F]-\d{2}$/.test(id); });
               layer.bindPopup('<div class="dy-map-popup"><b>' + esc(p.species) + ' · ' + esc(p.pointId) + '</b><span>Kondisi tercatat: ' + esc(p.condition) + '</span><span>Gawangan: ' + esc(p.spatialMatches.join(', ')) + '</span><span>Bulan tanam: ' + esc(plantingText) + '</span><span>Tinggi: belum tersedia</span><small>Data diperbarui 8 Oktober 2026.</small><small>Foto dan penyebab kematian belum tersedia.</small>' + gawangan.map(function (id) { return '<a href="dayun-monitoring.html?point='+encodeURIComponent(p.pointId)+'&object='+encodeURIComponent(id)+'">Catat pemeriksaan pohon →</a><br><a href="dayun-monitoring.html?point='+encodeURIComponent(p.pointId)+'&activity=Penyisipan&object='+encodeURIComponent(id)+'">Catat sulam →</a><br><a href="dayun-gawangan.html?object=' + encodeURIComponent(id) + '">Buka profil ' + esc(id.replace('DAYUN-', '')) + '</a>'; }).join('<br>') + '</div>');
             }
-          }).addTo(map);
+          });
+          if(visible)points.addTo(map);
           if(options.control){options.control.addOverlay(points,'MPTS Blok C · 215 titik');map.on('overlayadd overlayremove',function(event){if(event.layer===points){visible=map.hasLayer(points);render();}});}
           render();
         }).catch(function (failure) { console.error('Monitoring MPTS:', failure); error = true; render(); });

@@ -17,7 +17,7 @@
    return response;
   }
   host.hidden=false;
-  view=root.YG_ORTHO_AREA_STORE.mountOverlay({map,host,api,current,title:'Area hortikultura',publicLabels:true});
+  view=root.YG_ORTHO_AREA_STORE.mountOverlay({map,host,api,current,title:'Area hortikultura',publicLabels:true,initialVisible:false});
   root.addEventListener('storage',check);root.addEventListener('pageshow',check);root.document.addEventListener('visibilitychange',check);
   timer=setTimeout(dispose,Math.min(2147483647,Math.max(0,Number(initial.expiresAt)-Date.now())));
   return{dispose};

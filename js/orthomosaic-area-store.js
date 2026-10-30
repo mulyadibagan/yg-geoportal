@@ -33,12 +33,12 @@
  }
  // A read-only map layer, separate from editable measurements and point work.
  // Fetch only on entry or an explicit refresh/save, never on pan or zoom.
- function mountOverlay({host,map,api,current=()=>true,title="Batas horti",matches=item=>/\bhorti\b/i.test(item.name),paneName="ortho-team-boundaries",color="#a21caf",getSnapshot,publicLabels=false}){
+ function mountOverlay({host,map,api,current=()=>true,title="Batas horti",matches=item=>/\bhorti\b/i.test(item.name),paneName="ortho-team-boundaries",color="#a21caf",getSnapshot,publicLabels=false,initialVisible=true}){
   const el=(tag,text)=>{const n=document.createElement(tag);if(text)n.textContent=text;return n;};
   const label=el('label',' '+title),toggle=el('input'),reload=el('button','Perbarui batas'),status=el('small');
-  toggle.type='checkbox';toggle.checked=true;reload.type='button';status.setAttribute('role','status');label.prepend(toggle);host.replaceChildren(label,reload,status);
+  toggle.type='checkbox';toggle.checked=initialVisible;reload.type='button';status.setAttribute('role','status');label.prepend(toggle);host.replaceChildren(label,reload,status);
   const pane=map.createPane(paneName);pane.style.zIndex='450';pane.style.pointerEvents='none';
-  const layer=root.L.layerGroup().addTo(map);let disposed=false,busy=false,again=false;
+  const layer=root.L.layerGroup();if(initialVisible)layer.addTo(map);let disposed=false,busy=false,again=false;
   const alive=()=>!disposed&&current();
   const countsHost=getSnapshot?el('details'):null,annotations=[];let records=[];
   if(countsHost)host.append(countsHost);

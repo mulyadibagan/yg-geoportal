@@ -160,3 +160,6 @@
 .dy-install-offer>div{display:grid;justify-items:center}.dy-install-offer .dy-offline-badge{margin:9px 0 2px}.dy-install-offer-actions{display:grid;grid-template-columns:1fr 1.5fr;gap:8px;width:100%;margin-top:18px}.dy-install-offer-actions button{position:static;width:auto;height:44px;border:1px solid #c8d9d0;border-radius:11px;background:#fff;color:#245142;font:800 12px inherit}.dy-install-offer-actions [data-install-now]{border-color:#087653;background:#087653;color:#fff}
 
 #dayun-horti-boundaries:not([hidden]){display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px;border:1px solid #d5e5dc;border-radius:10px;background:white}#dayun-horti-boundaries label{color:#a21caf;font-size:13px;font-weight:700}#dayun-horti-boundaries input{width:auto}#dayun-horti-boundaries button{padding:6px 9px;border:1px solid #d5e5dc;border-radius:6px;background:#f2f7f4;cursor:pointer}#dayun-horti-boundaries small{flex-basis:100%;font-size:11px}
+
+/* Scrollable touch-friendly layer chooser for narrow and short screens. */
+.dy-map .leaflet-control-layers-expanded{max-width:calc(100vw - 76px);max-height:calc(100dvh - 100px);overflow:auto;overscroll-behavior:contain}.dy-map .leaflet-control-layers label{display:flex;align-items:center;gap:6px;min-height:36px;margin:0;cursor:pointer}.dy-map .leaflet-control-layers input{flex:none}
