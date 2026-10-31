@@ -12,7 +12,7 @@ const ref=(prefix,value)=>{const v=String(value).trim().toUpperCase();if(!/^[A-Z
 const active=d=>!d.deleted_at;
 const sales=()=>report.documents.filter(d=>active(d)&&d.kind==='income'&&d.category==='Penjualan nanas');
 const nota=d=>d.source_ref?.startsWith('DAYUN-SALE:')?d.source_ref.slice(11):(d.source_ref||d.id.slice(0,8));
-const batchLabel=d=>d.activity?.startsWith('DAYUN-HARVEST:')?d.activity.slice(14):'Nota lama · panen belum ditautkan';
+const batchLabel=d=>d.activity?.startsWith('DAYUN-HARVEST:')?d.activity.slice(14):(d.product||'Nota lama · panen belum ditautkan');
 const evidenceButton=id=>id?'<button type="button" data-evidence="'+esc(id)+'">Bukti / kuitansi</button>':'Belum ada bukti';
 function selected(d){return (!$('hp-from').value||d.date>=$('hp-from').value)&&(!$('hp-to').value||d.date<=$('hp-to').value)&&(!$('hp-plot').value||d.object_id===$('hp-plot').value)&&(!$('hp-block').value||String(d.object_id||'').startsWith('DAYUN-GT-'+$('hp-block').value+'-'));}
 function payments(d){return report.rows.filter(t=>active(t)&&t.document_id===d.id);}
