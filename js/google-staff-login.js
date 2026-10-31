@@ -1,7 +1,8 @@
 (function(){
 'use strict';
 const broker='https://staff.yayasangambut.org';
-const button=document.getElementById('staff-google-login'),status=document.getElementById('staff-login-status');
+const button=document.getElementById('staff-google-login');
+const status=document.createElement('p');status.id='google-login-status';status.setAttribute('role','status');status.setAttribute('aria-live','polite');button.after(status);
 function returnTarget(value){
  try{if(!value||/^(?:[a-z]+:|\/\/)/i.test(value)||value.includes('..'))return 'admin-dashboard.html';const target=new URL(value,location.href);if(target.origin!==location.origin)return 'admin-dashboard.html';return target.pathname+target.search+target.hash;}catch{return 'admin-dashboard.html';}
 }
@@ -17,11 +18,11 @@ if(code){history.replaceState(null,'',location.pathname+location.search);(async(
  try{const pending=JSON.parse(sessionStorage.getItem('ygGoogleRequest')||'null');sessionStorage.removeItem('ygGoogleRequest');
  if(!pending||pending.state!==params.get('state')||Date.now()-pending.created>600000)throw Error('Permintaan login tidak cocok. Mulai kembali.');
  status.textContent='Menyelesaikan login Google…';button.disabled=true;
- const r=await fetch(broker+'/api/webgis/exchange',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,state:pending.state,verifier:pending.verifier})});const data=await r.json();
+ const r=await fetch(broker+'/api/webgis/exchange',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,state:pending.state,verifier:pending.verifier}),signal:AbortSignal.timeout(25000)});const data=await r.json();
  if(!r.ok||data.ok!==true||!data.sessionToken||!['webgis-staff','kups-finance'].includes(data.scope))throw Error(data.error||'Login belum berhasil.');
  const s={token:data.sessionToken,username:data.username,name:data.name,email:data.email,role:data.role,scope:data.scope,expiresAt:data.expiresAt};const target=returnTarget(pending.target),attendance=new URL(target,location.href).pathname==='/dayun-kegiatan.html';
  if(attendance){localStorage.setItem('ygDayunAttendanceSession',JSON.stringify(s));sessionStorage.setItem('ygDayunAttendanceSession',JSON.stringify(s));}
- else localStorage.setItem('ygEditorSessionV1',JSON.stringify(s));
+ else{localStorage.setItem('ygEditorSessionV1',JSON.stringify(s));sessionStorage.setItem('ygEditorSessionV1',JSON.stringify(s));}
  location.replace(data.scope==='kups-finance'?(attendance?target:'kups-finance.html'):target);
  }catch(e){status.textContent=e.message;button.disabled=false;}
 })();}
