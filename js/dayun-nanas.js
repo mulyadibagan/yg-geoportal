@@ -21,33 +21,23 @@
     function table(label, headers, rows, footer) {
       return '<div class="dy-table-wrap" role="region" aria-label="' + label + '" tabindex="0" style="overflow-x:auto"><table class="dy-table" style="width:100%;min-width:360px"><caption style="text-align:left;font-weight:700;padding:12px 0">' + label + '</caption><thead><tr>' + headers.map(function(h){return '<th scope="col">' + h + '</th>';}).join('') + '</tr></thead><tbody>' + rows.join('') + '</tbody><tfoot>' + footer + '</tfoot></table></div>';
     }
-    host.innerHTML = '<div class="dy-section-head"><div><span>Potensi pengembangan kebun</span><h2>Rekap luas Potensi Penanaman Nanas</h2></div><p>' + summary.count + ' bidang pada ' + summary.gawangan.length + ' gawangan di ' + summary.blocks.length + ' blok · Total <strong>' + area(summary.total) + '</strong></p></div>' +
+    host.innerHTML = '<div class="dy-summary-head"><div><h2>Potensi pengembangan kebun</h2><p>Potensi penanaman nanas.</p></div></div><div class="dy-summary-kpis">' + [
+      ['Total luas',area(summary.total)],['Blok',summary.blocks.length],['Gawangan',summary.gawangan.length],['Bidang',summary.count]
+    ].map(function(item){return '<article><small>'+item[0]+'</small><strong>'+item[1]+'</strong></article>';}).join('') + '</div><details style="margin-top:18px"><summary style="cursor:pointer;color:#226342;font-weight:700;padding:10px 0">Lihat luas per blok dan gawangan</summary>' +
       table('Luas per blok', ['Blok','Gawangan','Bidang','Luas (ha)'], summary.blocks.map(function(b){return '<tr><th scope="row">Blok ' + esc(b.id) + '</th><td>' + Object.keys(b.gawangan).length + '</td><td>' + b.count + '</td><td>' + area(b.areaHa).replace(' ha','') + '</td></tr>';}), '<tr><th scope="row">Total</th><td>' + summary.gawangan.length + '</td><td>' + summary.count + '</td><td><strong>' + area(summary.total).replace(' ha','') + '</strong></td></tr>') +
       table('Luas per gawangan', ['Gawangan','Blok','Bidang','Luas (ha)'], summary.gawangan.map(function(g){return '<tr><th scope="row">' + esc(g.id) + '</th><td>' + esc(g.block) + '</td><td>' + g.count + '</td><td>' + area(g.areaHa).replace(' ha','') + '</td></tr>';}), '<tr><th scope="row">Total</th><td>—</td><td>' + summary.count + '</td><td><strong>' + area(summary.total).replace(' ha','') + '</strong></td></tr>') +
-      '<p><small>Luas dijumlahkan dari atribut shapefile Potensi Penanaman Nanas, lalu dibulatkan hingga empat desimal. Beberapa bidang dalam gawangan yang sama digabungkan dalam satu baris. Rekap mencakup blok dan gawangan yang terdapat pada layer potensi, serta tetap tersedia saat layer disembunyikan.</small></p>';
+      '<p><small>Luas mengikuti data layer potensi penanaman nanas. Bidang pada gawangan yang sama dijumlahkan.</small></p></details>';
   }
   window.YGDayunNanas = {
     summarize: summarize,
     attach: function (map, legend, control) {
-      var polygons = null, visible = false, failed = false, records = [];
+      var polygons = null;
       function render() {
         var old = legend.querySelector('.dy-nanas-panel');
         if (old) old.remove();
-        var panel = document.createElement('section');
-        panel.className = 'dy-legend-panel dy-nanas-panel';
-        if (!polygons) panel.textContent = failed ? 'Layer potensi nanas belum dapat dimuat. Muat ulang halaman untuk mencoba lagi.' : 'Memuat potensi penanaman nanas…';
-        else {
-          var total = records.reduce(function (sum, f) { return sum + f.properties.areaHa; }, 0);
-          panel.innerHTML = '<b><span style="color:#f59e0b">■</span> Potensi Penanaman Nanas</b><p>' + records.length + ' bidang · ' + area(total) + '</p><label><input type="checkbox" ' + (visible ? 'checked' : '') + '> Tampilkan potensi nanas</label><p><button type="button" class="dy-btn ghost">Lihat seluruh potensi nanas</button></p><small>Areal potensi penanaman. Luas mengikuti atribut shapefile sumber.</small>';
-          panel.querySelector('input').addEventListener('change', function (event) { visible = event.target.checked; if (visible) polygons.addTo(map); else map.removeLayer(polygons); });
-          panel.querySelector('button').style.cssText = 'display:block;min-height:44px;padding:10px 14px;border:1px solid #b45309;border-radius:8px;background:#fff7ed;color:#92400e;font-weight:700;cursor:pointer';
-          panel.querySelector('button').addEventListener('click', function () { visible = true; polygons.addTo(map); render(); map.fitBounds(polygons.getBounds(), {padding:[30,30], maxZoom:19}); });
-        }
-        legend.prepend(panel);
       }
       fetch('data/dayun-potensi-nanas.geojson?v=20261030-1').then(function (response) { if (!response.ok) throw new Error('HTTP ' + response.status); return response.json(); }).then(function (data) {
-        records = data.features;
-        renderRecap(records);
+        renderRecap(data.features);
         polygons = L.geoJSON(data, {
           style:{color:'#b45309', weight:2, fillColor:'#f59e0b', fillOpacity:0.5},
           onEachFeature:function (feature, layer) {
@@ -57,9 +47,8 @@
           }
         });
         if (control) control.addOverlay(polygons, 'Potensi Penanaman Nanas');
-        map.on('layeradd layerremove', function (event) { if (event.layer === polygons) { visible = map.hasLayer(polygons); render(); } });
         render();
-      }).catch(function (error) { console.error('Potensi nanas:', error); failed = true; render(); var host = document.getElementById('dayun-potensi-nanas-recap'); if (host) host.textContent = 'Rekap potensi nanas belum dapat dimuat. Muat ulang halaman untuk mencoba lagi.'; });
+      }).catch(function (error) { console.error('Potensi nanas:', error); render(); var host = document.getElementById('dayun-potensi-nanas-recap'); if (host) host.textContent = 'Rekap potensi nanas belum dapat dimuat. Muat ulang halaman untuk mencoba lagi.'; });
       return render;
     }
   };
