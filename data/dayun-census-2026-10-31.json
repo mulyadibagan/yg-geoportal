@@ -133,12 +133,26 @@
     "assets/dayun/sensus-beruk-2026-10-31-catatan.png",
     "assets/dayun/sensus-beruk-2026-10-31-kerusakan-01.png",
     "assets/dayun/sensus-beruk-2026-10-31-kerusakan-02.png",
-    "assets/dayun/sensus-beruk-2026-10-31-kerusakan-03.png"
+    "assets/dayun/sensus-beruk-2026-10-31-kerusakan-03.png",
+    "assets/dayun/temuan-reject-2026-10-31.png"
   ],
   "affectedPlantCount": 4750,
   "measurementConfirmation": {
     "confirmedAt": "2026-10-31",
     "statement": "Pengguna mengonfirmasi angka sebagai tanaman yang terserang monyet, bukan tanaman tersisa."
   },
-  "populationTreatment": "Catatan serangan terpisah dari populasi. Tanaman terserang tidak otomatis dinyatakan mati atau dikurangi dari jumlah tanaman hidup; jumlah buah hilang belum dihitung."
+  "populationTreatment": "Catatan serangan terpisah dari populasi. Tanaman terserang tidak otomatis dinyatakan mati atau dikurangi dari jumlah tanaman hidup; jumlah buah hilang belum dihitung.",
+  "rejectedFruitFinding": {
+    "date": "2026-10-31",
+    "count": 17,
+    "unit": "buah",
+    "conditions": [
+      "jatuh di tanah",
+      "kroak",
+      "mata hitam"
+    ],
+    "gawangan": null,
+    "photo": "assets/dayun/temuan-reject-2026-10-31.png",
+    "note": "Temuan lapangan dicatat terpisah dari jumlah tanaman terserang. Pembagian per kondisi dan gawangan belum dilaporkan; tidak otomatis mengubah stok buah atau rekap panen."
+  }
 }
