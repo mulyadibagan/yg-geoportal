@@ -1,9 +1,9 @@
 const test=require('node:test'),assert=require('node:assert/strict'),fs=require('node:fs'),vm=require('node:vm');
 const source=fs.readFileSync('js/dayun-public.js','utf8');
 test('selecting the current but hidden areal layer activates it and still fits its bounds',()=>{const fn=source.match(/function switchLayer\(id\)[^\n]+/)[0];let added=0,rendered=0,fit=0;const group={addTo(){added++},getBounds(){return{}}},context={groups:{agro:group},active:'agro',map:{removeLayer(){},fitBounds(){fit++}},renderLegend(){rendered++},ethrelController:null};const run=vm.runInNewContext('('+fn+')',context);run('agro');assert.equal(added,1);assert.equal(rendered,1);assert.equal(fit,1);run('missing');assert.equal(added,1);});
-test('only the agroforestry overlay is active when Dayun opens',()=>{
- assert.doesNotMatch(source,/contextLayers\[p.contextId\]=layer;layer.addTo\(map\)/);
- assert.doesNotMatch(source,/blockLayer=L.featureGroup\(\[blockHalo,blockLines\]\).addTo\(map\)/);
+test('village HKm blocks and agroforestry are active when Dayun opens',()=>{
+ assert.match(source,/contextLayers\[p.contextId\]=layer;layer.addTo\(map\)/);
+ assert.match(source,/blockLayer=L.featureGroup\(\[blockHalo,blockLines\]\).addTo\(map\)/);
  assert.match(source,/groups\[active\]\.addTo\(map\);renderLegend\(\);map.fitBounds\(groups\[active\]\.getBounds\(\),\{padding:\[24,24\]\}\);setTimeout/);
  assert.match(source,/layerControl.addOverlay\(groups\[layer.id\]/);
  assert.match(fs.readFileSync('js/dayun-mpts.js','utf8'),/visible = false/);
