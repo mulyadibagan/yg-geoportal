@@ -1,0 +1,119 @@
+{
+  "id": "sensus-beruk-2026-10-31",
+  "date": "2026-10-31",
+  "title": "Sensus tanaman nanas tanam 2024 pada areal terdampak serangan beruk",
+  "commodity": "NANAS",
+  "unit": "batang",
+  "populationScope": "Tanaman nanas tanam 2024 sesuai judul catatan; bukan tanaman baru 2026.",
+  "measurementMeaning": "pending-confirmation",
+  "groups": [
+    {
+      "id": "tidak-penuh",
+      "label": "Tanaman tidak penuh sampai ujung gawangan B bagian belakang",
+      "reportedSubtotal": 1214,
+      "rows": [
+        {
+          "objectId": "DAYUN-GT-B-01",
+          "label": "B1",
+          "count": 54
+        },
+        {
+          "objectId": "DAYUN-GT-B-02",
+          "label": "B2",
+          "count": 309
+        },
+        {
+          "objectId": "DAYUN-GT-B-03",
+          "label": "B3",
+          "count": 61
+        },
+        {
+          "objectId": "DAYUN-GT-B-04",
+          "label": "B4",
+          "count": 80
+        },
+        {
+          "objectId": "DAYUN-GT-B-05",
+          "label": "B5",
+          "count": 340
+        },
+        {
+          "objectId": "DAYUN-GT-B-06",
+          "label": "B6",
+          "count": 370
+        }
+      ],
+      "computedSubtotal": 1214
+    },
+    {
+      "id": "penuh",
+      "label": "Tanaman penuh sampai ujung gawangan bagian belakang",
+      "reportedSubtotal": 3526,
+      "confirmedSubtotal": 3536,
+      "rows": [
+        {
+          "objectId": "DAYUN-GT-B-07",
+          "label": "B7",
+          "count": 270
+        },
+        {
+          "objectId": "DAYUN-GT-B-08",
+          "label": "B8",
+          "count": 193
+        },
+        {
+          "objectId": "DAYUN-GT-B-09",
+          "label": "B9",
+          "count": 435
+        },
+        {
+          "objectId": "DAYUN-GT-B-10",
+          "label": "B10",
+          "count": 452
+        },
+        {
+          "objectId": "DAYUN-GT-B-11",
+          "label": "B11",
+          "count": 137
+        },
+        {
+          "objectId": "DAYUN-GT-B-12",
+          "label": "B12",
+          "count": 431
+        },
+        {
+          "objectId": "DAYUN-GT-C-01",
+          "label": "C1",
+          "count": 390
+        },
+        {
+          "objectId": "DAYUN-GT-C-02",
+          "label": "C2",
+          "count": 381
+        },
+        {
+          "objectId": "DAYUN-GT-C-03",
+          "label": "C3",
+          "count": 435
+        },
+        {
+          "objectId": "DAYUN-GT-C-04",
+          "label": "C4",
+          "count": 412
+        }
+      ],
+      "computedSubtotal": 3536
+    }
+  ],
+  "total": 4750,
+  "subtotalCorrection": {
+    "group": "penuh",
+    "written": 3526,
+    "confirmed": 3536,
+    "confirmation": "Pengguna mengonfirmasi rincian benar, total 3.536 pada 31 Oktober 2026."
+  },
+  "photos": [
+    "assets/dayun/sensus-beruk-2026-10-31-lapangan.png",
+    "assets/dayun/sensus-beruk-2026-10-31-catatan.png"
+  ]
+}
