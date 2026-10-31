@@ -21,8 +21,10 @@ if(code){history.replaceState(null,'',location.pathname+location.search);(async(
  const r=await fetch(broker+'/api/webgis/exchange',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({code,state:pending.state,verifier:pending.verifier}),signal:AbortSignal.timeout(25000)});const data=await r.json();
  if(!r.ok||data.ok!==true||!data.sessionToken||!['webgis-staff','kups-finance'].includes(data.scope))throw Error(data.error||'Login belum berhasil.');
  const s={token:data.sessionToken,username:data.username,name:data.name,email:data.email,role:data.role,scope:data.scope,expiresAt:data.expiresAt};const target=returnTarget(pending.target),attendance=new URL(target,location.href).pathname==='/dayun-kegiatan.html';
+ if(!s.token.startsWith('yg-google-')||!Number.isFinite(Number(s.expiresAt))||Number(s.expiresAt)<=Date.now())throw Error('Sesi Google dari server sudah kedaluwarsa atau tidak lengkap. Periksa tanggal perangkat, lalu masuk kembali.');
  if(attendance){localStorage.setItem('ygDayunAttendanceSession',JSON.stringify(s));sessionStorage.setItem('ygDayunAttendanceSession',JSON.stringify(s));}
  else{localStorage.setItem('ygEditorSessionV1',JSON.stringify(s));sessionStorage.setItem('ygEditorSessionV1',JSON.stringify(s));}
+ if(!attendance&&JSON.parse(sessionStorage.getItem('ygEditorSessionV1')||'null')?.token!==s.token)throw Error('Browser belum menyimpan sesi Google. Izinkan penyimpanan situs lalu coba kembali.');
  location.replace(data.scope==='kups-finance'?(attendance?target:'kups-finance.html'):target);
  }catch(e){status.textContent=e.message;button.disabled=false;}
 })();}
