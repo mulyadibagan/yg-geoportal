@@ -1,9 +1,9 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-30T03:40:25.735421+00:00",
+  "generatedAt": "2026-10-31T03:38:46.662730+00:00",
   "status": "ready",
   "eventCount": 4,
-  "estimatedAreaHa": 169.63,
+  "estimatedAreaHa": 164.51,
   "candidateEventCount": 5,
   "processing": {
     "published": 4,
@@ -17,7 +17,7 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-10-30T03:40:25.774915+00:00",
+  "administrativeUpdatedAt": "2026-10-31T03:38:46.734819+00:00",
   "unassignedAreaHa": 0.15,
   "villageTotals": [
     {
@@ -48,7 +48,7 @@
       "regency": "Kampar",
       "district": "Xiii Koto Kampar",
       "village": "Kelurahan Batu Bersurat",
-      "areaHa": 27.67
+      "areaHa": 23.11
     },
     {
       "regency": "Kampar",
@@ -60,7 +60,7 @@
       "regency": "Kampar",
       "district": "Xiii Koto Kampar",
       "village": "Pongkai Istiqomah",
-      "areaHa": 34.89
+      "areaHa": 34.33
     },
     {
       "regency": "Kampar",
@@ -106,7 +106,7 @@
     {
       "regency": "Kampar",
       "district": "Xiii Koto Kampar",
-      "areaHa": 89.54
+      "areaHa": 84.42
     },
     {
       "regency": "Kampar/Rokan Hulu",
@@ -131,7 +131,7 @@
     },
     {
       "regency": "Kampar",
-      "areaHa": 89.54
+      "areaHa": 84.42
     },
     {
       "regency": "Kampar/Rokan Hulu",
