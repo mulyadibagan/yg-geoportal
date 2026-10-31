@@ -1,20 +1,37 @@
 (function(){
 'use strict';
-const base='https://staff.yayasangambut.org',group='dayun-rimba-sejahtera',key='ygEditorSessionV1',$=id=>document.getElementById(id),form=$('event-form');
+const base='https://staff.yayasangambut.org',group='dayun-rimba-sejahtera',key='ygDayunAttendanceSession',sharedKey='ygEditorSessionV1',$=id=>document.getElementById(id),form=$('event-form');
 const labels={planned:'Rencana / belum dikonfirmasi',present:'Hadir',permission:'Izin',sick:'Sakit',absent:'Tidak hadir'},kinds=['Panen','Sensus tanaman','Pemupukan','Penyiangan','Pengendalian hama','Gotong royong','Kegiatan lain'];
 const esc=v=>String(v??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const today=()=>new Date().toLocaleDateString('sv-SE',{timeZone:'Asia/Jakarta'});
-const reports={'dayun-sensus-20261031':'dayun.html#sensus-beruk-20261031','dayun-panen-20261027':'dayun.html#panen-nanas-20261027'};
+const reports={'dayun-sensus-20261031':'dayun.html#sensus-beruk-20261031','dayun-panen-20261027':'dayun.html#panen-nanas-20261027','dayun-panen-20261030':'dayun.html#panen-nanas-20261030'};
 let selectedId=new URLSearchParams(location.search).get('event')||sessionStorage.getItem('ygDayunAttendanceEvent')||'',openRequested=true;
 if(!/^[a-zA-Z0-9-]{1,80}$/.test(selectedId))selectedId='';
 sessionStorage.removeItem('ygDayunAttendanceEvent');
 let session=null,events=[],manage=false,editing=null,draft=[],dirty=false,serial=0,creatingId=null;
+function storedSession(){
+ for(const [storage,name] of [[localStorage,key],[sessionStorage,key],[localStorage,sharedKey]]){
+  try{const s=JSON.parse(storage.getItem(name)||'null');if(s?.token?.startsWith('yg-google-')&&Number(s.expiresAt)>Date.now())return s;}catch{}
+ }return null;
+}
+function clearSession(token){
+ for(const [storage,name] of [[localStorage,key],[sessionStorage,key],[localStorage,sharedKey]]){
+  try{if(JSON.parse(storage.getItem(name)||'null')?.token===token)storage.removeItem(name);}catch{}
+ }
+}
+function syncSession(){
+ const next=storedSession();
+ if(next?.token===session?.token)return;
+ if(dirty)return;
+ if(next){session=next;refresh();}else{signedOut();status('Masuk untuk membuka dan mengelola absensi kegiatan.');}
+}
 function status(message,error=false){$('status').textContent=message;$('status').classList.toggle('error',error);}
 function signedOut(){++serial;session=null;events=[];manage=false;$('events').replaceChildren();$('identity').textContent='';$('app').hidden=true;$('login-panel').hidden=false;$('logout').hidden=true;$('create').hidden=true;$('editor').close();form.reset();draft=[];dirty=false;}
 async function api(path='',options={}){
  if(!session?.token)throw Error('Masuk untuk membuka absensi kegiatan.');
- const response=await fetch(base+'/api/kups/activities'+path+'?'+new URLSearchParams({group}),{method:options.method||'GET',headers:{Authorization:'Bearer '+session.token,...(options.body?{'Content-Type':'application/json'}:{})},body:options.body?JSON.stringify(options.body):undefined,signal:AbortSignal.timeout(20000)});
- const data=await response.json();if(response.status===401){localStorage.removeItem(key);signedOut();status('Sesi berakhir. Masuk kembali untuk membuka absensi.',true);throw Error('Sesi berakhir. Masuk kembali untuk membuka absensi.');}if(!response.ok)throw Error(data.error||'Permintaan belum berhasil.');return data;
+ const requestToken=session.token;
+ const response=await fetch(base+'/api/kups/activities'+path+'?'+new URLSearchParams({group}),{method:options.method||'GET',headers:{Authorization:'Bearer '+requestToken,...(options.body?{'Content-Type':'application/json'}:{})},body:options.body?JSON.stringify(options.body):undefined,signal:AbortSignal.timeout(20000)});
+ const data=await response.json();if(response.status===401){clearSession(requestToken);if(session?.token===requestToken){signedOut();status('Sesi berakhir. Masuk kembali untuk membuka absensi.',true);}throw Error('Sesi berakhir. Masuk kembali untuk membuka absensi.');}if(!response.ok)throw Error(data.error||'Permintaan belum berhasil.');return data;
 }
 function formatDate(date){return new Date(date+'T12:00:00+07:00').toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});}
 function options(value){return Object.entries(labels).map(([k,v])=>'<option value="'+k+'"'+(k===value?' selected':'')+'>'+v+'</option>').join('');}
@@ -32,21 +49,23 @@ function openEditor(id){editing=events.find(e=>e.id===id)||null;creatingId=editi
 function closeEditor(){if(dirty&&!confirm('Perubahan belum disimpan. Tutup formulir?'))return;$('editor').close();dirty=false;}
 form.elements.kind.innerHTML=kinds.map(k=>'<option>'+esc(k)+'</option>').join('');
 $('month').value=selectedId?'':today().slice(0,7);
-$('login').addEventListener('click',async()=>{try{
+$('login').addEventListener('click',async()=>{try{$('login').disabled=true;status('Membuka login Google…');
  if(selectedId)sessionStorage.setItem('ygDayunAttendanceEvent',selectedId);else sessionStorage.removeItem('ygDayunAttendanceEvent');
  const random=()=>Array.from(crypto.getRandomValues(new Uint8Array(32)),x=>x.toString(16).padStart(2,'0')).join(''),verifier=random(),state=random();
- sessionStorage.setItem('ygGoogleRequest',JSON.stringify({verifier,state,created:Date.now(),target:'dayun-kegiatan.html'}));
+ sessionStorage.setItem('ygGoogleRequest',JSON.stringify({verifier,state,created:Date.now(),target:'dayun-kegiatan.html'+(selectedId?'?'+new URLSearchParams({event:selectedId}):'')}));
  const bytes=new Uint8Array(await crypto.subtle.digest('SHA-256',new TextEncoder().encode(verifier))),challenge=btoa(String.fromCharCode(...bytes)).replace(/=/g,'').replace(/\+/g,'-').replace(/\//g,'_');
  location.assign(base+'/auth/kups?'+new URLSearchParams({state,challenge}));
-}catch{status('Login belum dapat dimulai. Coba kembali.',true);}});
-$('logout').addEventListener('click',async()=>{const token=session?.token;localStorage.removeItem(key);signedOut();try{await fetch(base+'/api/webgis/logout',{method:'POST',headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(10000)});}catch{}status('Anda telah keluar. Baca laporan di Perkembangan Lapangan.');});
+}catch{$('login').disabled=false;status('Login belum dapat dimulai. Coba kembali.',true);}});
+$('logout').addEventListener('click',async()=>{const token=session?.token;clearSession(token);signedOut();try{await fetch(base+'/api/webgis/logout',{method:'POST',headers:{Authorization:'Bearer '+token},signal:AbortSignal.timeout(10000)});}catch{}status('Anda telah keluar. Baca laporan di Perkembangan Lapangan.');});
 $('refresh').addEventListener('click',()=>{if(dirty){status('Simpan atau tutup perubahan terlebih dahulu.',true);return;}refresh();});$('month').addEventListener('change',draw);$('all').addEventListener('click',()=>{selectedId='';sessionStorage.removeItem('ygDayunAttendanceEvent');$('month').value='';draw();});$('create').addEventListener('click',()=>openEditor());$('close').addEventListener('click',closeEditor);$('editor').addEventListener('cancel',e=>{e.preventDefault();closeEditor();});form.addEventListener('input',()=>{dirty=true;});
 form.elements.date.addEventListener('change',()=>{draft=collectParticipants();if(form.elements.date.value>today())draft.forEach(p=>p.status='planned');drawParticipants();dirty=true;});
 $('add-names').addEventListener('click',()=>{draft=collectParticipants();const names=$('names').value.split(/\r?\n/).map(n=>n.trim()).filter(Boolean);const existing=new Set(draft.map(p=>p.name.toLocaleLowerCase('id-ID').replace(/\s+/g,' ')));for(const name of names){const normalized=name.toLocaleLowerCase('id-ID').replace(/\s+/g,' ');if(!existing.has(normalized)){draft.push({id:crypto.randomUUID(),name,email:'',status:'planned',note:''});existing.add(normalized);}}if(draft.length>200){$('editor-status').textContent='Maksimal 200 peserta.';return;}drawParticipants();$('names').value='';dirty=true;});
 form.addEventListener('submit',async e=>{e.preventDefault();if($('names').value.trim()){$('editor-status').textContent='Tekan Tambahkan peserta terlebih dahulu.';return;}const payload={id:editing?.id||creatingId,version:editing?.version,participants:collectParticipants()};for(const field of ['title','date','time','kind','location','notes','result'])payload[field]=form.elements[field].value;$('save').disabled=true;$('editor-status').textContent='Menyimpan ke server…';try{await api(editing?'/'+editing.id:'',{method:editing?'PUT':'POST',body:payload});dirty=false;$('editor').close();await refresh();status('Agenda dan absensi berhasil disimpan.');}catch(error){$('editor-status').textContent=error.message;$('editor-status').classList.add('error');}finally{$('save').disabled=false;}});
 $('events').addEventListener('click',e=>{const button=e.target.closest('[data-edit]');if(button)openEditor(button.dataset.edit);});
 $('events').addEventListener('submit',async e=>{const f=e.target.closest('[data-self]');if(!f)return;e.preventDefault();const event=events.find(x=>x.id===f.dataset.self),button=f.querySelector('button');button.disabled=true;try{await api('/'+event.id+'/self',{method:'PUT',body:{version:event.version,status:f.elements.status.value,note:f.elements.note.value}});await refresh();status('Kehadiran Anda tersimpan.');}catch(error){status(error.message,true);}finally{button.disabled=false;}});
-window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});window.addEventListener('storage',e=>{if(e.key===key){signedOut();status('Masuk untuk membuka dan mengelola absensi kegiatan.');}});
-try{session=JSON.parse(localStorage.getItem(key)||'null');}catch{}
-if(session?.token?.startsWith('yg-google-')&&session.expiresAt>Date.now())refresh();else{signedOut();status('Masuk untuk membuka dan mengelola absensi kegiatan.');}
+window.addEventListener('beforeunload',e=>{if(dirty){e.preventDefault();e.returnValue='';}});
+window.addEventListener('storage',e=>{if(e.key===key||e.key===sharedKey)syncSession();});
+window.addEventListener('pageshow',syncSession);
+document.addEventListener('visibilitychange',()=>{if(document.visibilityState==='visible')syncSession();});
+session=storedSession();if(session)refresh();else{signedOut();status('Masuk untuk membuka dan mengelola absensi kegiatan.');}
 })();
