@@ -29,7 +29,7 @@
   window.YGDayunNanas = {
     summarize: summarize,
     attach: function (map, legend, control) {
-      var polygons = null, visible = true, failed = false, records = [];
+      var polygons = null, visible = false, failed = false, records = [];
       function render() {
         var old = legend.querySelector('.dy-nanas-panel');
         if (old) old.remove();
@@ -55,7 +55,7 @@
             layer.bindTooltip(esc(p.id_1 + ' · Potensi nanas'));
             layer.bindPopup('<div class="dy-map-popup"><b>Potensi Penanaman Nanas</b><span>Gawangan: ' + esc(p.id_1) + '</span><span>Blok: ' + esc(p.block) + '</span><span>Luas: ' + area(p.areaHa) + '</span><small>Areal potensi penanaman; luas dari shapefile sumber.</small></div>');
           }
-        }).addTo(map);
+        });
         if (control) control.addOverlay(polygons, 'Potensi Penanaman Nanas');
         map.on('layeradd layerremove', function (event) { if (event.layer === polygons) { visible = map.hasLayer(polygons); render(); } });
         render();
