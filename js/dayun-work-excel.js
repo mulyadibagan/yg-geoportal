@@ -14,10 +14,10 @@
   line(1,'Rekap nanas dan buah per gawangan A–C');s.getRow(1).font={name:'Arial',size:16,bold:true};s.getRow(1).height=28;
   line(2,data.live===false?'Data sensus '+data.censusDate+'. Pembaruan titik langsung belum tersedia.':'Data diperiksa '+stamp(data.checkedAt)+' WIB. Sensus tanaman baru '+(data.censusDate||'sesuai catatan sumber')+'.');
   line(3,'Total tanaman mencakup nanas baru. Enam gawangan disesuaikan dengan sensus 27 Oktober 2026.');
-  s.getRow(5).values=['Blok','Gawangan','Jumlah nanas','Buah tim','Nanas baru','Dari luar batas GT','Bulan tanam lama','Bulan tanam baru'];
+  s.getRow(5).values=['Blok','Gawangan','Jumlah nanas',data.fruitBaselineDate?'Buah terkoreksi':'Buah tim','Nanas baru','Dari luar batas GT','Bulan tanam lama','Bulan tanam baru'];
   const rows=[...data.rows].sort((a,b)=>a.zone.localeCompare(b.zone));
-  for(const r of rows)s.addRow([r.block,r.zone,r.plants,r.fruits,r.newPlants,r.allocated,r.plantingMonth||'Belum tercatat',r.newPlantingMonth||'—']);
-  const end=5+rows.length,n=end+1,total=s.getRow(n);total.getCell(2).value='TOTAL';for(const [c,key]of [[3,'plants'],[4,'fruits'],[5,'newPlants'],[6,'allocated']])total.getCell(c).value={formula:`SUM(${String.fromCharCode(64+c)}6:${String.fromCharCode(64+c)}${end})`,result:rows.reduce((sum,r)=>sum+r[key],0)};
+  for(const r of rows)s.addRow([r.block,r.zone,r.plants,r.fruitCorrectedBaseline??r.fruits,r.newPlants,r.allocated,r.plantingMonth||'Belum tercatat',r.newPlantingMonth||'—']);
+  const end=5+rows.length,n=end+1,total=s.getRow(n);total.getCell(2).value='TOTAL';for(const [c,key]of [[3,'plants'],[4,'fruits'],[5,'newPlants'],[6,'allocated']])total.getCell(c).value={formula:`SUM(${String.fromCharCode(64+c)}6:${String.fromCharCode(64+c)}${end})`,result:rows.reduce((sum,r)=>sum+(key==='fruits'?(r.fruitCorrectedBaseline??r.fruits):r[key]),0)};
   s.autoFilter={from:'A5',to:'H'+end};
   s.eachRow(row=>{row.height=row.height||23;row.eachCell(cell=>{cell.font={name:'Arial',size:11,...cell.font};cell.alignment={vertical:'middle',horizontal:typeof cell.value==='number'?'right':'left'};if(cell.col>=3&&cell.col<=6&&cell.row>=6){cell.numFmt='#,##0';cell.alignment.horizontal='right';}});});
   for(const row of [s.getRow(5),total]){row.height=30;row.eachCell(cell=>{cell.font={name:'Arial',size:11,bold:true,color:{argb:row.number===5?'FFFFFFFF':'FF163C2F'}};cell.fill={type:'pattern',pattern:'solid',fgColor:{argb:row.number===5?'FF244A64':'FFE7EEF3'}};});}
@@ -25,7 +25,7 @@
   line(n+3,'Revisi sumber: '+Object.entries(data.revisions||{}).map(([b,r])=>`${b}: titik ${r.plants}, buah ${r.fruits}`).join(' · '));
   line(n+4,'Sumber: https://webgisyg.id — titik kerja dan pembaruan sensus 27 Oktober 2026 (A1, A11, B5–B8).');
   line(n+5,'Posisi tambahan penyesuaian sensus merupakan perkiraan. Bulan tanam mengikuti data tanaman tercatat.');
-  if(data.fruitBaselineDate){const audit=w.addWorksheet('Rekonsiliasi buah');audit.columns=[{header:'Gawangan',width:20},{header:'Acuan pendataan',width:22},{header:'Buah awal',width:16},{header:'Dipanen fisik',width:18},{header:'Sisa terhitung',width:22},{header:'Selisih perlu cocokkan',width:25},{header:'ID panen',width:70}];for(const r of rows)audit.addRow([r.zone,data.fruitBaselineDate,r.fruitBaseline,r.harvestedFruits,r.remainingFruits===null?'Perlu cocokkan':r.remainingFruits,r.fruitDeficit,(r.harvestEvents||[]).join('; ')]);audit.views=[{state:'frozen',ySplit:1}];}
+  if(data.fruitBaselineDate){const audit=w.addWorksheet('Rekonsiliasi buah');audit.columns=[{header:'Gawangan',width:20},{header:'Acuan pendataan',width:22},{header:'Buah awal',width:16},{header:'Dipanen fisik',width:18},{header:'Sisa terhitung',width:22},{header:'Koreksi hasil panen',width:25},{header:'ID panen',width:70},{header:'Buah awal terkoreksi',width:24}];for(const r of rows)audit.addRow([r.zone,data.fruitBaselineDate,r.fruitBaseline,r.harvestedFruits,r.remainingFruits===null?'Perlu cocokkan':r.remainingFruits,r.fruitHarvestCorrection,(r.harvestEvents||[]).join('; '),r.fruitCorrectedBaseline]);audit.views=[{state:'frozen',ySplit:1}];}
   return w;
  }
  let library;
