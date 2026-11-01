@@ -6,7 +6,7 @@
  function displayZone(zone){return String(zone||'').replace(/^GT-([A-F])-0?(\d+)$/,'$1$2');}
  function applyCensus(d,published){return {...d,censusDate:published.censusDate,rows:d.rows.map(r=>{const census=published.rows.find(p=>p.zone===r.zone)?.newPlantCensus;return census?{...r,plants:r.plants-r.newPlants+census.count,newPlants:census.count,newPlantCensus:census}:r;})};}
 
- function plantingRange(rows,key){const months={januari:1,februari:2,maret:3,april:4,mei:5,juni:6,juli:7,agustus:8,september:9,oktober:10,november:11,desember:12};const list=[...new Set(rows.filter(r=>key!=='newPlantingMonth'||r.newPlants>0).map(r=>r[key]).filter(Boolean))].sort((a,b)=>{const parse=v=>{const [m,y]=v.toLowerCase().split(/\s+/);return Number(y)*12+(months[m]||0);};return parse(a)-parse(b);});return list.length?list.length===1?monthLabel(list[0]):monthLabel(list[0])+' – '+monthLabel(list.at(-1)):'Bulan tanam belum tercatat';}
+ function plantingRange(rows,key){const months={januari:1,februari:2,maret:3,april:4,mei:5,juni:6,juli:7,agustus:8,september:9,oktober:10,november:11,desember:12};const list=[...new Set(rows.filter(r=>key!=='newPlantingMonth'||r.newPlants>0).map(r=>monthLabel(r[key])).filter(v=>/^[A-Za-z]+ \d{4}$/.test(v)&&months[v.split(' ')[0].toLowerCase()]))].sort((a,b)=>{const parse=v=>{const [m,y]=v.toLowerCase().split(/\s+/);return Number(y)*12+(months[m]||0);};return parse(a)-parse(b);});return list.length?list.length===1?monthLabel(list[0]):monthLabel(list[0])+' – '+monthLabel(list.at(-1)):'Bulan tanam belum tercatat';}
  function reconcileHarvest(d,baseline,details){
   if(!/^\d{4}-\d{2}-\d{2}$/.test(baseline.snapshotDate||''))return d;
   const records=new Map((details.objects||[]).map(o=>[o.objectId,o]));
