@@ -1,13 +1,13 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-31T03:38:46.662730+00:00",
+  "generatedAt": "2026-11-01T03:39:27.341488+00:00",
   "status": "ready",
-  "eventCount": 4,
-  "estimatedAreaHa": 164.51,
+  "eventCount": 5,
+  "estimatedAreaHa": 281.96,
   "candidateEventCount": 5,
   "processing": {
-    "published": 4,
-    "excludedByRiauBoundary": 1
+    "published": 5,
+    "excludedByRiauBoundary": 0
   },
   "latestDetection": "2026-10-05T06:31:00+00:00",
   "method": "Sentinel-2 dNBR/NBR with FIRMS candidate events",
@@ -17,32 +17,50 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-10-31T03:38:46.734819+00:00",
-  "unassignedAreaHa": 0.15,
+  "administrativeUpdatedAt": "2026-11-01T03:39:27.471072+00:00",
+  "unassignedAreaHa": 0.2,
   "villageTotals": [
     {
       "regency": "Indragiri Hilir",
       "district": "Concong",
+      "village": "Kampung Baru",
+      "areaHa": 5.98
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Concong",
+      "village": "Kelurahan Concong Luar",
+      "areaHa": 1.63
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Concong",
+      "village": "Panglima Raja",
+      "areaHa": 5.24
+    },
+    {
+      "regency": "Indragiri Hilir",
+      "district": "Concong",
       "village": "Sungaiberapit",
-      "areaHa": 1.36
+      "areaHa": 16.1
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Kateman",
       "village": "Kuala Selat",
-      "areaHa": 54.13
+      "areaHa": 72.69
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Kateman",
       "village": "Penjuru",
-      "areaHa": 10.23
+      "areaHa": 9.55
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Kuala Indragiri",
       "village": "Sungaibela",
-      "areaHa": 1.2
+      "areaHa": 70.85
     },
     {
       "regency": "Kampar",
@@ -78,7 +96,7 @@
       "regency": "Pelalawan",
       "district": "Kuala Kampar",
       "village": "Sungai Upih",
-      "areaHa": 1.48
+      "areaHa": 3.76
     },
     {
       "regency": "Rokan Hulu",
@@ -91,17 +109,17 @@
     {
       "regency": "Indragiri Hilir",
       "district": "Concong",
-      "areaHa": 1.36
+      "areaHa": 28.95
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Kateman",
-      "areaHa": 64.36
+      "areaHa": 82.25
     },
     {
       "regency": "Indragiri Hilir",
       "district": "Kuala Indragiri",
-      "areaHa": 1.2
+      "areaHa": 70.85
     },
     {
       "regency": "Kampar",
@@ -116,7 +134,7 @@
     {
       "regency": "Pelalawan",
       "district": "Kuala Kampar",
-      "areaHa": 1.48
+      "areaHa": 3.76
     },
     {
       "regency": "Rokan Hulu",
@@ -127,7 +145,7 @@
   "regencyTotals": [
     {
       "regency": "Indragiri Hilir",
-      "areaHa": 66.92
+      "areaHa": 182.05
     },
     {
       "regency": "Kampar",
@@ -139,7 +157,7 @@
     },
     {
       "regency": "Pelalawan",
-      "areaHa": 1.48
+      "areaHa": 3.76
     },
     {
       "regency": "Rokan Hulu",
