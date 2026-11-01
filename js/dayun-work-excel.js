@@ -25,6 +25,7 @@
   line(n+3,'Revisi sumber: '+Object.entries(data.revisions||{}).map(([b,r])=>`${b}: titik ${r.plants}, buah ${r.fruits}`).join(' · '));
   line(n+4,'Sumber: https://webgisyg.id — titik kerja dan pembaruan sensus 27 Oktober 2026 (A1, A11, B5–B8).');
   line(n+5,'Posisi tambahan penyesuaian sensus merupakan perkiraan. Bulan tanam mengikuti data tanaman tercatat.');
+  if(data.fruitBaselineDate){const audit=w.addWorksheet('Rekonsiliasi buah');audit.columns=[{header:'Gawangan',width:20},{header:'Acuan pendataan',width:22},{header:'Buah awal',width:16},{header:'Dipanen fisik',width:18},{header:'Sisa terhitung',width:22},{header:'Selisih perlu cocokkan',width:25},{header:'ID panen',width:70}];for(const r of rows)audit.addRow([r.zone,data.fruitBaselineDate,r.fruitBaseline,r.harvestedFruits,r.remainingFruits===null?'Perlu cocokkan':r.remainingFruits,r.fruitDeficit,(r.harvestEvents||[]).join('; ')]);audit.views=[{state:'frozen',ySplit:1}];}
   return w;
  }
  let library;
