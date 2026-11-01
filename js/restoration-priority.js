@@ -1,0 +1,219 @@
+(function () {
+  'use strict';
+  const A = window.YG_RESTORATION;
+  const C = window.YG_RESTORATION_CATALOG;
+  const $ = id => document.getElementById(id);
+  const BASE = 'https://webgis-api.yayasangambut.org';
+  const state = { map: null, peat: [], boundary: null, filtered: [], cache: new Map(), layers: new Map(), session: null };
+  state.khgCandidates = []; state.khgFeatures = []; state.khgLayer = null;
+  const definitions = [
+    { id: 'peat', label: 'Gambut BBSDLP 2019', path: 'data/Gambut_BBSDLP_2019.geojson', color: '#7e8982', note: 'Unit referensi analisis, bukan hasil prioritas' },
+    { id: 'khg', label: 'KHG', note: 'Data belum tersedia · batas dan relasi spasial belum terverifikasi' },
+    { id: 'feg', label: 'Fungsi ekosistem gambut SK.130', path: 'data/FEG_SK130_RIAU.geojson', color: '#905ead', private: true, note: 'Endpoint staf eksisting · konteks seluruh Riau' },
+    { id: 'canals', label: 'Jaringan kanal', note: 'Data belum tersedia · titik sekat bukan jaringan kanal' },
+    { id: 'blocks', label: 'Sekat kanal terpetakan', path: 'data/sekat_kanal.geojson', color: '#147e94', note: 'Titik infrastruktur eksisting, bukan skor gangguan hidrologi' },
+    { id: 'landcover', label: 'Tutupan lahan', note: 'Data belum tersedia · belum ada poligon/raster menyeluruh yang terverifikasi' },
+    { id: 'hotspots', label: 'Hotspot FIRMS confidence tinggi', path: 'data/hotspot-high-confidence.geojson', color: '#d46026', note: 'Hanya titik di dalam gambut tersaring · bukan bukti kebakaran terverifikasi' },
+    { id: 'burned', label: 'Area terindikasi terbakar', path: 'data/burned-area-estimates.geojson', color: '#a64139', note: 'Estimasi Sentinel-2 dNBR/NBR, bukan validasi lapangan' }
+  ];
+  const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  const number = n => n === null ? 'Data belum tersedia' : n.toLocaleString('id-ID', { maximumFractionDigits: 2 });
+  function status(message) { $('access-status').textContent = message; }
+  async function fetchJSON(path, privateData = false) {
+    const response = privateData ? await window.YG_STAFF_DATA.privateFetch(path) : await fetch(path, { cache: 'no-store', signal: AbortSignal.timeout(45000) });
+    if (!response.ok) throw new Error('Data belum tersedia (HTTP ' + response.status + ')');
+    return response.json();
+  }
+  function collection(data) {
+    if (data?.type !== 'FeatureCollection' || !Array.isArray(data.features)) throw new Error('GeoJSON FeatureCollection tidak valid');
+    return data;
+  }
+  function popup(feature, title) {
+    const p = feature.properties || {};
+    const content = document.createElement('div');
+    const heading = document.createElement('strong'); heading.textContent = title; content.appendChild(heading);
+    Object.entries(p).filter(([key, value]) => typeof value !== 'object' && !/foto|photo|url/i.test(key)).slice(0, 22).forEach(([key, value]) => {
+      const row = document.createElement('p'); row.textContent = key + ': ' + (value ?? 'Data belum tersedia'); content.appendChild(row);
+    });
+    if (title === 'Gambut BBSDLP 2019') {
+      const result = A.assess(p.restorationIndicators);
+      const row = document.createElement('p'); row.textContent = 'Kebutuhan ekologis: ' + result.category + (result.score === null ? ' · indikator kritis belum lengkap/valid' : ' · ' + number(result.score)); content.appendChild(row);
+    }
+    return content;
+  }
+  function scoped(def, data) {
+    const regency = $('regency').value;
+    if (def.id === 'peat') return state.filtered;
+    if (def.id === 'hotspots') return data.features.filter(f => f.geometry?.type === 'Point' &&
+      state.filtered.some(peat => {
+        const b = peat._restorationBounds, p = f.geometry.coordinates;
+        return p[0] >= b[0] && p[0] <= b[2] && p[1] >= b[1] && p[1] <= b[3] && A.contains(p, peat.geometry);
+      }));
+    if (!regency || def.id === 'feg') return data.features;
+    if (def.id === 'blocks') return data.features.filter(f => A.district(f.properties?.Kabupaten) === A.district(regency));
+    if (def.id === 'burned') return data.features.filter(f => (f.properties?.regencies || []).some(v => A.district(v) === A.district(regency)));
+    return data.features;
+  }
+  function draw(def) {
+    if (state.layers.has(def.id)) state.map.removeLayer(state.layers.get(def.id));
+    const data = state.cache.get(def.id);
+    if (!data || !$('layer-' + def.id).checked) return;
+    const features = scoped(def, data);
+    const layer = L.geoJSON({ type: 'FeatureCollection', features }, {
+      style: f => ({ color: def.color, weight: 1, fillOpacity: def.id === 'peat' ? .36 : .15,
+        fillColor: def.id === 'peat' ? ({ Tinggi: '#b43b38', Sedang: '#d89a32', Rendah: '#4a9661' }[A.assess(f.properties?.restorationIndicators).category] || '#adb7b3') : def.color }),
+      pointToLayer: (f, ll) => L.circleMarker(ll, { radius: def.id === 'hotspots' ? 4 : 6, color: def.color, weight: 1, fillOpacity: .8 }),
+      onEachFeature: (f, l) => l.bindPopup(() => popup(f, def.label))
+    }).addTo(state.map);
+    state.layers.set(def.id, layer);
+    $('state-' + def.id).textContent = features.length.toLocaleString('id-ID') + ' objek ditampilkan · ' + def.note;
+  }
+  async function toggle(def, input) {
+    if (!input.checked) {
+      if (state.layers.has(def.id)) state.map.removeLayer(state.layers.get(def.id));
+      $('state-' + def.id).textContent = 'Tidak ditampilkan · ' + def.note;
+      return;
+    }
+    input.disabled = true; $('state-' + def.id).textContent = 'Memuat data asli…';
+    try {
+      if (!state.cache.has(def.id)) state.cache.set(def.id, collection(await fetchJSON(def.path, def.private)));
+      const data = state.cache.get(def.id);
+      const sourceId = 'runtime-source-' + def.id;
+      let source = document.getElementById(sourceId);
+      if (!source) { source = document.createElement('p'); source.id = sourceId; $('sources').appendChild(source); }
+      source.textContent = def.label + ' · metadata runtime · versi generatedAt: ' + (data.generatedAt || 'belum tersedia') +
+        ' · periode: ' + (data.coverageStart || 'belum tersedia') + ' sampai ' + (data.coverageEnd || 'belum tersedia') +
+        ' · objek sumber: ' + data.features.length + ' · jalur: ' + (def.private ? 'endpoint staf eksisting' : def.path) + ' · belum tervalidasi untuk scoring';
+      draw(def);
+    } catch (error) {
+      input.checked = false; $('state-' + def.id).textContent = 'Data belum tersedia · ' + error.message;
+    } finally { input.disabled = false; }
+  }
+  function fit() {
+    const peat = state.layers.get('peat');
+    const bounds = peat && $('layer-peat').checked && peat.getBounds();
+    if (bounds?.isValid()) state.map.fitBounds(bounds, { padding: [18, 18], maxZoom: 12 });
+    else if (state.boundary) state.map.fitBounds(L.geoJSON(state.boundary).getBounds());
+  }
+  function filter() {
+    state.filtered = A.select(state.peat, $('regency').value, '');
+    const summary = A.summarize(state.filtered);
+    $('area').textContent = summary.sourceAreaHa === null ? 'Data belum tersedia' : number(summary.sourceAreaHa) + ' ha';
+    $('polygon-count').textContent = number(summary.count);
+    $('unassessed').textContent = number(summary.unassessed) + ' poligon belum dinilai';
+    $('priority-count').textContent = summary.assessed ? number(summary.priorityCount) : 'Belum dinilai';
+    definitions.filter(def => def.path && state.cache.has(def.id)).forEach(draw);
+    fit();
+  }
+  function renderControls() {
+    definitions.forEach(def => {
+      const label = document.createElement('label'), input = document.createElement('input'), note = document.createElement('small');
+      input.type = 'checkbox'; input.id = 'layer-' + def.id; input.disabled = !def.path;
+      input.addEventListener('change', () => toggle(def, input));
+      note.id = 'state-' + def.id; note.textContent = def.note;
+      label.append(input, ' ' + def.label, note); $('layers').appendChild(label);
+    });
+    $('indicators').innerHTML = A.INDICATORS.map(i => '<tr><td>' + esc(i.label) + '</td><td>' + Math.round(i.weight * 100) + '%</td><td>Belum dinilai · data/metode belum tervalidasi</td></tr>').join('');
+    $('regency').addEventListener('change', filter); $('khg').addEventListener('change', focusKHG); $('fit').addEventListener('click', fit);
+    $('load-khg').addEventListener('click', loadKHG);
+  }
+  function catalogKHG(catalog) {
+    state.khgCandidates = C.candidates(catalog);
+    if (!state.khgCandidates.length) { $('khg-status').textContent = 'Data belum tersedia · tidak ada kandidat KHG siap-peta dengan metadata lengkap di katalog sesi ini.'; return; }
+    const select = $('khg-dataset'); select.replaceChildren();
+    state.khgCandidates.forEach(item => { const option = document.createElement('option'); option.value = item.uuid; option.textContent = item.title; select.appendChild(option); });
+    select.disabled = false; $('load-khg').disabled = false;
+    $('khg-status').textContent = state.khgCandidates.length + ' kandidat siap-peta. Geometri dimuat hanya setelah dipilih; belum tervalidasi untuk scoring.';
+  }
+  function focusKHG() {
+    if (state.khgLayer) state.map.removeLayer(state.khgLayer);
+    state.khgLayer = null;
+    const selected = $('khg').value;
+    if (selected === '') { fit(); return; }
+    const feature = state.khgFeatures[Number(selected)]; if (!feature) return;
+    state.khgLayer = L.geoJSON(feature, { style: { color: '#375bb1', weight: 3, fillOpacity: .08 }, onEachFeature: (f,l) => l.bindPopup(() => popup(f, 'KHG · referensi peta, belum dinilai')) }).addTo(state.map);
+    state.map.fitBounds(state.khgLayer.getBounds(), { padding: [20,20], maxZoom: 12 });
+  }
+  async function loadKHG() {
+    const item = state.khgCandidates.find(r => r.uuid === $('khg-dataset').value); if (!item || !state.map) return;
+    $('load-khg').disabled = true; $('khg-dataset').disabled = true;
+    $('khg-status').textContent = 'Memuat geometri privat dan memeriksa checksum…';
+    try {
+      const current = window.YG_AUTH?.readStoredSession(); if (!current || current.token !== state.session.token) throw Error('Sesi staf berubah atau berakhir');
+      const response = await fetch(BASE + '/api/staff/riau-geoportal/datasets/' + item.uuid + '/display', {
+        headers: { authorization: 'Bearer ' + current.token }, cache: 'no-store', signal: AbortSignal.timeout(45000)
+      });
+      if (response.status === 401 || response.status === 403) { $('workspace').hidden = true; status('Akses ditolak. Sesi/otorisasi staf tidak berlaku; login ulang diperlukan.'); }
+      const data = await C.readDisplay(response, item, crypto);
+      state.khgFeatures = data.features;
+      const select = $('khg'); select.replaceChildren();
+      const all = document.createElement('option'); all.value = ''; all.textContent = 'Tanpa fokus KHG'; select.appendChild(all);
+      data.features.forEach((f,index) => { const option = document.createElement('option'); option.value = String(index); option.textContent = C.label(f,index); select.appendChild(option); });
+      select.disabled = false; focusKHG();
+      $('state-khg').textContent = 'Referensi tersedia melalui pemilih fokus KHG di atas · belum ada overlay analisis';
+      $('khg-status').textContent = item.title + ' · ' + data.features.length + ' poligon · UUID ' + item.uuid + ' · sumber: ' + item.source + ' · tahun: ' + (item.year ?? 'belum diketahui') + ' · versi SHA-256: ' + item.sha256 + '. Lolos pemeriksaan struktur/checksum, belum QA topologi atau scoring. Ringkasan tidak difilter KHG.';
+    } catch (error) {
+      state.khgFeatures = []; $('khg').replaceChildren(); $('khg').disabled = true; focusKHG();
+      $('state-khg').textContent = 'Data belum tersedia · pemuatan KHG gagal';
+      $('khg-status').textContent = 'Data belum tersedia · ' + error.message;
+    } finally { $('load-khg').disabled = false; $('khg-dataset').disabled = false; }
+  }
+  async function loadLeaflet() {
+    const css = document.createElement('link'); css.rel = 'stylesheet'; css.href = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.css';
+    css.integrity = 'sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY='; css.crossOrigin = 'anonymous'; document.head.appendChild(css);
+    await new Promise((resolve, reject) => {
+      const script = document.createElement('script'); script.src = 'https://unpkg.com/leaflet@1.9.4/dist/leaflet.js';
+      script.integrity = 'sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo='; script.crossOrigin = 'anonymous';
+      const timer = setTimeout(() => reject(new Error('Leaflet belum termuat dalam 20 detik')), 20000);
+      script.onload = () => { clearTimeout(timer); resolve(); }; script.onerror = () => { clearTimeout(timer); reject(new Error('Leaflet gagal dimuat')); }; document.head.appendChild(script);
+    });
+  }
+  async function boot() {
+    if (window.top !== window.self) return;
+    // Use the origin already authorized by the staff API and SSO callback.
+    // A stored token alone never unlocks the workspace.
+    if (location.hostname !== 'webgisyg.id' || location.protocol !== 'https:') return status('Origin belum diizinkan untuk akses staf. Modul ini ditujukan untuk WebGIS HTTPS dengan verifikasi backend.');
+    state.session = window.YG_AUTH?.readStoredSession();
+    if (!state.session) {
+      status('Akses ditolak. Login staf diperlukan.');
+      const link = document.createElement('a'); link.href = 'staff-login.html?return=restoration-priority.html'; link.textContent = 'Login staf'; $('access-status').append(' ', link); return;
+    }
+    try {
+      // Do not trust localStorage alone: this existing endpoint verifies the token on the backend.
+      const response = await fetch(BASE + '/api/staff/riau-geoportal/catalog', {
+        headers: { authorization: 'Bearer ' + state.session.token }, cache: 'no-store', signal: AbortSignal.timeout(15000)
+      });
+      if (!response.ok) throw new Error('Sesi/otorisasi belum terverifikasi (HTTP ' + response.status + ')');
+      const catalog = await response.json();
+      if (catalog.access !== 'staff_only' || !Array.isArray(catalog.datasets)) throw new Error('Respons verifikasi katalog tidak valid');
+      status('Sesi staf diverifikasi backend · pengembangan internal · analisis belum dinilai');
+      renderControls(); $('workspace').hidden = false;
+      const manifest = await fetchJSON('data/restoration-priority-sources.json');
+      manifest.sources.forEach(s => {
+        const p = document.createElement('p'); p.textContent = s.title + ' — ' + s.source + ' · tahun: ' + (s.year ?? 'belum diketahui') + ' · versi: ' + s.version + ' · ' + s.note; $('sources').appendChild(p);
+      });
+      await loadLeaflet();
+      state.map = L.map('map').setView([.6, 101.8], 7);
+      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap contributors' }).addTo(state.map);
+      L.control.scale({ imperial: false }).addTo(state.map);
+      window.addEventListener('resize', () => state.map.invalidateSize());
+      const boundary = await fetchJSON('data/batas_provinsi_riau_dissolve.geojson'); state.boundary = collection(boundary);
+      L.geoJSON(boundary, { style: { color: '#235a46', weight: 2, fill: false }, interactive: false }).addTo(state.map); fit();
+      const peat = collection(await fetchJSON(definitions[0].path));
+      state.peat = peat.features;
+      state.peat.forEach(f => {
+        const bounds = L.geoJSON(f).getBounds(); f._restorationBounds = [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()];
+      });
+      state.cache.set('peat', peat);
+      const districts = new Map(); state.peat.forEach(f => { const name = f.properties?.KABKOT; if (name) districts.set(A.district(name), name); });
+      [...districts].sort(([a], [b]) => a.localeCompare(b)).forEach(([key, name]) => { const o = document.createElement('option'); o.value = name; o.textContent = key === 'SIAK' ? 'Siak' : name; $('regency').appendChild(o); });
+      $('regency').disabled = false; $('layers').disabled = false; $('fit').disabled = false; $('layer-peat').checked = true; filter();
+      catalogKHG(catalog);
+      $('layer-status').textContent = 'Data asli dimuat. Poligon abu-abu belum dinilai; pilih layer tambahan sesuai kebutuhan.';
+    } catch (error) {
+      status('Modul belum siap: ' + error.message + '. Tidak ada skor yang dihitung.');
+      if (!state.map) $('workspace').hidden = true;
+    }
+  }
+  boot();
+})();
