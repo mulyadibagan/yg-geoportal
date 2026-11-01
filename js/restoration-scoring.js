@@ -1,0 +1,76 @@
+(function (root, factory) {
+  const api = factory();
+  if (typeof module === 'object' && module.exports) module.exports = api;
+  else root.YG_RESTORATION = api;
+})(typeof globalThis !== 'undefined' ? globalThis : this, function () {
+  'use strict';
+  const VERSION = 'ecological-need-v1-provisional';
+  const INDICATORS = Object.freeze([
+    { id: 'degradation', label: 'Degradasi ekosistem', weight: .30 },
+    { id: 'fireHistory', label: 'Riwayat kebakaran', weight: .25 },
+    { id: 'hydrology', label: 'Gangguan hidrologi', weight: .25 },
+    { id: 'vegetationLoss', label: 'Kehilangan vegetasi', weight: .15 },
+    { id: 'peatSensitivity', label: 'Sensitivitas gambut', weight: .05 }
+  ].map(Object.freeze));
+  const finite = n => typeof n === 'number' && Number.isFinite(n);
+  const text = s => typeof s === 'string' && s.trim().length > 0;
+  function normalize(value, min, max, direction = 'increasing') {
+    if (![value, min, max].every(finite) || max <= min || value < min || value > max ||
+        !['increasing', 'decreasing'].includes(direction)) return null;
+    const score = (value - min) / (max - min) * 100;
+    return direction === 'decreasing' ? 100 - score : score;
+  }
+  function category(score) {
+    if (!finite(score) || score < 0 || score > 100) return 'Belum dinilai';
+    return score >= 75 ? 'Tinggi' : score >= 50 ? 'Sedang' : 'Rendah';
+  }
+  // All five indicators are critical until an approved missing-data policy exists.
+  // Validation is supplied by a reviewed upstream pipeline, never inferred from a map layer.
+  function assess(inputs = {}) {
+    inputs = inputs && typeof inputs === 'object' ? inputs : {};
+    const indicators = INDICATORS.map(def => {
+      const row = inputs[def.id], provenance = row?.provenance;
+      let reason = null;
+      if (!row || !finite(row.value)) reason = 'Data belum tersedia';
+      else if (row.validated !== true || !text(row.validation?.reviewer) || !text(row.validation?.reference)) reason = 'Data belum tervalidasi';
+      else if (!text(provenance?.source) || !Number.isInteger(provenance?.year) || provenance.year < 1900 || provenance.year > 2100 || !text(provenance?.version)) reason = 'Metadata sumber/tahun/versi belum lengkap';
+      else if (!text(row.normalization?.method)) reason = 'Metode normalisasi belum tersedia';
+      const score = reason ? null : normalize(row.value, row.normalization.min, row.normalization.max, row.normalization.direction);
+      if (!reason && score === null) reason = 'Nilai atau batas normalisasi tidak valid';
+      return { ...def, score, reason, provenance: provenance ? { ...provenance } : null,
+        validation: row?.validation ? { ...row.validation } : null,
+        normalization: row?.normalization ? { ...row.normalization } : null, value: row?.value ?? null };
+    });
+    const missing = indicators.filter(row => row.score === null).map(row => row.id);
+    const score = missing.length ? null : indicators.reduce((sum, row) => sum + row.weight * row.score, 0);
+    return { modelVersion: VERSION, score, category: category(score), indicators, missing,
+      implementationReadiness: { status: 'Belum dinilai', score: null } };
+  }
+  function district(value) { return String(value || '').toUpperCase().replace(/[^A-Z0-9]/g, ''); }
+  function select(features, regency, khg) {
+    return features.filter(f => (!regency || district(f.properties?.KABKOT) === district(regency)) &&
+      (!khg || String(f.properties?.khgId || '') === khg));
+  }
+  function summarize(features) {
+    const results = features.map(f => assess(f.properties?.restorationIndicators));
+    const areas = features.map(f => f.properties?.Luas_Ha);
+    return { count: features.length, assessed: results.filter(r => r.score !== null).length,
+      priorityCount: results.filter(r => r.category === 'Tinggi').length,
+      unassessed: results.filter(r => r.score === null).length,
+      // Preserve the source area; no conversion from Shape_Area (degrees squared).
+      sourceAreaHa: features.length && areas.every(a => finite(a) && a >= 0) ? areas.reduce((a, b) => a + b, 0) : null };
+  }
+  function ringContains(point, ring) {
+    let inside = false;
+    for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+      const a = ring[i], b = ring[j];
+      if ((a[1] > point[1]) !== (b[1] > point[1]) && point[0] < (b[0] - a[0]) * (point[1] - a[1]) / (b[1] - a[1]) + a[0]) inside = !inside;
+    }
+    return inside;
+  }
+  function contains(point, geometry) {
+    const polygons = geometry?.type === 'Polygon' ? [geometry.coordinates] : geometry?.type === 'MultiPolygon' ? geometry.coordinates : [];
+    return polygons.some(rings => rings.length && ringContains(point, rings[0]) && !rings.slice(1).some(r => ringContains(point, r)));
+  }
+  return Object.freeze({ VERSION, INDICATORS, normalize, category, assess, district, select, summarize, contains });
+});

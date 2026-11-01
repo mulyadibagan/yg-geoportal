@@ -1,0 +1,31 @@
+name: Validate internal restoration priority
+
+on:
+  pull_request:
+    paths:
+      - restoration-priority.html
+      - staff-riau-reference.html
+      - js/restoration-*.js
+      - css/restoration-priority.css
+      - data/restoration-priority-sources.json
+      - tests/restoration-*.test.cjs
+      - .github/workflows/validate-restoration-priority.yml
+
+permissions:
+  contents: read
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+      - name: Check scripts
+        run: |
+          node --check js/restoration-priority.js
+          node --check js/restoration-scoring.js
+          node --check js/restoration-catalog.js
+      - name: Test scoring, access and existing reference workspace
+        run: node --test tests/restoration-priority.test.cjs tests/restoration-catalog.test.cjs tests/riau-geoportal-internal.test.cjs tests/riau-reference-workspace.test.cjs tests/riau-reference-loading.test.cjs

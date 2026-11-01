@@ -1,0 +1,13 @@
+{
+  "schemaVersion": 1,
+  "analysisStatus": "unassessed",
+  "snapshotCommit": "e086c0c5ff6a3860b072c9732ce3df7e54e46077",
+  "sources": [
+    {"title":"Gambut BBSDLP 2019","source":"BBSDLP; data/Gambut_BBSDLP_2019.geojson","year":2019,"version":"repository e086c0c5ff6a3860b072c9732ce3df7e54e46077","scoringValidated":false,"note":"736 poligon sumber; luas dari Luas_Ha, bukan luas restorasi. Klasifikasi sensitivitas belum disetujui."},
+    {"title":"Batas Provinsi Riau","source":"data/batas_provinsi_riau_dissolve.geojson; turunan batas administrasi desa Riau","year":null,"version":"repository e086c0c5ff6a3860b072c9732ce3df7e54e46077","scoringValidated":false,"note":"Dissolve dan simplifikasi untuk referensi kartografis; bukan batas hukum resmi."},
+    {"title":"Sekat kanal","source":"data/sekat_kanal.geojson; inventaris WebGIS Yayasan Gambut","year":null,"version":"repository e086c0c5ff6a3860b072c9732ce3df7e54e46077","scoringValidated":false,"note":"13 titik; tahun per objek pada popup. Bukan jaringan kanal atau pengukuran hidrologi."},
+    {"title":"Hotspot confidence tinggi","source":"NASA FIRMS / LANCE; data/hotspot-high-confidence.geojson","year":null,"version":"generatedAt dan periode dari snapshot yang dimuat (lihat metadata runtime)","scoringValidated":false,"note":"Titik dipilih secara spasial dalam poligon gambut tersaring; snapshot bukan seluruh riwayat kebakaran."},
+    {"title":"Area terindikasi terbakar","source":"Sentinel-2 dNBR/NBR dan kandidat FIRMS; data/burned-area-estimates.geojson","year":null,"version":"generatedAt dari snapshot yang dimuat (lihat metadata runtime)","scoringValidated":false,"note":"Jumlah kejadian mengikuti snapshot yang dimuat; bukan hasil verifikasi lapangan dan tidak dipakai menghitung indikator."},
+    {"title":"FEG SK.130","source":"Endpoint staf eksisting /api/staff/feg-sk130-riau; dasar SK.130/MENLHK/SETJEN/PKL.0/2/2017","year":null,"version":"Dasar SK tahun 2017; versi geometri mengikuti metadata endpoint","scoringValidated":false,"note":"Endpoint telah memuat 424 fitur pada peta staf eksisting tanggal 1 November 2026. Integrasi halaman baru belum diuji di hosting. Tahun data geometri belum dipastikan; tidak diasumsikan sama dengan tahun SK."}
+  ]
+}

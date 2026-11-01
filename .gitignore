@@ -37,3 +37,8 @@ tmp/dayun-yaml/
 gha-creds-*.json
 data/RTRW*.geojson
 data/RDTR*.geojson
+
+# Local verification screenshots may contain staff-only map data.
+docs/restoration-priority-qa/
+docs/restoration-access-probes-*.json
+tests/serve-restoration-preview.cjs
