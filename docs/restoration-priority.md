@@ -1,6 +1,17 @@
 # Analisis Prioritas Restorasi Gambut — pengembangan internal
 
-Status per 1 November 2026: disiapkan untuk branch/draft PR GitHub atas arahan pengguna. Belum merge dan belum deploy. Modul belum menghasilkan prioritas ekologis nyata karena lima indikator belum lengkap/tervalidasi.
+Baseline PR #507 telah di-merge dan terbit pada 1 November 2026. Perubahan 3 November di bawah disiapkan pada branch/PR terpisah dan belum diterbitkan. Modul belum menghasilkan prioritas ekologis nyata karena lima indikator belum lengkap/tervalidasi.
+
+## Pengelompokan FEG menurut kode KHG — 3 November 2026
+
+- Tombol `Gunakan kode KHG dari FEG` memuat endpoint FEG staf yang sama, setelah gerbang backend berhasil. Tidak ada endpoint, menu publik atau akses baru. Pemuatan checkbox FEG dan tombol yang bersamaan berbagi satu permintaan; kegagalan dapat dicoba ulang.
+- Pilihan dibuat hanya dari `kode_khg` dan `nama_khg` sumber. Kode kosong/penanda tidak tersedia tidak diubah menjadi kelompok rekaan. Perbedaan nama untuk kode yang sama dilaporkan; kode berbeda tetap kelompok berbeda meskipun namanya sama.
+- Setiap pilihan menyorot kumpulan poligon FEG asli sebagai FeatureCollection, tanpa dissolve, simplifikasi, overlay, agregasi luas, atau perubahan geometri sumber. **Bagian FEG menurut KHG bukan batas KHG mandiri.**
+- Jumlah fitur tanpa kode/nama, geometri yang tidak lolos pemeriksaan struktur, dan konflik nama ditampilkan. CRS/struktur mengikuti validator referensi; ini bukan validasi topologi/keutuhan batas KHG atau persetujuan scoring.
+- Sumber fokus aktif terlihat jelas. Katalog KHG mandiri dan kelompok FEG dapat dipilih secara eksplisit; mengaktifkan layer FEG tidak menimpa fokus katalog yang sudah aktif. Mematikan FEG menghapus sorotan kelompok FEG.
+- Ringkasan tetap memakai kabupaten dan luas poligon gambut sumber utuh. Skor/kesiapan pelaksanaan tidak berubah dan tetap belum dinilai. Geometri serta kelompok hanya berada di memori browser, tidak ditulis ke repository atau penyimpanan browser.
+- `tests/restoration-feg-selection.test.cjs` menguji alur kontrol dengan DOM/Leaflet tiruan terisolasi, bukan browser berlogin atau hasil spasial nyata. Test mempertahankan identitas geometri sumber, ringkasan/skor, pemuatan bersama, pergantian sumber dan retry. Data numerik sintetis hanya berada dalam unit test.
+- **45 test terkait lulus**. Pengelompokan baru belum diverifikasi dengan respons FEG privat nyata di hosting; itu memerlukan publikasi perubahan yang belum diizinkan pada tahap ini. Baseline 424 fitur FEG nyata telah diuji saat deploy #507.
 
 ## Akses dan publikasi
 
@@ -48,17 +59,17 @@ Melalui browser dan UI staf eksisting secara baca-saja:
 ## Pengujian
 
 ```text
-node --test tests/restoration-priority.test.cjs tests/restoration-catalog.test.cjs tests/riau-geoportal-internal.test.cjs tests/riau-reference-workspace.test.cjs tests/riau-reference-loading.test.cjs
+node --test tests/restoration-priority.test.cjs tests/restoration-catalog.test.cjs tests/restoration-feg-selection.test.cjs tests/riau-geoportal-internal.test.cjs tests/riau-reference-workspace.test.cjs tests/riau-reference-loading.test.cjs
 node --check js/restoration-priority.js
 node --check js/restoration-scoring.js
 node --check js/restoration-catalog.js
 ```
 
-**37 test lulus**: scoring dan batas kategori, data kosong, metadata/metode belum valid, data BBSDLP asli, lubang poligon, urutan verifikasi backend sebelum pembukaan workspace, iframe, HTTP/host tidak diizinkan, 401/403/503, jaringan/format respons gagal, checksum/stream/geometri KHG dan regresi workspace eksisting.
+**45 test lulus**: scoring dan batas kategori, data kosong, metadata/metode belum valid, data BBSDLP asli, lubang poligon, urutan verifikasi backend sebelum pembukaan workspace, iframe, HTTP/host tidak diizinkan, 401/403/503, jaringan/format respons gagal, checksum/stream/geometri KHG, pengelompokan FEG dan regresi workspace eksisting.
 
 QA UI baseline sebelum perubahan target hosting: desktop 1440x1000 dan tablet 820x1180 tanpa overflow; peta, filter Siak, popup, sekat kanal dan estimasi terbakar memakai data asli, dengan autentikasi fixture terisolasi. QA tersebut bukan uji SSO halaman baru. Akses/FEG nyata diverifikasi terpisah seperti dijelaskan di atas.
 
-Belum diuji: halaman baru end-to-end pada origin WebGIS, pemuatan KHG mandiri nyata, QA topologi/overlay dan skor ekologis nyata. Test guard privat eksisting memeriksa penolakan artefak sumber bocor; tidak dibuat artefak Pages produksi dalam pekerjaan ini.
+Baseline setelah deploy #507: workspace staf, 424 fitur FEG dan filter Siak (38 poligon) berhasil pada origin WebGIS. Browser tanpa sesi ditolak; endpoint privat menghasilkan 401 dan jalur statis privat 404. Belum diuji: pengelompokan FEG baru pada hosting, pemuatan KHG mandiri nyata, QA topologi/overlay dan skor ekologis nyata.
 
 ## Langkah berikutnya
 

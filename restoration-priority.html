@@ -30,8 +30,11 @@
           <label>Dataset KHG katalog staf<select id="khg-dataset" disabled><option value="">Data belum tersedia</option></select></label>
           <button id="load-khg" type="button" disabled>Muat referensi KHG</button>
           <p id="khg-status" role="status">Katalog KHG belum diperiksa.</p>
+          <button id="use-feg-khg" type="button" disabled>Gunakan kode KHG dari FEG</button>
+          <p id="feg-khg-status" role="status">Kode/nama KHG dapat dikelompokkan dari atribut FEG asli setelah dimuat. Bagian FEG bukan batas KHG mandiri.</p>
           <label>KHG (fokus peta)<select id="khg" disabled><option value="">Data belum tersedia</option></select></label>
-          <p class="muted">Pilihan KHG hanya menyorot dan memfokuskan peta. Ringkasan serta filter analisis tetap berdasarkan kabupaten; belum ada overlay/luas irisan KHG tervalidasi.</p>
+          <p id="khg-focus-source" role="status">Sumber fokus belum dipilih.</p>
+          <p class="muted">Pilihan KHG hanya menyorot dan memfokuskan peta. Sumber aktif dijelaskan pada status. Kelompok dari FEG mempertahankan poligon sumber tanpa dissolve. Ringkasan serta filter analisis tetap berdasarkan kabupaten; belum ada overlay/luas irisan KHG tervalidasi.</p>
           <p class="muted">Filter kabupaten memakai atribut KABKOT BBSDLP 2019. KHG memerlukan batas dan relasi spasial yang tervalidasi.</p>
           <fieldset id="layers" disabled><legend>Layer referensi</legend></fieldset>
           <button id="fit" type="button" disabled>Zoom ke wilayah tersaring</button>

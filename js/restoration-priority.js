@@ -5,7 +5,8 @@
   const $ = id => document.getElementById(id);
   const BASE = 'https://webgis-api.yayasangambut.org';
   const state = { map: null, peat: [], boundary: null, filtered: [], cache: new Map(), layers: new Map(), session: null };
-  state.khgCandidates = []; state.khgFeatures = []; state.khgLayer = null;
+  state.khgCandidates = []; state.khgFeatures = []; state.khgLayer = null; state.khgMode = null; state.fegGroups = null;
+  state.pendingData = new Map();
   const definitions = [
     { id: 'peat', label: 'Gambut BBSDLP 2019', path: 'data/Gambut_BBSDLP_2019.geojson', color: '#7e8982', note: 'Unit referensi analisis, bukan hasil prioritas' },
     { id: 'khg', label: 'KHG', note: 'Data belum tersedia · batas dan relasi spasial belum terverifikasi' },
@@ -27,6 +28,12 @@
   function collection(data) {
     if (data?.type !== 'FeatureCollection' || !Array.isArray(data.features)) throw new Error('GeoJSON FeatureCollection tidak valid');
     return data;
+  }
+  async function layerData(def) {
+    if (state.cache.has(def.id)) return state.cache.get(def.id);
+    if (!state.pendingData.has(def.id)) state.pendingData.set(def.id,
+      fetchJSON(def.path, def.private).then(collection).then(data => { state.cache.set(def.id, data); return data; }).finally(() => state.pendingData.delete(def.id)));
+    return state.pendingData.get(def.id);
   }
   function popup(feature, title) {
     const p = feature.properties || {};
@@ -68,23 +75,27 @@
     state.layers.set(def.id, layer);
     $('state-' + def.id).textContent = features.length.toLocaleString('id-ID') + ' objek ditampilkan · ' + def.note;
   }
+  function recordLayerSource(def, data) {
+    const sourceId = 'runtime-source-' + def.id;
+    let source = document.getElementById(sourceId);
+    if (!source) { source = document.createElement('p'); source.id = sourceId; $('sources').appendChild(source); }
+    source.textContent = def.label + ' · metadata runtime · versi generatedAt: ' + (data.generatedAt || 'belum tersedia') +
+      ' · periode: ' + (data.coverageStart || 'belum tersedia') + ' sampai ' + (data.coverageEnd || 'belum tersedia') +
+      ' · objek sumber: ' + data.features.length + ' · jalur: ' + (def.private ? 'endpoint staf eksisting' : def.path) + ' · belum tervalidasi untuk scoring';
+  }
   async function toggle(def, input) {
     if (!input.checked) {
       if (state.layers.has(def.id)) state.map.removeLayer(state.layers.get(def.id));
+      if (def.id === 'feg' && state.khgMode === 'feg') { $('khg').value = ''; focusKHG(); }
       $('state-' + def.id).textContent = 'Tidak ditampilkan · ' + def.note;
       return;
     }
     input.disabled = true; $('state-' + def.id).textContent = 'Memuat data asli…';
     try {
-      if (!state.cache.has(def.id)) state.cache.set(def.id, collection(await fetchJSON(def.path, def.private)));
-      const data = state.cache.get(def.id);
-      const sourceId = 'runtime-source-' + def.id;
-      let source = document.getElementById(sourceId);
-      if (!source) { source = document.createElement('p'); source.id = sourceId; $('sources').appendChild(source); }
-      source.textContent = def.label + ' · metadata runtime · versi generatedAt: ' + (data.generatedAt || 'belum tersedia') +
-        ' · periode: ' + (data.coverageStart || 'belum tersedia') + ' sampai ' + (data.coverageEnd || 'belum tersedia') +
-        ' · objek sumber: ' + data.features.length + ' · jalur: ' + (def.private ? 'endpoint staf eksisting' : def.path) + ' · belum tervalidasi untuk scoring';
+      const data = await layerData(def);
+      recordLayerSource(def, data);
       draw(def);
+      if (def.id === 'feg' && !state.khgMode) useFEGGroups(data);
     } catch (error) {
       input.checked = false; $('state-' + def.id).textContent = 'Data belum tersedia · ' + error.message;
     } finally { input.disabled = false; }
@@ -116,6 +127,36 @@
     $('indicators').innerHTML = A.INDICATORS.map(i => '<tr><td>' + esc(i.label) + '</td><td>' + Math.round(i.weight * 100) + '%</td><td>Belum dinilai · data/metode belum tervalidasi</td></tr>').join('');
     $('regency').addEventListener('change', filter); $('khg').addEventListener('change', focusKHG); $('fit').addEventListener('click', fit);
     $('load-khg').addEventListener('click', loadKHG);
+    $('use-feg-khg').addEventListener('click', loadFEGGroups);
+  }
+  function useFEGGroups(data) {
+    const result = C.groupFEG(data);
+    state.fegGroups = result;
+    const messages = [result.groups.length + ' kode KHG dari atribut FEG',
+      result.missingCode + ' fitur tanpa kode', result.invalidGeometry + ' geometri tidak lolos struktur',
+      result.missingName + ' fitur tanpa nama', result.groups.filter(g => g.nameConflict).length + ' kode dengan nama berbeda'];
+    $('feg-khg-status').textContent = messages.join(' · ') + '. Bukan batas KHG mandiri; tidak mengubah luas/ringkasan atau skor ekologis.';
+    if (!result.groups.length) return;
+    state.khgMode = 'feg';
+    state.khgFeatures = result.groups.map(g => ({ type: 'FeatureCollection', features: g.features }));
+    const select = $('khg'); select.replaceChildren();
+    const none = document.createElement('option'); none.value = ''; none.textContent = 'Tanpa fokus kelompok FEG'; select.appendChild(none);
+    result.groups.forEach((g,index) => { const option = document.createElement('option'); option.value = String(index); option.textContent = g.label; select.appendChild(option); });
+    select.disabled = false; focusKHG();
+    $('state-khg').textContent = 'Sumber fokus: kelompok bagian FEG menurut kode KHG · bukan batas KHG mandiri';
+    $('khg-focus-source').textContent = 'Sumber fokus aktif: bagian FEG SK.130 menurut atribut kode_khg/nama_khg. Bukan batas KHG mandiri.';
+  }
+  async function loadFEGGroups() {
+    const button = $('use-feg-khg'), def = definitions.find(d => d.id === 'feg');
+    button.disabled = true;
+    $('feg-khg-status').textContent = 'Memuat FEG asli melalui endpoint staf…';
+    try {
+      const data = await layerData(def);
+      recordLayerSource(def, data);
+      $('layer-feg').checked = true; draw(def);
+      useFEGGroups(data);
+    } catch (error) { $('feg-khg-status').textContent = 'Data belum tersedia · ' + error.message; }
+    finally { button.disabled = false; }
   }
   function catalogKHG(catalog) {
     state.khgCandidates = C.candidates(catalog);
@@ -131,7 +172,9 @@
     const selected = $('khg').value;
     if (selected === '') { fit(); return; }
     const feature = state.khgFeatures[Number(selected)]; if (!feature) return;
-    state.khgLayer = L.geoJSON(feature, { style: { color: '#375bb1', weight: 3, fillOpacity: .08 }, onEachFeature: (f,l) => l.bindPopup(() => popup(f, 'KHG · referensi peta, belum dinilai')) }).addTo(state.map);
+    if (state.khgMode === 'feg' && !$('layer-feg').checked) { $('layer-feg').checked = true; draw(definitions.find(d => d.id === 'feg')); }
+    const title = state.khgMode === 'feg' ? 'Bagian FEG pada ' + state.fegGroups.groups[Number(selected)].code + ' · bukan batas KHG mandiri' : 'KHG · referensi peta, belum dinilai';
+    state.khgLayer = L.geoJSON(feature, { style: { color: '#375bb1', weight: 3, fillOpacity: .08 }, onEachFeature: (f,l) => l.bindPopup(() => popup(f, title)) }).addTo(state.map);
     state.map.fitBounds(state.khgLayer.getBounds(), { padding: [20,20], maxZoom: 12 });
   }
   async function loadKHG() {
@@ -145,16 +188,19 @@
       });
       if (response.status === 401 || response.status === 403) { $('workspace').hidden = true; status('Akses ditolak. Sesi/otorisasi staf tidak berlaku; login ulang diperlukan.'); }
       const data = await C.readDisplay(response, item, crypto);
+      state.khgMode = 'catalog';
       state.khgFeatures = data.features;
       const select = $('khg'); select.replaceChildren();
       const all = document.createElement('option'); all.value = ''; all.textContent = 'Tanpa fokus KHG'; select.appendChild(all);
       data.features.forEach((f,index) => { const option = document.createElement('option'); option.value = String(index); option.textContent = C.label(f,index); select.appendChild(option); });
       select.disabled = false; focusKHG();
       $('state-khg').textContent = 'Referensi tersedia melalui pemilih fokus KHG di atas · belum ada overlay analisis';
+      $('khg-focus-source').textContent = 'Sumber fokus aktif: ' + item.title + ' · UUID ' + item.uuid + ' · katalog staf, belum dinilai.';
       $('khg-status').textContent = item.title + ' · ' + data.features.length + ' poligon · UUID ' + item.uuid + ' · sumber: ' + item.source + ' · tahun: ' + (item.year ?? 'belum diketahui') + ' · versi SHA-256: ' + item.sha256 + '. Lolos pemeriksaan struktur/checksum, belum QA topologi atau scoring. Ringkasan tidak difilter KHG.';
     } catch (error) {
-      state.khgFeatures = []; $('khg').replaceChildren(); $('khg').disabled = true; focusKHG();
+      state.khgMode = null; state.khgFeatures = []; $('khg').replaceChildren(); $('khg').disabled = true; focusKHG();
       $('state-khg').textContent = 'Data belum tersedia · pemuatan KHG gagal';
+      $('khg-focus-source').textContent = 'Sumber fokus belum tersedia; pemuatan katalog gagal.';
       $('khg-status').textContent = 'Data belum tersedia · ' + error.message;
     } finally { $('load-khg').disabled = false; $('khg-dataset').disabled = false; }
   }
@@ -207,7 +253,7 @@
       state.cache.set('peat', peat);
       const districts = new Map(); state.peat.forEach(f => { const name = f.properties?.KABKOT; if (name) districts.set(A.district(name), name); });
       [...districts].sort(([a], [b]) => a.localeCompare(b)).forEach(([key, name]) => { const o = document.createElement('option'); o.value = name; o.textContent = key === 'SIAK' ? 'Siak' : name; $('regency').appendChild(o); });
-      $('regency').disabled = false; $('layers').disabled = false; $('fit').disabled = false; $('layer-peat').checked = true; filter();
+      $('regency').disabled = false; $('layers').disabled = false; $('fit').disabled = false; $('use-feg-khg').disabled = false; $('layer-peat').checked = true; filter();
       catalogKHG(catalog);
       $('layer-status').textContent = 'Data asli dimuat. Poligon abu-abu belum dinilai; pilih layer tambahan sesuai kebutuhan.';
     } catch (error) {
