@@ -15,6 +15,7 @@ Setiap eksekusi membuat direktori baru `private-data/restoration-sources-*` dan 
 | units.geojson | Seluruh baris BBSDLP asli, geometri tidak diubah, atribut tanah dipertahankan, QA duplikasi/wilayah, hitungan observasi hotspot dalam poligon, lima indikator null dan validated false |
 | fire-archive.json | Salinan arsip bulanan asli dan indeksnya; tidak digabung atau dijumlahkan sebagai riwayat lengkap |
 | manifest.json | Identitas sumber, tahun/periode yang tersedia, SHA-256, status cakupan, jumlah fitur, hasil QA dan keterbatasan |
+| unit-review.json | Antrean QA privat: anggota kelompok geometri identik, kolom/nilai yang bertentangan, nomor baris sumber dan konflik KK/KABKOT; keputusan tetap null |
 
 ID unit mengikat **nomor baris ke SHA-256 persis berkas BBSDLP**. ID unik dalam paket, tetapi bukan ID legal KHG atau identitas stabil lintas versi. Pembaruan sumber memerlukan rekonsiliasi unit. SHA bukan bukti persetujuan ilmiah.
 
@@ -22,6 +23,7 @@ ID unit mengikat **nomor baris ke SHA-256 persis berkas BBSDLP**. ID unik dalam 
 
 - BBSDLP: 736 baris, tahun atribut 2019 pada seluruh baris, 725 geometri unik secara persis. Ada 11 baris dengan geometri yang sudah muncul, termasuk 3 baris identik penuh. Semua dipertahankan dan diberi rujukan duplikat; luas tidak dihitung ulang.
 - Sebanyak 105 baris berbeda antara `KK` dan `KABKOT` setelah normalisasi penulisan. Keduanya kolom wilayah dan dipertahankan; tidak dipilih salah satunya sebagai kebenaran secara otomatis.
+- Pemeriksaan lanjutan memisahkan 9 kelompok geometri identik: 8 kelompok memiliki atribut bertentangan, termasuk kelas ketebalan/jenis tanah, dan 1 kelompok sepenuhnya identik. Tiga baris identik penuh juga dapat berada di dalam kelompok yang memuat varian atribut. Karena itu geometri sama tidak boleh langsung di-dissolve atau dipilih satu kelas tanahnya. Semua anggota kelompok, termasuk kemunculan pertama, diberi flag review. Tidak ada unit yang diberi status disetujui otomatis.
 - `KETEBALAN` berisi kelas kategoris, bukan kedalaman numerik hasil pengukuran. `pH` berisi kelas "Sangat Masam - Masam", bukan angka. `JNTNH1` memuat jenis tanah seperti Organosol Saprik. Tidak dikonversi menjadi skor sensitivitas.
 - Snapshot hotspot pada eksekusi awal: 53.057 titik valid; tidak ada observasi yang masuk poligon BBSDLP pada snapshot tersebut. Ini bukan bukti tidak pernah terbakar. Periode dan kegagalan/cakupan provider disimpan dalam manifest. Observasi bukan kejadian unik; unit tumpang tindih dapat menerima observasi yang sama.
 - Arsip indikasi terbakar: Juli 2026 3 fitur, Agustus 20, September 20, Oktober 5; seluruh laporan berstatus **partial**. Geometri adalah indikasi Sentinel-2 dNBR/NBR, bukan validasi lapangan. Fitur antarbulan dapat berulang; jumlah fitur dan luas tidak dijumlahkan sebagai total unik. Belum dilakukan overlay ke unit gambut.

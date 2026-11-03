@@ -33,6 +33,11 @@ test('duplicate source rows and overlapping units are flagged and never silently
   assert.equal(r.manifest.qa.districtConflicts,2);assert.equal(r.manifest.qa.multipleUnitObservations,1);
   assert.equal(r.manifest.qa.matchedObservations,1);
   assert.equal(r.units.features[1].properties.qa.duplicateGeometryOf,r.units.features[0].id);
+  assert.equal(r.review.decisionsApplied,false);
+  assert.equal(r.review.duplicateGeometryGroups[0].classification,'identical-source-rows');
+  assert.deepEqual(r.review.duplicateGeometryGroups[0].conflictingFields,[]);
+  assert.equal(r.review.districtReviews.length,2);
+  assert.ok(r.units.features.every(unit=>unit.properties.qa.reviewFlags.includes('identical-geometry')));
 });
 test('holes and invalid points are handled; zero snapshot counts do not become fire scores',async()=>{
   const {prepare}=await import('../scripts/prepare-restoration-sources.mjs');
@@ -59,5 +64,19 @@ test('actual BBSDLP rows retain duplicate/conflict QA and remain unassessed',asy
   assert.equal(r.units.features.length,736);assert.equal(r.manifest.qa.duplicateGeometryRows,11);
   assert.equal(r.manifest.qa.duplicateFeatureRows,3);assert.equal(r.manifest.qa.districtConflicts,105);
   assert.equal(new Set(r.units.features.map(f=>f.id)).size,736);
+  assert.equal(r.review.duplicateGeometryGroups.length,9);
+  assert.equal(r.manifest.qa.conflictingGeometryGroups,8);
+  assert.equal(r.review.districtReviews.length,105);
+  assert.ok(r.review.duplicateGeometryGroups.some(group=>group.conflictingFields.some(row=>row.field==='KETEBALAN')));
+  assert.ok(r.review.districtReviews.every(row=>row.decision===null));
   assert.ok(r.units.features.every(f=>A.assess(f.properties.restorationIndicators).score===null));
+});
+test('conflicting soil classes in identical geometries are exposed without choosing a winner',async()=>{
+  const {prepare}=await import('../scripts/prepare-restoration-sources.mjs');
+  const r=prepare(fc([polygon({KETEBALAN:'Dalam'}),polygon({KETEBALAN:'Dangkal'})]),fc([]),provenance);
+  const group=r.review.duplicateGeometryGroups[0];
+  assert.equal(group.classification,'same-geometry-conflicting-attributes');assert.equal(group.decision,null);
+  assert.deepEqual(group.conflictingFields[0].values.map(row=>row.value),['Dalam','Dangkal']);
+  assert.ok(r.units.features.every(unit=>unit.properties.qa.analysisUnitApproved===false));
+  assert.equal(r.units.features.length,2);
 });

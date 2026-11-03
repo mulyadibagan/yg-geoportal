@@ -53,6 +53,35 @@ export function prepare(peat, hotspots, provenance) {
     }};
   });
   const indexed=units.map(unit=>({unit,bbox:bounds(unit.geometry)}));
+  const grouped=new Map();
+  units.forEach(unit=>{
+    const key=unit.properties.qa.duplicateGeometryOf||unit.id;
+    if(!grouped.has(key))grouped.set(key,[]);
+    grouped.get(key).push(unit);
+  });
+  const duplicateGeometryGroups=Array.from(grouped.values()).filter(group=>group.length>1).map(group=>{
+    const rows=group.map(unit=>peat.features[unit.properties.sourceFeatureIndex].properties||{});
+    const keys=[...new Set(rows.flatMap(row=>Object.keys(row)))].sort();
+    const conflictingFields=keys.filter(key=>new Set(rows.map(row=>JSON.stringify(row[key]))).size>1)
+      .map(field=>({field,values:group.map((unit,index)=>({unitId:unit.id,present:Object.hasOwn(rows[index],field),value:rows[index][field]??null}))}));
+    group.forEach(unit=>{unit.properties.qa.identicalGeometryGroup=group[0].id;});
+    return {groupId:group[0].id,unitIds:group.map(unit=>unit.id),sourceRows:group.map(unit=>unit.properties.sourceFeatureIndex+1),
+      classification:conflictingFields.length?'same-geometry-conflicting-attributes':'identical-source-rows',
+      conflictingFields,decision:null,status:'needs-source-review'};
+  });
+  const districtReviews=units.filter(unit=>unit.properties.qa.districtConflict).map(unit=>({
+    unitId:unit.id,sourceRow:unit.properties.sourceFeatureIndex+1,
+    KK:unit.properties.sourceAttributes.KK,KABKOT:unit.properties.sourceAttributes.KABKOT,
+    decision:null,status:'needs-authoritative-boundary-or-source-review'
+  }));
+  units.forEach(unit=>{
+    const qa=unit.properties.qa;
+    qa.reviewFlags=[...(qa.identicalGeometryGroup?['identical-geometry']:[]),...(qa.districtConflict?['district-field-conflict']:[])];
+    qa.analysisUnitApproved=false;
+  });
+  const review={schemaVersion:1,access:'staff_only',sourceSha256:provenance.peatSha256,
+    decisionsApplied:false,duplicateGeometryGroups,districtReviews,
+    note:'Review evidence only. All original rows retained; no canonical soil class or district is selected.'};
   let invalidPoints=0,matchedObservations=0,unmatchedObservations=0,multipleUnitObservations=0;
   for(const feature of hotspots.features){
     if(!isPoint(feature)){invalidPoints++;continue;}
@@ -75,6 +104,9 @@ export function prepare(peat, hotspots, provenance) {
         skippedChunks:hotspots.skippedChunks??null,providers:hotspots.providers??null,featureCount:hotspots.features.length}
     ],
     qa:{structuralGeometryValidated:true,topologyValidated:false,duplicateGeometryRows,duplicateFeatureRows,districtConflicts,
+      duplicateGeometryGroups:duplicateGeometryGroups.length,
+      conflictingGeometryGroups:duplicateGeometryGroups.filter(group=>group.conflictingFields.length).length,
+      unitsWithReviewFlags:units.filter(unit=>unit.properties.qa.reviewFlags.length).length,
       invalidPoints,matchedObservations,unmatchedObservations,multipleUnitObservations},
     limitations:[
       'All five indicator values remain null and unvalidated; no priority scores.',
@@ -84,7 +116,7 @@ export function prepare(peat, hotspots, provenance) {
       'No area, polygon intersection, legal KHG identity, or hydrological condition is inferred.',
       'Source attributes and duplicate/conflicting units require expert and spatial QA before use.'
     ]};
-  return {manifest,units:{type:'FeatureCollection',features:units}};
+  return {manifest,review,units:{type:'FeatureCollection',features:units}};
 }
 
 async function readJSON(relative){
@@ -126,6 +158,7 @@ export async function stage(){
   // Fresh directory; never overwrite a previously reviewed package.
   const output=await fs.mkdtemp(path.join(privateRoot,'restoration-sources-'));
   await fs.writeFile(path.join(output,'units.geojson'),JSON.stringify(result.units),{flag:'wx'});
+  await fs.writeFile(path.join(output,'unit-review.json'),JSON.stringify(result.review,null,2),{flag:'wx'});
   await fs.writeFile(path.join(output,'fire-archive.json'),JSON.stringify({index:archiveIndex.data,archives}),{flag:'wx'});
   await fs.writeFile(path.join(output,'manifest.json'),JSON.stringify(result.manifest,null,2),{flag:'wx'});
   return {output,featureCount:result.units.features.length,qa:result.manifest.qa,fireArchive:archiveMetadata.map(r=>({month:r.month,status:r.status,featureCount:r.featureCount}))};
