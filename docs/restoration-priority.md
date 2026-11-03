@@ -80,6 +80,8 @@ Baseline setelah deploy #507: workspace staf, 424 fitur FEG dan filter Siak (38 
 
 ## 3 November 2026 — pintu masuk staf dan wilayah kajian
 
+Pembaruan navigasi: tautan beranda dipindahkan ke **Tools → Prioritas Restorasi Gambut**, dibuat hanya saat sesi staf masih berlaku. Perubahan focus/storage memeriksa kembali sesi dan menghapus tautan bila tidak berlaku. Akses dari Peta Referensi Riau serta verifikasi backend pada halaman tetap dipertahankan.
+
 Usulan lanjutan setelah PR #512/#513: menu utama Beranda menampilkan Prioritas Restorasi hanya pada sesi staf yang masih berlaku. Ini hanya visibilitas navigasi; halaman tetap memerlukan verifikasi backend sebelum membaca data dan membuka workspace. Tidak ada endpoint atau data privat baru.
 
 Tampilan merangkum kabupaten dari atribut KABKOT BBSDLP 2019, luas sumber Luas_Ha, jumlah poligon dan status penilaian. Kabupaten tidak menggantikan batas KHG; tidak ada luas irisan maupun luas restorasi yang dihitung. Semua lima indikator tetap wajib. Rincian layer, sumber, cakupan dan metode dapat diperluas. Pemilih KHG tetap menggunakan FEG privat yang sudah tersedia.

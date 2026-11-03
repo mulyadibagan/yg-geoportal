@@ -3,6 +3,8 @@ name: Validate internal restoration priority
 on:
   pull_request:
     paths:
+      - index.html
+      - js/navigation-v2.js
       - restoration-priority.html
       - staff-riau-reference.html
       - js/restoration-*.js
