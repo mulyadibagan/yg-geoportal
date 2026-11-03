@@ -30,6 +30,9 @@ test("Riau Geoportal catalogue is a no-index staff surface", () => {
 
 test("catalogue requests only authenticated private Worker routes", () => {
   const app = read("js/riau-geoportal-internal.js");
+  const page = read("staff-riau-reference.html");
+  assert.match(app, /const API = "https:\/\/webgis-api\.yayasangambut\.org"/);
+  assert.match(page, /connect-src 'self' https:\/\/webgis-api\.yayasangambut\.org/);
   assert.match(app, /authorization", "Bearer " \+ state\.session\.token/);
   assert.match(app, /credentials: "omit"/);
   assert.match(app, /\/api\/staff\/riau-geoportal\/catalog/);
@@ -63,7 +66,7 @@ test("catalogue preserves UUID identity and streams large source downloads safel
 test("metadata notes do not hide a display-ready dataset", () => {
   const page = read("staff-riau-reference.html");
   const app = read("js/riau-geoportal-internal.js");
-  assert.match(page, /riau-geoportal-internal\.js\?v=20260921-opd2/);
+  assert.match(page, /riau-geoportal-internal\.js\?v=20261103-staff-entry1/);
   const displayCheck = app.indexOf('if (item.displayAvailable) return "display";');
   const issueCheck = app.indexOf('if (item.mirrorError || /fail|error|blocked/.test(item.mirrorStatus)) return "issue";');
   assert.ok(displayCheck > 0);
