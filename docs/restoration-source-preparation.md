@@ -2,7 +2,7 @@
 
 ## Hasil yang benar-benar disiapkan
 
-Jalankan di checkout repository, tanpa server localhost atau dependency baru:
+Jalankan di checkout repository, tanpa server localhost. Persiapan dasar memakai Node bawaan; overlay/raster memakai versi pustaka GIS yang sudah digunakan WebGIS, dipasang terisolasi di folder privat tanpa mengubah dependency produksi:
 
 ```powershell
 node scripts/prepare-restoration-sources.mjs
@@ -50,3 +50,41 @@ Tabel berikut adalah rancangan persiapan, **bukan metode normalisasi atau nilai 
 4. Dokumentasikan metode normalisasi, referensi ilmiah, reviewer dan bukti validasi yang nyata. Tidak ada penandaan validated otomatis oleh persiapan ini.
 5. Jalankan `check-restoration-inputs.mjs` pada paket setelah indikator diisi dari pipeline yang sudah divalidasi. Saat ini hasil yang benar adalah **incomplete**, bukan skor nol.
 6. Integrasikan paket melalui penyimpanan/API staf eksisting setelah QA akses dan izin data terverifikasi. Jangan menaruhnya di folder data statis publik. Kesiapan pelaksanaan tetap terpisah dari kebutuhan ekologis.
+
+## Rekonsiliasi dan akuisisi tambahan, 3 November 2026
+
+Paket dasar dilanjutkan dengan perbandingan geometri menggunakan Turf 7.2.0 dan pembacaan raster GeoTIFF 2.1.3. Versi tersebut sudah digunakan pada komponen WebGIS; runtime pemrosesan disimpan hanya di `private-data/restoration-runtime`. Ganti `<id>` dalam perintah berikut dengan direktori yang dicetak tahap sebelumnya:
+
+```powershell
+npm install --prefix private-data/restoration-runtime --no-save --ignore-scripts --no-audit --no-fund @turf/turf@7.2.0 geotiff@2.1.3
+node scripts/reconcile-restoration-evidence.mjs "private-data/restoration-sources-<id>"
+node scripts/acquire-restoration-gfc.mjs
+node scripts/extract-restoration-tree-loss.mjs "private-data/restoration-reconciled-<id>" "private-data/restoration-gfc-<id>"
+```
+
+**Rekonsiliasi yang benar-benar diterapkan:** tiga baris yang identik sebagai Feature sumber lengkap dihilangkan hanya dari turunan `canonical-units.geojson`; hasilnya 733 unit. `reconciliation.json` mencatat hash baris sumber dan hubungan semua ID asal. Geometri sama dengan atribut tanah berbeda tetap dipertahankan. Seluruh sumber awal tetap ada. Ini penyelesaian redundansi rekaman, bukan pengesahan kelas tanah atau unit ekologis.
+
+**Hasil pemeriksaan spasial:** delapan unit tidak lolos kombinasi `booleanValid`/`kinks` dan dikecualikan dari ekstraksi raster/overlay. Ini pemeriksaan teknis konservatif, bukan audit topologi independen. Sebanyak 101 fitur batas referensi dan 33 fitur arsip terbakar tidak lolos pemeriksaan yang sama. Tidak ada perbaikan geometri otomatis yang dapat menghilangkan atau mengubah bagian sumber.
+
+Untuk 105 perbedaan KK/KABKOT, diperoleh bukti irisan batas pada 100 kasus. Dari keseluruhan kasus, 58 berstatus reference-overlaps-only dan 47 memiliki bukti tidak lengkap karena masalah geometri atau fitur referensi yang dikecualikan. Batas desa mengandung label multi-kabupaten/sengketa dan tahun tidak tersedia; hasilnya tidak dipakai memilih salah satu kolom sebagai administrasi resmi. Koreksi administrasi tetap null.
+
+Arsip terbakar menghasilkan irisan indikasi pada 27 unit dari fitur yang lolos pemeriksaan. Pada 75 unit terdapat status incomplete-overlay. Tidak ada luasan terbakar per unit, pengesahan kebakaran lapangan, ataupun riwayat lengkap yang dihasilkan. Identitas kejadian dan bulan sumber disimpan agar tidak disamakan dengan kejadian unik tanpa review.
+
+### Sumber vegetasi asli yang ditambahkan
+
+[Global Forest Change 2000–2025 v1.13 dari UMD](https://storage.googleapis.com/earthenginepartners-hansen/GFC-2025-v1.13/download.html) menyediakan `lossyear` dan `datamask`. Akuisisi memverifikasi nama tile pada daftar resmi lalu mengambil 00N_100E dan 10N_100E untuk kedua layer. Empat berkas asli (204.967.257 byte pada pengambilan ini) disimpan privat beserta SHA-256, ETag, versi, waktu pengambilan, sumber dan atribusi Hansen/UMD/Google/USGS/NASA. Tidak ada geometri unit atau kredensial staf yang dikirim ke penyedia.
+
+Ekstraksi memverifikasi checksum, EPSG:4326 dan keselarasan grid kedua layer. Piksel dihitung pada resolusi asli menurut pusat piksel dalam poligon, dengan lubang dikecualikan; tidak dilakukan resampling. Kode kehilangan dicatat per tahun 2001–2025 pada datamask=1, terpisah dari piksel air, nodata, nilai tidak valid dan unit tanpa pusat piksel. Jumlah piksel adalah observasi peta, **bukan estimasi hektare definitif atau skor**. Unit yang bertumpang tindih tidak boleh dijumlahkan. Indikator vegetasi tetap null karena kehilangan tutupan pohon tidak mencakup seluruh vegetasi dan metode ekologis belum disahkan. Keterbatasan sensor/versi dan estimasi luas mengikuti catatan penyedia.
+
+Eksekusi aktual menghasilkan `units-with-evidence.geojson` dan manifest privat: 725 unit diproses, 8 dikecualikan karena geometri, 583 memiliki observasi kehilangan tutupan pohon, 66 tanpa pusat piksel native. Tidak ada nilai nodata/kode tidak valid yang ditemukan pada piksel yang dihitung; ini bukan klaim semua sumber/indikator lengkap. Semua 733 unit turunan tetap memiliki lima indikator null dan validated false. Pada 12 unit kecil yang dipilih deterministik (enam di tiap sisi khatulistiwa), hitungan native diverifikasi melalui iterasi setiap piksel dan Turf point-in-polygon secara terpisah dari algoritma scanline; seluruh hitungan cocok. Ini verifikasi implementasi, bukan validasi ketepatan ekologis peta sumber di lapangan.
+
+[ESA WorldCover](https://esa-worldcover.org/en/data-access) menjelaskan bahwa peta 2020 dan 2021 dibuat dengan versi algoritma berbeda. Karena itu keduanya tidak dikurangkan langsung untuk mengisi indikator kehilangan vegetasi.
+
+### Kebutuhan yang belum terselesaikan
+
+- Data hidrologi: seri TMAT dengan periode/cakupan/kalibrasi dan jaringan drainase yang relevan belum diperoleh. Akses ke halaman resmi SiPPEG yang dicoba gagal; ini tidak membuktikan datanya tidak ada. Titik sekat kanal tidak dijadikan nilai gangguan hidrologi.
+- Degradasi dan sensitivitas: belum ada dasar untuk memilih satu kelas tanah pada delapan kelompok geometri yang atributnya berbeda atau menetapkan angka sensitivitas dari kelas ketebalan/pH. Klasifikasi tutupan tidak otomatis menunjukkan degradasi.
+- Kebakaran: arsip tetap parsial dan sebagian geometri tidak layak overlay; bukti hotspot/indikasi bukan riwayat terverifikasi lengkap.
+- Sebanyak 115 unit turunan masih membawa flag review sumber setelah tiga baris redundan dihilangkan. Konflik 118 unit sumber tidak dinyatakan semuanya selesai. Tidak ada indikator yang diubah menjadi validated true.
+
+Paket hasil tetap di folder privat yang diabaikan Git dan dikecualikan dari Pages. Perubahan ini tidak membuka endpoint, memperluas akses staf, mengubah menu Tools, atau memperbarui hasil prioritas produksi.
