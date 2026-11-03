@@ -120,10 +120,46 @@ test('network failures and malformed verification response fail closed', async (
     const { nodes } = await bootScenario({ session: { token: 'test-only' }, ...args }); assert.equal(nodes.get('workspace').hidden, true);
   }
 });
-test('entry is limited to staff reference catalog; page has no public navigation changes', () => {
+test('entry uses a hidden staff-only main navigation link and protected reference catalog', () => {
   const catalog = fs.readFileSync(path.join(root, 'staff-riau-reference.html'), 'utf8');
   const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
-  assert.match(catalog, /href="restoration-priority.html"/); assert.doesNotMatch(home, /restoration-priority/);
+  assert.match(catalog, /href="restoration-priority.html"/);
+  assert.match(home, /<a href="restoration-priority.html" data-staff-only-module hidden>/);
+  assert.match(home, /\[data-staff-only-module\]\[hidden\]\{display:none!important\}/);
   const page = fs.readFileSync(path.join(root, 'restoration-priority.html'), 'utf8');
   assert.match(page, /id="workspace" hidden/); assert.match(page, /Content-Security-Policy/);
+});
+test('county summaries preserve unknown scores, missing areas, and normalized district names', () => {
+  const rows = A.regions([
+    {properties:{KABKOT:'Siak',Luas_Ha:12}},
+    {properties:{KABKOT:'S I A K',Luas_Ha:8}},
+    {properties:{KABKOT:'Bengkalis',Luas_Ha:null}},
+    {properties:{}}
+  ]);
+  assert.equal(rows.length,3);
+  const siak = rows.find(r=>r.name==='Siak');
+  assert.equal(siak.sourceAreaHa,20); assert.equal(siak.count,2);
+  assert.equal(siak.assessed,0); assert.equal(siak.unassessed,2);
+  assert.equal(rows.find(r=>r.name==='Bengkalis').sourceAreaHa,null);
+  assert.equal(A.regions([]).length,0);
+});
+
+test('main menu visibility follows a valid session and hides anonymous or expired staff links', () => {
+  const source = fs.readFileSync(path.join(root,'js/navigation-v2.js'),'utf8');
+  const snippet = source.slice(source.indexOf('  function readSession()'),source.indexOf("  window.addEventListener('yg:languagechange'"));
+  for (const session of [null, {token:'test-only',username:'test',expiresAt:Date.now()-1}, {token:'test-only',username:'test',expiresAt:Date.now()+60000}]) {
+    const link = {hidden:true};
+    const storage = {getItem:()=>JSON.stringify(session),removeItem(){}};
+    const context = {Date,JSON,Number,localStorage:storage,sessionStorage:storage,document:{querySelectorAll:selector=>selector==='[data-staff-only-module]'?[link]:[]}};
+    vm.runInNewContext(snippet+';applyStaffOnlyVisibility(readSession());',context);
+    assert.equal(link.hidden, !(session && session.expiresAt>Date.now()));
+  }
+});
+test('county priority counts come only from complete validated ecological scores', () => {
+  const result = A.regions([
+    {properties:{KABKOT:'Siak',Luas_Ha:1,restorationIndicators:fixture(75)}},
+    {properties:{KABKOT:'Siak',Luas_Ha:2,restorationIndicators:fixture(50)}},
+    {properties:{KABKOT:'Siak',Luas_Ha:3}}
+  ])[0];
+  assert.equal(result.assessed,2); assert.equal(result.priorityCount,1); assert.equal(result.unassessed,1);
 });

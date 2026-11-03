@@ -77,3 +77,11 @@ Baseline setelah deploy #507: workspace staf, 424 fitur FEG dan filter Siak (38 
 2. Uji halaman baru pada origin/preview terotorisasi yang mendukung SSO dan CORS staf; jangan melemahkan CORS atau memindahkan token.
 3. Temukan batas KHG resmi dengan ID stabil dan metadata. Setujui unit analisis, QA CRS/topologi/cakupan dan metode luas irisan.
 4. Siapkan pipeline indikator spasial tervalidasi dan review ahli gambut; kesiapan pelaksanaan tetap proses terpisah.
+
+## 3 November 2026 — pintu masuk staf dan wilayah kajian
+
+Usulan lanjutan setelah PR #512/#513: menu utama Beranda menampilkan Prioritas Restorasi hanya pada sesi staf yang masih berlaku. Ini hanya visibilitas navigasi; halaman tetap memerlukan verifikasi backend sebelum membaca data dan membuka workspace. Tidak ada endpoint atau data privat baru.
+
+Tampilan merangkum kabupaten dari atribut KABKOT BBSDLP 2019, luas sumber Luas_Ha, jumlah poligon dan status penilaian. Kabupaten tidak menggantikan batas KHG; tidak ada luas irisan maupun luas restorasi yang dihitung. Semua lima indikator tetap wajib. Rincian layer, sumber, cakupan dan metode dapat diperluas. Pemilih KHG tetap menggunakan FEG privat yang sudah tersedia.
+
+Validasi perubahan ini menggunakan unit/integration test Node termasuk sumber BBSDLP asli, visibilitas sesi, akses gagal tertutup, pengelompokan wilayah, filter dan FEG. Tampilan desktop/tablet versi perubahan ini belum diperiksa dengan browser; uji FEG produksi sebelumnya pada PR #512 tidak menggantikan uji tampilan baru.
