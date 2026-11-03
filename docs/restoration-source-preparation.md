@@ -88,3 +88,25 @@ Eksekusi aktual menghasilkan `units-with-evidence.geojson` dan manifest privat: 
 - Sebanyak 115 unit turunan masih membawa flag review sumber setelah tiga baris redundan dihilangkan. Konflik 118 unit sumber tidak dinyatakan semuanya selesai. Tidak ada indikator yang diubah menjadi validated true.
 
 Paket hasil tetap di folder privat yang diabaikan Git dan dikecualikan dari Pages. Perubahan ini tidak membuka endpoint, memperluas akses staf, mengubah menu Tools, atau memperbarui hasil prioritas produksi.
+
+## Penelusuran lanjutan sumber pembanding
+
+Pemeriksaan berikut dilakukan pada 3 November 2026, tanpa perubahan data operasional:
+
+| Sumber diperiksa | Temuan aktual | Keputusan penggunaan |
+| --- | --- | --- |
+| Riwayat GitHub untuk `data/Gambut_BBSDLP_2019.geojson` | Riwayat publik saat diperiksa hanya menunjukkan commit `d826b2906f31c84e34700b7d1eb2ba316d13f39e` (15 September 2026), pesan pemulihan riwayat publik. Tidak tersedia versi sebelum itu untuk membandingkan kelas yang bertentangan. | Tidak merekonstruksi kelas ketebalan/jenis tanah dari tebakan atau ID tetangga. |
+| Katalog publik Kementerian Pertanian, pencarian `gambut` | Respons aktual menggunakan `items`; hanya satu hasil pada saat diperiksa, Peta Lahan Gambut Pulau Kalimantan skala 1:50.000. | Dikeluarkan sebagai sumber pembanding Riau karena beda wilayah. Ini bukan pernyataan tidak adanya sumber Sumatera di sistem lain. |
+| Distribusi ArcGIS dari metadata Kementan yang ditemukan | Link distribusi mengarah ke login server. | Tidak mengirim kredensial staf YG atau mencoba melewati autentikasi layanan lain. |
+| `data/fdrs.geojson` | 10 titik inventaris FDRS, tahun 2023–2026; tidak ada kolom pengukuran muka air. Keterangan berupa inventaris/pembangunan, bukan seri pengukuran. | Bahan lokasi alat saja; tidak diubah menjadi angka TMAT, proksi hidrologi atau skor. |
+| API `public-reports` yang dipakai halaman monitoring WebGIS | Snapshot asli `generatedAt` 2026-11-03T15:23:25.703Z berisi 93 laporan. Setelah membaca `proposedInformation`, `proposedChanges.monitoring` dan kolom legacy `Water_Table_Cm`, ditemukan 0 laporan bertipe hidrologi dan 0 nilai muka air yang terisi. Sumber utuh dan SHA-256 disimpan privat. | Data pengukuran tidak tersedia dalam snapshot ini; bukan muka air bernilai nol atau kondisi hidrologi baik. |
+
+Metadata pembanding: [katalog Kementerian Pertanian yang diperiksa](https://geospasial.pertanian.go.id/katalog/cmroqmrlx002w01qjq1t2l1l1) dan [dokumentasi API publiknya](https://geospasial.pertanian.go.id/dokumentasi/api/endpoint-publik). Katalog tersebut bukan sumber Riau sehingga tidak digabungkan ke unit analisis.
+
+### Masukan sumber yang benar-benar diperlukan untuk melanjutkan
+
+1. Salinan sumber BBSDLP/metadata atribut dan referensi wilayah yang dapat digunakan untuk memutuskan kelas pada delapan kelompok geometri berbeda atribut serta 105 perbedaan KK/KABKOT. Memilih nilai mayoritas atau kelas poligon tetangga tidak menyelesaikan provenance.
+2. Pengukuran hidrologi aktual: ID stasiun, koordinat dan referensi elevasi/permukaan, waktu pengukuran, nilai beserta satuan/tanda, protokol/kalibrasi, sumber dan versi. Lokasi alat tanpa pengukuran tidak mencukupi.
+3. Bukti kondisi/degradasi dan aturan sensitivitas pada unit/periode yang disepakati. GFC hanya bukti kehilangan tutupan pohon; tidak membuktikan gangguan hidrologi atau sensitivitas gambut.
+
+Sampai sumber tersebut dapat diperoleh atau aksesnya tersedia, pekerjaan yang tersisa terblokir oleh data/pembuktian, bukan fungsi scoring. Seluruh lima indikator dan persetujuan tetap kosong. PR ini dapat ditinjau sebagai pekerjaan persiapan data; tidak boleh disebut hasil prioritas restorasi yang sudah selesai.
