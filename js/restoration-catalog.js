@@ -82,5 +82,34 @@
     const value = p.NAMA_KHG ?? p.NAMOBJ ?? p.nama_khg ?? p.KHG ?? p.NAMA;
     return typeof value === 'string' && value.trim() ? value : 'Poligon KHG ' + (index + 1);
   }
-  return Object.freeze({ candidates, validate, readDisplay, label, MAX_BYTES });
+  function groupFEG(data) {
+    if (data?.type !== 'FeatureCollection' || !Array.isArray(data.features) || data.features.length > 25000) throw Error('Koleksi FEG tidak valid atau terlalu besar');
+    const groups = new Map();
+    let missingCode = 0, invalidGeometry = 0, missingName = 0;
+    const sourceText = value => typeof value === 'string' && !/^(?:no data|n\/a|null|none|-|0)$/i.test(value.trim()) ? value.trim() : '';
+    for (const feature of data.features) {
+      // Only source identifiers are grouped. Do not infer membership spatially,
+      // dissolve geometry, sum area, or create an ecological indicator.
+      const code = sourceText(feature?.properties?.kode_khg);
+      if (!code) { missingCode++; continue; }
+      try { validate({ type: 'FeatureCollection', ...(data.crs ? { crs: data.crs } : {}), features: [feature] }); }
+      catch (_) { invalidGeometry++; continue; }
+      const name = sourceText(feature.properties?.nama_khg);
+      if (!name) missingName++;
+      if (!groups.has(code)) groups.set(code, { code, names: new Set(), features: [] });
+      const group = groups.get(code);
+      if (name) group.names.add(name);
+      group.features.push(feature);
+    }
+    return {
+      groups: [...groups.values()].sort((a,b) => a.code.localeCompare(b.code)).map(group => ({
+        code: group.code, names: [...group.names].sort(), features: group.features,
+        nameConflict: group.names.size > 1,
+        label: group.code + (group.names.size === 1 ? ' · ' + [...group.names][0] : group.names.size > 1 ? ' · nama sumber berbeda' : ' · nama belum tersedia') + ' · ' + group.features.length + ' bagian FEG'
+      })),
+      missingCode, invalidGeometry, missingName,
+      scope: 'source-attribute-groups-only', standaloneBoundary: false, scoringValidated: false
+    };
+  }
+  return Object.freeze({ candidates, validate, readDisplay, label, groupFEG, MAX_BYTES });
 });

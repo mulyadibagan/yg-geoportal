@@ -38,3 +38,35 @@ test('selection labels preserve source attributes without inventing KHG names',(
   assert.equal(C.label({properties:{NAMA_KHG:'Nama sumber'}},0),'Nama sumber');
   assert.equal(C.label({properties:{}},4),'Poligon KHG 5');
 });
+test('FEG grouping uses source codes and keeps the exact original geometry objects',()=>{
+  const first=fixture().features[0], second=fixture().features[0];
+  first.properties={kode_khg:'KHG.source-A',nama_khg:'Nama sumber A'};
+  second.properties={kode_khg:'KHG.source-A',nama_khg:'Nama sumber A'};
+  const data={type:'FeatureCollection',features:[first,second]}, before=JSON.stringify(data);
+  const result=C.groupFEG(data);
+  assert.equal(result.groups.length,1); assert.equal(result.groups[0].features.length,2);
+  assert.equal(result.groups[0].features[0],first); assert.equal(result.groups[0].features[1],second);
+  assert.equal(JSON.stringify(data),before); assert.equal(result.standaloneBoundary,false); assert.equal(result.scoringValidated,false);
+  assert.equal(Object.hasOwn(result.groups[0],'areaHa'),false);
+});
+test('missing KHG codes do not create invented groups; names do not replace identifiers',()=>{
+  const rows=[undefined,null,'','   ','No Data','N/A',0].map(code=>({...fixture().features[0],properties:{kode_khg:code,nama_khg:'Same source name'}}));
+  const result=C.groupFEG({type:'FeatureCollection',features:rows});
+  assert.equal(result.groups.length,0); assert.equal(result.missingCode,rows.length);
+});
+test('FEG groups preserve naming conflicts and remain distinct when codes differ',()=>{
+  const rows=[['KHG.A','Name 1'],['KHG.A','Name 2'],['KHG.B','Name 1'],['KHG.C',null]].map(([code,name])=>({...fixture().features[0],properties:{kode_khg:code,nama_khg:name}}));
+  const r=C.groupFEG({type:'FeatureCollection',features:rows});
+  assert.equal(r.groups.length,3); assert.equal(r.groups[0].nameConflict,true);
+  assert.deepEqual(r.groups[0].names,['Name 1','Name 2']); assert.match(r.groups[0].label,/nama sumber berbeda/);
+  assert.equal(r.groups[1].features.length,1); assert.equal(r.missingName,1);
+});
+test('malformed FEG geometries and projected CRS never enter the focus layer',()=>{
+  const good=fixture().features[0];good.properties={kode_khg:'KHG.A'};
+  const bad={...good,geometry:null};
+  const r=C.groupFEG({type:'FeatureCollection',features:[good,bad]});
+  assert.equal(r.groups[0].features.length,1);assert.equal(r.invalidGeometry,1);
+  const projected=C.groupFEG({type:'FeatureCollection',crs:{properties:{name:'EPSG:3857'}},features:[good]});
+  assert.equal(projected.groups.length,0);assert.equal(projected.invalidGeometry,1);
+  assert.throws(()=>C.groupFEG({type:'Point',coordinates:[]}));
+});
