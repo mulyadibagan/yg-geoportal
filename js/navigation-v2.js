@@ -88,6 +88,21 @@
   window.addEventListener('focus',syncOrthomosaicTool);
   window.addEventListener('storage',syncOrthomosaicTool);
 
+  function syncRestorationTool(){
+    var session=readSession();
+    document.querySelectorAll('[data-yg-tools-menu] .yg-nav-menu').forEach(function(menu){
+      var link=menu.querySelector('a[href="restoration-priority.html"]');
+      if(!session){ if(link)link.remove(); return; }
+      if(link)return;
+      link=document.createElement('a');
+      link.href='restoration-priority.html';
+      link.textContent='Prioritas Restorasi Gambut';
+      menu.appendChild(link);
+    });
+  }
+  window.addEventListener('focus',syncRestorationTool);
+  window.addEventListener('storage',syncRestorationTool);
+
   function applyStaffAccount(nav,session){
     var link=nav.querySelector('a[href="staff-login.html"]');
     if(!link)return;
@@ -151,6 +166,7 @@
     });
 
     syncOrthomosaicTool();
+    syncRestorationTool();
     ensureAutoI18n();
 
     document.addEventListener('click',function(event){

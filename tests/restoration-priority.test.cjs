@@ -120,11 +120,13 @@ test('network failures and malformed verification response fail closed', async (
     const { nodes } = await bootScenario({ session: { token: 'test-only' }, ...args }); assert.equal(nodes.get('workspace').hidden, true);
   }
 });
-test('entry uses a hidden staff-only main navigation link and protected reference catalog', () => {
+test('entry uses staff-only Tools submenu and protected reference catalog', () => {
   const catalog = fs.readFileSync(path.join(root, 'staff-riau-reference.html'), 'utf8');
   const home = fs.readFileSync(path.join(root, 'index.html'), 'utf8');
   assert.match(catalog, /href="restoration-priority.html"/);
-  assert.match(home, /<a href="restoration-priority.html" data-staff-only-module hidden>/);
+  assert.doesNotMatch(home, /href="restoration-priority.html"/);
+  const navigation = fs.readFileSync(path.join(root, 'js/navigation-v2.js'), 'utf8');
+  assert.match(navigation, /syncRestorationTool\(\)/);
   assert.match(home, /\[data-staff-only-module\]\[hidden\]\{display:none!important\}/);
   const page = fs.readFileSync(path.join(root, 'restoration-priority.html'), 'utf8');
   assert.match(page, /id="workspace" hidden/); assert.match(page, /Content-Security-Policy/);
@@ -162,4 +164,30 @@ test('county priority counts come only from complete validated ecological scores
     {properties:{KABKOT:'Siak',Luas_Ha:3}}
   ])[0];
   assert.equal(result.assessed,2); assert.equal(result.priorityCount,1); assert.equal(result.unassessed,1);
+});
+test('Tools restoration entry is staff-only, unique, and removed when the session ends', () => {
+  const source = fs.readFileSync(path.join(root,'js/navigation-v2.js'),'utf8');
+  const start = source.indexOf('  function syncRestorationTool()');
+  const end = source.indexOf("  window.addEventListener('focus',syncRestorationTool)", start);
+  let session = null;
+  const menu = {
+    links: [],
+    querySelector(){ return this.links.find(link=>link.href==='restoration-priority.html') || null; },
+    appendChild(link){this.links.push(link);}
+  };
+  const context = {
+    readSession:()=>session,
+    document:{
+      querySelectorAll:selector=>selector==='[data-yg-tools-menu] .yg-nav-menu'?[menu]:[],
+      createElement:()=>({remove(){menu.links=menu.links.filter(link=>link!==this);}})
+    }
+  };
+  vm.runInNewContext(source.slice(start,end),context);
+  context.syncRestorationTool(); assert.equal(menu.links.length,0);
+  session={token:'test-only'};
+  context.syncRestorationTool(); context.syncRestorationTool();
+  assert.equal(menu.links.length,1); assert.equal(menu.links[0].textContent,'Prioritas Restorasi Gambut');
+  session=null;context.syncRestorationTool();assert.equal(menu.links.length,0);
+  assert.match(source, /window.addEventListener\('focus',syncRestorationTool\)/);
+  assert.match(source, /window.addEventListener\('storage',syncRestorationTool\)/);
 });
