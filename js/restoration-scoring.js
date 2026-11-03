@@ -60,6 +60,18 @@
       // Preserve the source area; no conversion from Shape_Area (degrees squared).
       sourceAreaHa: features.length && areas.every(a => finite(a) && a >= 0) ? areas.reduce((a, b) => a + b, 0) : null };
   }
+  // Administrative summaries preserve source areas, without inferring a KHG overlay.
+  function regions(features) {
+    const groups = new Map();
+    features.forEach(feature => {
+      const name = String(feature.properties?.KABKOT || '').trim();
+      const key = district(name);
+      if (!groups.has(key)) groups.set(key, { name: name || 'Kabupaten belum tersedia', features: [] });
+      groups.get(key).features.push(feature);
+    });
+    return Array.from(groups.values(), group => ({ name: group.name, ...summarize(group.features) }))
+      .sort((a, b) => b.priorityCount - a.priorityCount || a.name.localeCompare(b.name, 'id'));
+  }
   function ringContains(point, ring) {
     let inside = false;
     for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
@@ -72,5 +84,5 @@
     const polygons = geometry?.type === 'Polygon' ? [geometry.coordinates] : geometry?.type === 'MultiPolygon' ? geometry.coordinates : [];
     return polygons.some(rings => rings.length && ringContains(point, rings[0]) && !rings.slice(1).some(r => ringContains(point, r)));
   }
-  return Object.freeze({ VERSION, INDICATORS, normalize, category, assess, district, select, summarize, contains });
+  return Object.freeze({ VERSION, INDICATORS, normalize, category, assess, district, select, summarize, regions, contains });
 });

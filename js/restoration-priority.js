@@ -113,6 +113,17 @@
     $('polygon-count').textContent = number(summary.count);
     $('unassessed').textContent = number(summary.unassessed) + ' poligon belum dinilai';
     $('priority-count').textContent = summary.assessed ? number(summary.priorityCount) : 'Belum dinilai';
+    $('region-status').textContent = summary.assessed
+      ? number(summary.assessed) + ' dari ' + number(summary.count) + ' poligon telah dinilai. Poligon lain tetap memerlukan validasi.'
+      : 'Wilayah prioritas belum dapat ditetapkan: lima indikator ekologis belum lengkap atau tervalidasi. Daftar berikut adalah wilayah kajian dari data gambut asli.';
+    $('regions').replaceChildren();
+    A.regions(state.filtered).forEach(region => {
+      const row = document.createElement('tr');
+      [region.name, number(region.sourceAreaHa), number(region.count), region.assessed ? number(region.priorityCount) : 'Belum dinilai', number(region.unassessed)].forEach(value => {
+        const cell = document.createElement('td'); cell.textContent = value; row.appendChild(cell);
+      });
+      $('regions').appendChild(row);
+    });
     definitions.filter(def => def.path && state.cache.has(def.id)).forEach(draw);
     fit();
   }

@@ -92,3 +92,13 @@ test('failed loading can retry; FEG without a source code never invents a KHG ch
   await ui.click('use-feg-khg');assert.equal(ui.privateCalls.length,2);assert.equal(ui.nodes.get('khg').disabled,true);
   assert.match(ui.nodes.get('feg-khg-status').textContent,/0 kode KHG/);
 });
+
+test('county filter updates source region table without inventing priority counts',async()=>{
+  const ui=await app();
+  const rows=ui.nodes.get('regions').children;
+  assert.equal(rows.length,1); assert.equal(rows[0].children[0].textContent,'Siak');
+  assert.equal(rows[0].children[3].textContent,'Belum dinilai');
+  assert.match(ui.nodes.get('region-status').textContent,/belum dapat ditetapkan/);
+  ui.nodes.get('regency').value='Bengkalis'; await ui.change('regency');
+  assert.equal(ui.nodes.get('regions').children.length,0);
+});

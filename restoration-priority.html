@@ -8,16 +8,16 @@
   <script src="js/staff-frame-guard.js"></script>
   <title>Analisis Prioritas Restorasi Gambut | YG GeoPortal</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
-  <link rel="stylesheet" href="css/restoration-priority.css">
+  <link rel="stylesheet" href="css/restoration-priority.css?v=20261103-regions1">
 </head>
 <body>
   <header><a href="staff-riau-reference.html">← Peta Referensi Riau</a><span>YG GeoPortal · Internal</span></header>
   <main>
     <p class="eyebrow">PERENCANAAN PEMULIHAN · PENGEMBANGAN INTERNAL STAF</p>
-    <h1>Analisis Prioritas Restorasi Gambut</h1>
+    <h1>Wilayah Prioritas Restorasi Gambut</h1>
     <p id="access-status" role="status">Memeriksa akses staf…</p>
     <section id="workspace" hidden>
-      <p class="notice">Kebutuhan ekologis belum dinilai. Layer referensi tidak otomatis menjadi indikator tervalidasi. Kesiapan pelaksanaan dinilai terpisah. Tidak untuk keputusan operasional sebelum validasi.</p>
+      <p class="notice">Belum ada wilayah prioritas yang dapat ditetapkan. Lengkapi dan validasi indikator ekologis sebelum menggunakan hasil untuk keputusan restorasi.</p>
       <div class="stats" aria-live="polite">
         <article><span>Luas sumber gambut tersaring</span><strong id="area">—</strong><small>Jumlah atribut Luas_Ha BBSDLP, bukan luas irisan KHG</small></article>
         <article><span>Poligon gambut</span><strong id="polygon-count">—</strong><small id="unassessed">Belum dinilai</small></article>
@@ -27,16 +27,20 @@
         <aside class="panel">
           <h2>Wilayah & layer</h2>
           <label>Kabupaten/kota<select id="regency" disabled><option value="">Semua wilayah dalam data gambut</option></select></label>
+          <button id="use-feg-khg" type="button" disabled>Gunakan kode KHG dari FEG</button>
+          <details class="data-options"><summary>Sumber KHG & validasi</summary>
           <label>Dataset KHG katalog staf<select id="khg-dataset" disabled><option value="">Data belum tersedia</option></select></label>
           <button id="load-khg" type="button" disabled>Muat referensi KHG</button>
           <p id="khg-status" role="status">Katalog KHG belum diperiksa.</p>
           <button id="use-feg-khg" type="button" disabled>Gunakan kode KHG dari FEG</button>
           <p id="feg-khg-status" role="status">Kode/nama KHG dapat dikelompokkan dari atribut FEG asli setelah dimuat. Bagian FEG bukan batas KHG mandiri.</p>
+          </details>
           <label>KHG (fokus peta)<select id="khg" disabled><option value="">Data belum tersedia</option></select></label>
           <p id="khg-focus-source" role="status">Sumber fokus belum dipilih.</p>
-          <p class="muted">Pilihan KHG hanya menyorot dan memfokuskan peta. Sumber aktif dijelaskan pada status. Kelompok dari FEG mempertahankan poligon sumber tanpa dissolve. Ringkasan serta filter analisis tetap berdasarkan kabupaten; belum ada overlay/luas irisan KHG tervalidasi.</p>
+          <details class="data-options"><summary>Cakupan filter</summary><p class="muted">Pilihan KHG hanya menyorot dan memfokuskan peta. Sumber aktif dijelaskan pada status. Kelompok dari FEG mempertahankan poligon sumber tanpa dissolve. Ringkasan serta filter analisis tetap berdasarkan kabupaten; belum ada overlay/luas irisan KHG tervalidasi.</p>
           <p class="muted">Filter kabupaten memakai atribut KABKOT BBSDLP 2019. KHG memerlukan batas dan relasi spasial yang tervalidasi.</p>
-          <fieldset id="layers" disabled><legend>Layer referensi</legend></fieldset>
+          </details>
+          <details class="data-options"><summary>Layer referensi</summary><fieldset id="layers" disabled><legend>Data peta</legend></fieldset></details>
           <button id="fit" type="button" disabled>Zoom ke wilayah tersaring</button>
           <p id="layer-status" role="status"></p>
           <h3>Legenda kebutuhan ekologis</h3>
@@ -44,14 +48,15 @@
         </aside>
         <section class="panel map-panel"><h2>Peta referensi Provinsi Riau</h2><div id="map" aria-label="Peta interaktif Riau"></div><p class="muted">Filter wilayah berlaku pada poligon gambut, sekat kanal, hotspot dalam gambut tersaring, dan estimasi terbakar berdasarkan atribut kabupaten. FEG merupakan konteks seluruh Riau. Estimasi terbakar tidak dipotong ulang; luasnya tidak masuk ringkasan gambut.</p></section>
       </div>
-      <section class="panel analysis"><h2>Mesin analisis kebutuhan ekologis</h2><p>Semua lima indikator wajib tersedia, tervalidasi, memiliki sumber/tahun/versi serta metode normalisasi yang disetujui. Tidak ada penggantian data kosong dengan nol atau pembobotan ulang.</p><div class="table-wrap"><table><thead><tr><th>Indikator</th><th>Bobot</th><th>Status</th></tr></thead><tbody id="indicators"></tbody></table></div><p>Kesiapan pelaksanaan: <strong>Belum dinilai</strong>. Tidak digabung ke skor ekologis.</p></section>
-      <section class="panel analysis"><h2>Sumber & keterbatasan data</h2><div id="sources"></div><p>Belum tersedia: batas KHG yang terhubung ke poligon, jaringan kanal dan kondisi hidrologi, degradasi, kehilangan vegetasi antarwaktu, serta aturan sensitivitas gambut. Tutupan lahan pada titik hotspot bukan layer tutupan lahan menyeluruh.</p></section>
+      <section class="panel analysis" aria-labelledby="regions-title"><h2 id="regions-title">Wilayah kajian & status prioritas</h2><p id="region-status" role="status"></p><div class="table-wrap"><table><thead><tr><th>Kabupaten/kota</th><th>Luas sumber (ha)</th><th>Poligon gambut</th><th>Prioritas tinggi (poligon)</th><th>Belum dinilai (poligon)</th></tr></thead><tbody id="regions"></tbody></table></div><p class="muted">Luas mengikuti atribut sumber BBSDLP 2019, bukan luas restorasi atau irisan KHG. Tidak ada peringkat ekologis untuk wilayah yang belum dinilai. Gunakan filter kabupaten untuk memfokuskan peta.</p></section>
+      <details class="panel analysis"><summary>Indikator & metode penilaian</summary><h2>Mesin analisis kebutuhan ekologis</h2><p>Semua lima indikator wajib tersedia, tervalidasi, memiliki sumber/tahun/versi serta metode normalisasi yang disetujui. Tidak ada penggantian data kosong dengan nol atau pembobotan ulang.</p><div class="table-wrap"><table><thead><tr><th>Indikator</th><th>Bobot</th><th>Status</th></tr></thead><tbody id="indicators"></tbody></table></div><p>Kesiapan pelaksanaan: <strong>Belum dinilai</strong>. Tidak digabung ke skor ekologis.</p></details>
+      <details class="panel analysis"><summary>Sumber & keterbatasan data</summary><div id="sources"></div><p>Belum tersedia: batas KHG yang terhubung ke poligon, jaringan kanal dan kondisi hidrologi, degradasi, kehilangan vegetasi antarwaktu, serta aturan sensitivitas gambut. Tutupan lahan pada titik hotspot bukan layer tutupan lahan menyeluruh.</p></details>
     </section>
   </main>
   <script src="js/auth.js?v=20261006-api-domain1"></script>
   <script src="js/staff-data-access.js?v=20261006-api-domain1"></script>
-  <script src="js/restoration-scoring.js"></script>
+  <script src="js/restoration-scoring.js?v=20261103-regions1"></script>
   <script src="js/restoration-catalog.js"></script>
-  <script src="js/restoration-priority.js"></script>
+  <script src="js/restoration-priority.js?v=20261103-regions1"></script>
 </body>
 </html>
