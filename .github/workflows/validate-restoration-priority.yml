@@ -9,6 +9,7 @@ on:
       - css/restoration-priority.css
       - data/restoration-priority-sources.json
       - tests/restoration-*.test.cjs
+      - scripts/check-restoration-inputs.mjs
       - .github/workflows/validate-restoration-priority.yml
 
 permissions:
@@ -27,5 +28,6 @@ jobs:
           node --check js/restoration-priority.js
           node --check js/restoration-scoring.js
           node --check js/restoration-catalog.js
+          node --check scripts/check-restoration-inputs.mjs
       - name: Test scoring, access and existing reference workspace
-        run: node --test tests/restoration-priority.test.cjs tests/restoration-catalog.test.cjs tests/restoration-feg-selection.test.cjs tests/riau-geoportal-internal.test.cjs tests/riau-reference-workspace.test.cjs tests/riau-reference-loading.test.cjs
+        run: node --test tests/restoration-priority.test.cjs tests/restoration-catalog.test.cjs tests/restoration-feg-selection.test.cjs tests/restoration-inputs.test.cjs tests/riau-geoportal-internal.test.cjs tests/riau-reference-workspace.test.cjs tests/riau-reference-loading.test.cjs
