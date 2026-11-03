@@ -1,7 +1,7 @@
 (function () {
   "use strict";
 
-  const API = "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev";
+  const API = "https://webgis-api.yayasangambut.org";
   const CATALOG_PATH = "/api/staff/riau-geoportal/catalog";
   const MAX_ACTIVE_LAYERS = 8;
   const MAX_DISPLAY_BYTES = 12 * 1024 * 1024;
