@@ -6,6 +6,13 @@ import {createRequire} from 'node:module';
 import {fileURLToPath,pathToFileURL} from 'node:url';
 const root=path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
 const sha=bytes=>createHash('sha256').update(bytes).digest('hex');
+export function independentValidity(feature,J){
+ const geometry=new J.io.GeoJSONReader().read(feature.geometry);
+ const operation=new J.operation.valid.IsValidOp(geometry),valid=operation.isValid(),error=operation.getValidationError();
+ const coordinate=error?.getCoordinate();
+ return {engine:'JSTS IsValidOp',valid,error:error?{code:error.getErrorType(),message:error.getMessage(),coordinate:coordinate?[coordinate.x,coordinate.y]:null}:null,
+  selfTouchingRingFormingHoleAllowed:false,precisionReductionApplied:false,geometryModified:false,analysisUnitApproved:false};
+}
 export function diagnose(feature,T){
  const geometry=feature?.geometry;
  if(!['Polygon','MultiPolygon'].includes(geometry?.type))throw Error('Polygon source required');
@@ -54,16 +61,17 @@ export async function run(directory){
  if(matrix.access!=='staff_only'||manifest.access!=='staff_only'||manifest.bbsdlpSha256!==sha(sourceBytes))throw Error('Source provenance mismatch');
  const queue=matrix.bpbd?.geometryReviewQueue;
  if(!Array.isArray(queue)||queue.length>64||new Set(queue.map(q=>q.unitId)).size!==queue.length)throw Error('Invalid geometry review queue');
- const require=createRequire(path.join(privateRoot,'restoration-runtime/package.json')),T=require('@turf/turf');
+ const require=createRequire(path.join(privateRoot,'restoration-runtime/package.json')),T=require('@turf/turf'),J=require('jsts');
  if(require('@turf/turf/package.json').version!=='7.2.0')throw Error('Use existing pinned Turf 7.2.0 runtime');
+ if(require('jsts/package.json').version!=='2.7.1')throw Error('Use existing JSTS 2.7.1 runtime');
  const cases=queue.map(q=>{
   const row=matrix.units.find(unit=>unit.unitId===q.unitId);
   if(!row||row.geometryCheckPassed!==false||row.sourceFeatureIndex!==q.sourceFeatureIndex||!Number.isSafeInteger(q.sourceFeatureIndex)||q.sourceFeatureIndex<0||!source.features[q.sourceFeatureIndex])throw Error('Invalid source review reference');
-  return {unitId:q.unitId,sourceFeatureIndex:q.sourceFeatureIndex,sourceRowNumber:q.sourceFeatureIndex+1,candidateResponseRecords:q.bpbdResponseRefs.length,...diagnose(source.features[q.sourceFeatureIndex],T)};
+  return {unitId:q.unitId,sourceFeatureIndex:q.sourceFeatureIndex,sourceRowNumber:q.sourceFeatureIndex+1,candidateResponseRecords:q.bpbdResponseRefs.length,...diagnose(source.features[q.sourceFeatureIndex],T),independentTopology:independentValidity(source.features[q.sourceFeatureIndex],J)};
  });
  const output=await fs.mkdtemp(path.join(privateRoot,'restoration-geometry-diagnostic-'));
- const report={access:'staff_only',sourceSha256:sha(sourceBytes),matrixSha256:sha(matrixBytes),inputManifestSha256:sha(manifestBytes),turfVersion:'7.2.0',cases,geometryModified:false,approvalGranted:false,limitations:['Turf diagnostics are technical evidence, not independent authoritative topology validation.','Boundary intersections and positive-area component intersections are distinct.','No snapping, buffering, union, simplification, component removal or source correction is applied.','Source row numbers are one-based; sourceFeatureIndex is zero-based.']};
+ const report={access:'staff_only',sourceSha256:sha(sourceBytes),matrixSha256:sha(matrixBytes),inputManifestSha256:sha(manifestBytes),turfVersion:'7.2.0',jstsVersion:'2.7.1',jstsBundleSha256:sha(await fs.readFile(require.resolve('jsts'))),cases,geometryModified:false,approvalGranted:false,limitations:['JSTS IsValidOp is separate from Turf booleanValid/kinks algorithms, not an independent expert review or GEOS certification.','Boundary intersections and positive-area component intersections are distinct.','No snapping, buffering, union, simplification, component removal or source correction is applied.','Source row numbers are one-based; sourceFeatureIndex is zero-based.','Engine disagreements do not alter original eligibility flags or source conflicts.']};
  await fs.writeFile(path.join(output,'diagnostic.json'),JSON.stringify(report,null,2),{flag:'wx'});
- return {output,cases:cases.length,withCandidateResponses:cases.filter(c=>c.candidateResponseRecords>0).length,withinComponentIssues:cases.filter(c=>c.findings.includes('within-component-geometry-issue')).length,positiveComponentIntersections:cases.filter(c=>c.findings.includes('positive-area-between-components')).length,geometryModified:false,approvalGranted:false};
+ return {output,cases:cases.length,withCandidateResponses:cases.filter(c=>c.candidateResponseRecords>0).length,withinComponentIssues:cases.filter(c=>c.findings.includes('within-component-geometry-issue')).length,positiveComponentIntersections:cases.filter(c=>c.findings.includes('positive-area-between-components')).length,jstsValid:cases.filter(c=>c.independentTopology.valid).length,jstsInvalid:cases.filter(c=>!c.independentTopology.valid).length,geometryModified:false,approvalGranted:false};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){try{if(process.argv.length!==3)throw Error('Provide private validation package directory');console.log(JSON.stringify(await run(process.argv[2]),null,2));}catch(e){console.error(e.message);process.exitCode=1;}}
