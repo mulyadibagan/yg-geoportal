@@ -31,6 +31,7 @@ on:
       - scripts/prepare-restoration-three-pressure-evidence.mjs
       - scripts/review-restoration-three-pressure-candidates.mjs
       - scripts/sample-restoration-candidate-loss.mjs
+      - scripts/review-restoration-canal-pixels.mjs
       - .github/workflows/validate-restoration-priority.yml
 
 permissions:
@@ -69,6 +70,7 @@ jobs:
           node --check scripts/prepare-restoration-three-pressure-evidence.mjs
           node --check scripts/review-restoration-three-pressure-candidates.mjs
           node --check scripts/sample-restoration-candidate-loss.mjs
+          node --check scripts/review-restoration-canal-pixels.mjs
           python3 -c "from pathlib import Path; p=Path('scripts/extract-restoration-research-tmat.py'); compile(p.read_text(encoding='utf-8'), str(p), 'exec')"
       - name: Prepare isolated existing GIS library versions
         run: npm install --prefix private-data/restoration-runtime --no-save --ignore-scripts --no-audit --no-fund @turf/turf@7.2.0 geotiff@2.1.3 jsts@2.7.1
