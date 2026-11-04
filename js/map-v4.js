@@ -2856,7 +2856,7 @@ L.control.scale({
         '" data-reference-layer-id="' + escapeHtml(layerId) +
         '" data-reference-section="' + escapeHtml(config.section || "general") +
         '" type="checkbox"' +
-        (["social_forestry_intervention_yg", "batas_kabupaten_riau"].includes(layerId) ? ' checked' : '') + '>' +
+        (layerId === "social_forestry_intervention_yg" ? ' checked' : '') + '>' +
         '<span class="swatch" style="background:' +
           escapeHtml(config.swatch || config.color) + '"></span>' +
         '<label for="layer-' + escapeHtml(layerId) + '">' +
@@ -5412,10 +5412,6 @@ L.control.scale({
   }).catch(error => {
     console.warn("Batas PS intervensi publik belum dapat dimuat", error);
   });
-  if (!isGhimboCoffeeView) loadReferenceLayer("batas_kabupaten_riau").then(layer => {
-    const checkbox = document.querySelector('[data-reference-layer-id="batas_kabupaten_riau"]');
-    if ((!checkbox || checkbox.checked) && !map.hasLayer(layer)) layer.addTo(map);
-  }).catch(error => console.warn("Batas kabupaten/kota belum dapat dimuat", error));
   loadDatabase().finally(startPublishedSnapshotWatch);
 })();
 
