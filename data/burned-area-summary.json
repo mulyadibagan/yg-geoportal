@@ -1,15 +1,15 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-11-03T03:38:51.605832+00:00",
+  "generatedAt": "2026-11-04T03:38:44.266197+00:00",
   "status": "ready",
-  "eventCount": 1,
-  "estimatedAreaHa": 95.96,
-  "candidateEventCount": 1,
+  "eventCount": 0,
+  "estimatedAreaHa": 0,
+  "candidateEventCount": 0,
   "processing": {
-    "published": 1,
+    "published": 0,
     "excludedByRiauBoundary": 0
   },
-  "latestDetection": "2026-10-05T06:31:00+00:00",
+  "latestDetection": null,
   "method": "Sentinel-2 dNBR/NBR with FIRMS candidate events",
   "disclaimer": "Estimasi berbasis citra satelit; bukan hasil pengukuran atau verifikasi lapangan.",
   "province": "Riau",
@@ -17,75 +17,9 @@
   "villageSource": "data/batas_administrasi_desa_riau.geojson",
   "spatiallyClipped": true,
   "areaCrs": "EPSG:32647",
-  "administrativeUpdatedAt": "2026-11-03T03:38:51.656429+00:00",
-  "unassignedAreaHa": 0.0,
-  "villageTotals": [
-    {
-      "regency": "Kampar",
-      "district": "Xiii Koto Kampar",
-      "village": "Kelurahan Batu Bersurat",
-      "areaHa": 23.11
-    },
-    {
-      "regency": "Kampar",
-      "district": "Xiii Koto Kampar",
-      "village": "Lubuk Agung",
-      "areaHa": 1.79
-    },
-    {
-      "regency": "Kampar",
-      "district": "Xiii Koto Kampar",
-      "village": "Pongkai Istiqomah",
-      "areaHa": 34.33
-    },
-    {
-      "regency": "Kampar",
-      "district": "Xiii Koto Kampar",
-      "village": "Ranah Sungkai",
-      "areaHa": 25.19
-    },
-    {
-      "regency": "Kampar/Rokan Hulu",
-      "district": "",
-      "village": "Area Saling Klaim",
-      "areaHa": 11.5
-    },
-    {
-      "regency": "Rokan Hulu",
-      "district": "Kabun",
-      "village": "Koto Ranah",
-      "areaHa": 0.03
-    }
-  ],
-  "districtTotals": [
-    {
-      "regency": "Kampar",
-      "district": "Xiii Koto Kampar",
-      "areaHa": 84.42
-    },
-    {
-      "regency": "Kampar/Rokan Hulu",
-      "district": "",
-      "areaHa": 11.5
-    },
-    {
-      "regency": "Rokan Hulu",
-      "district": "Kabun",
-      "areaHa": 0.03
-    }
-  ],
-  "regencyTotals": [
-    {
-      "regency": "Kampar",
-      "areaHa": 84.42
-    },
-    {
-      "regency": "Kampar/Rokan Hulu",
-      "areaHa": 11.5
-    },
-    {
-      "regency": "Rokan Hulu",
-      "areaHa": 0.03
-    }
-  ]
+  "administrativeUpdatedAt": "2026-11-04T03:38:44.266318+00:00",
+  "unassignedAreaHa": 0,
+  "villageTotals": [],
+  "districtTotals": [],
+  "regencyTotals": []
 }
