@@ -322,6 +322,7 @@
     var programme = programmeForDonor(donorName);
     var donor = donorForName(donorName);
     if (!content || !donor) return;
+    if(donorName==='Aramco Asia Singapore'&&programme)rows=rows.filter(row=>row.programmeId===programme.id||(!row.programmeId&&(programme.outputs||[]).some(o=>(o.activities||[]).some(a=>a.id===row.indicatorId))));
     var section = content.querySelector('.funding-milestone-status');
     if (!section) {
       section = document.createElement('section');
@@ -336,7 +337,7 @@
       });
       var outputRows = rows.filter(function (row) {
         return activityIds.indexOf(String(row.indicatorId || '')) >= 0 ||
-          outputName(row) === output.name;
+          (donorName!=='Aramco Asia Singapore'&&outputName(row) === output.name);
       });
       var uniqueActivities = {};
       outputRows.forEach(function (row) {
