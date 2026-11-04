@@ -1190,9 +1190,9 @@
     ],
     "indicators": [
       {
-        "label": "Aktivitas dengan paket evidence lengkap",
-        "value": "6 dari 12",
-        "progress": 50
+        "label": "Aktivitas terdokumentasi",
+        "value": "7 dari 12",
+        "progress": 58.33
       },
       {
         "label": "Output 1.1 · micro-mill",
@@ -1215,14 +1215,14 @@
         "progress": 100
       },
       {
-        "label": "Target sekat kanal disurvei/diperbaiki",
+        "label": "Sekat kanal diperbaiki",
         "value": "2 unit",
-        "progress": 0
+        "progress": 100
       },
       {
-        "label": "Target titik TMAT/FDRS",
+        "label": "Titik TMAT/FDRS terpasang",
         "value": "2 titik",
-        "progress": 0
+        "progress": 100
       }
     ],
     "programs": [
@@ -1378,7 +1378,20 @@
               }
             ]
           }
-        ]
+        ],
+        "interimReport": {
+          "title": "Laporan Interim Q1 · Juni–Agustus 2026",
+          "period": "Juni–Agustus 2026",
+          "submittedDate": "2026-09-07",
+          "reviewedDate": "2026-11-04",
+          "url": "https://drive.google.com/file/d/10TEaYi4fq6qYXRqAA30Uo-tOcrs9V9mY/view?usp=drivesdk",
+          "folderUrl": "https://drive.google.com/drive/folders/1yRl86x_y1n0Qcs8NKvwxRxv7nfCmvyFq",
+          "completedActivities": 6,
+          "womenMembers": 27,
+          "canalBlocksRepaired": 2,
+          "ewsPointsInstalled": 2,
+          "summary": "Enam kegiatan utama: rumah jemur, sarana air nursery, mesin pengupas kopi kering, SOP micro-mill, perbaikan dua sekat kanal, dan pemasangan dua titik TMAT/FDRS. Penerima manfaat utama adalah 27 perempuan KTWMJ; peserta antaraktivitas tidak dijumlahkan sebagai penerima manfaat unik."
+        }
       }
     ],
     "verifiedEvidence": [
@@ -1400,7 +1413,9 @@
         "evidenceTitle": "Pembangunan rumah penjemuran semi permanen",
         "activityDate": "2026-06-13",
         "activityDateLabel": "13–16 Juni 2026",
-        "note": "Rumah jemur selesai dibangun; paket bukti pelaksanaan tersedia lengkap."
+        "note": "Rumah jemur selesai dibangun; paket bukti pelaksanaan tersedia lengkap.",
+        "evidenceUrl": "https://drive.google.com/drive/folders/1JC10F4bMHHzeQO1q39O_LCsDoJsowYjM?usp=drive_link",
+        "interimReportUrl": "https://drive.google.com/file/d/10TEaYi4fq6qYXRqAA30Uo-tOcrs9V9mY/view?usp=drivesdk"
       },
       {
         "donorId": "DNR-PENABULU",
@@ -1420,7 +1435,9 @@
         "evidenceTitle": "Pembangunan tower air dan sistem distribusi air nursery",
         "activityDate": "2026-06-20",
         "activityDateLabel": "20–24 Juni 2026",
-        "note": "Menara tampung air, sumur, pompa, dan distribusi penyiraman nursery selesai dibangun."
+        "note": "Menara tampung air, sumur, pompa, dan distribusi penyiraman nursery selesai dibangun.",
+        "evidenceUrl": "https://drive.google.com/drive/folders/1YeY1a8PnITauylqz_WrvtUoWDaNxNHYK?usp=sharing",
+        "interimReportUrl": "https://drive.google.com/file/d/10TEaYi4fq6qYXRqAA30Uo-tOcrs9V9mY/view?usp=drivesdk"
       },
       {
         "donorId": "DNR-PENABULU",
@@ -1440,7 +1457,9 @@
         "evidenceTitle": "Pengadaan dan instalasi mesin pengupas kopi",
         "activityDate": "2026-07-16",
         "activityDateLabel": "16–18 Juli 2026",
-        "note": "Mesin dipasang, disetel, diuji tanpa beban dan dengan kopi, lalu diserahterimakan untuk operasional."
+        "note": "Mesin dipasang, disetel, diuji tanpa beban dan dengan kopi, lalu diserahterimakan untuk operasional.",
+        "evidenceUrl": "https://drive.google.com/drive/folders/1tJjXIJ4pavHqMa3kwN4gAANyfp9XsaBa?usp=sharing",
+        "interimReportUrl": "https://drive.google.com/file/d/10TEaYi4fq6qYXRqAA30Uo-tOcrs9V9mY/view?usp=drivesdk"
       },
       {
         "donorId": "DNR-PENABULU",
@@ -1460,7 +1479,9 @@
         "evidenceTitle": "Penyusunan dan penerapan SOP operasional micro-mill",
         "activityDate": "2026-07-24",
         "activityDateLabel": "24–26 Juli 2026",
-        "note": "SOP, poster alur, simulasi praktik, lembar kontrol, dan pengesahan aturan operasional telah diselesaikan."
+        "note": "SOP, poster alur, simulasi praktik, lembar kontrol, dan pengesahan aturan operasional telah diselesaikan.",
+        "evidenceUrl": "https://drive.google.com/drive/folders/1pf-6HWaniR__P9jFSks-5Gvbh86iw8Mn?usp=sharing",
+        "interimReportUrl": "https://drive.google.com/file/d/10TEaYi4fq6qYXRqAA30Uo-tOcrs9V9mY/view?usp=drivesdk"
       },
       {
         "donorId": "DNR-PENABULU",
@@ -1480,7 +1501,9 @@
         "evidenceTitle": "Perbaikan sekat kanal Temiang 2022",
         "activityDate": "2026-08-06",
         "activityDateLabel": "3–6 Agustus 2026",
-        "note": "Perbaikan struktur kayu, pemadatan, penambahan tanah, dan semenisasi telah dilaporkan serta diverifikasi."
+        "note": "Perbaikan struktur kayu, pemadatan, penambahan tanah, dan semenisasi telah dilaporkan serta diverifikasi.",
+        "evidenceUrl": "https://drive.google.com/drive/folders/1WWpJQEJBbo6caaiAMi7WyyMyhGKZUudv?usp=sharing",
+        "interimReportUrl": "https://drive.google.com/file/d/10TEaYi4fq6qYXRqAA30Uo-tOcrs9V9mY/view?usp=drivesdk"
       },
       {
         "donorId": "DNR-PENABULU",
@@ -1500,7 +1523,9 @@
         "evidenceTitle": "Perbaikan sekat kanal Temiang 2023",
         "activityDate": "2026-08-11",
         "activityDateLabel": "7–11 Agustus 2026",
-        "note": "Sekat kanal selesai diperbaiki; kondisi akhir baik dan berfungsi baik."
+        "note": "Sekat kanal selesai diperbaiki; kondisi akhir baik dan berfungsi baik.",
+        "evidenceUrl": "https://drive.google.com/drive/folders/1WWpJQEJBbo6caaiAMi7WyyMyhGKZUudv?usp=sharing",
+        "interimReportUrl": "https://drive.google.com/file/d/10TEaYi4fq6qYXRqAA30Uo-tOcrs9V9mY/view?usp=drivesdk"
       },
       {
         "donorId": "DNR-PENABULU",
@@ -1521,6 +1546,28 @@
         "verifiedBy": "Mulyadi, Direktur Yayasan Gambut",
         "note": "10.000 benih kopi Liberika, 10.000 paket media tanam, dan alat pembibitan diserahkan kepada KTWMJ; melibatkan 27 perempuan. Aktivitas selesai berdasarkan penyerahan dukungan pembibitan.",
         "indicatorLabel": "Output 1.3 · Sarana pendukung nursery diperkuat → Produksi dan perawatan bibit pertanian gambut"
+      },
+      {
+        "donorId": "DNR-PENABULU",
+        "donorName": "Yayasan Penabulu",
+        "programmeId": "PRG-PENABULU-2026-2027",
+        "programmeName": "Penguatan Rantai Nilai Kopi Liberika dan Ketahanan Ekosistem Gambut di Desa Temiang",
+        "evidenceId": "EV-PENABULU-2.2.1-Q1-2026",
+        "indicatorId": "ACT-PENABULU-2.2.1",
+        "activityCode": "2.2.1",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Instalasi dua titik TMAT dan FDRS sebagai EWS",
+        "location": "Desa Temiang, Bandar Laksamana, Bengkalis, Riau",
+        "activityDate": "2026-08-26",
+        "activityDateLabel": "23–26 Agustus 2026",
+        "verifiedAt": "2026-11-04T00:00:00+07:00",
+        "verifiedAtLabel": "4 November 2026",
+        "verificationBasis": "Laporan interim Q1 Juni–Agustus 2026 · executive summary 2.2.1 · berita acara 26 Agustus 2026",
+        "verifiedBy": "Penelaahan laporan dan dokumen pelaksanaan",
+        "note": "Dua titik TMAT/FDRS terpasang dan diserahterimakan dalam kondisi berfungsi. Kegiatan melibatkan 27 perempuan KTWMJ, 4 laki-laki pelaksana instalasi, dan 2 staf YG. Pelatihan monitoring/logbook (2.2.2) tetap aktivitas terpisah.",
+        "evidenceUrl": "https://drive.google.com/file/d/1pzP0zAApGZww04mp1j2EPGG9T2rtKiIt/view?usp=drivesdk",
+        "interimReportUrl": "https://drive.google.com/file/d/10TEaYi4fq6qYXRqAA30Uo-tOcrs9V9mY/view?usp=drivesdk",
+        "handoverUrl": "https://drive.google.com/file/d/15tZzUqRUUBhui205hIn27AEJyH4e73uv/view?usp=drivesdk"
       }
     ],
     "timeline": [
@@ -1531,8 +1578,8 @@
       },
       {
         "year": "Agustus 2026",
-        "title": "Program berjalan",
-        "detail": "Produksi benih, pemasaran, sekat kanal, dan monitoring TMAT/FDRS tetap ditampilkan sebagai target atau proses berjalan sesuai status bukti."
+        "title": "Perbaikan tata air dan pemasangan EWS selesai",
+        "detail": "Dua sekat kanal lama (2022 dan 2023) diperbaiki pada 3–11 Agustus. Dua titik TMAT/FDRS dipasang pada 23–26 Agustus 2026. Capaian dikonfirmasi laporan interim Q1, executive summary, dan berita acara."
       },
       {
         "year": "21–23 September 2026",
