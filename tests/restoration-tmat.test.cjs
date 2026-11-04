@@ -18,3 +18,13 @@ test('TMAT requests accept only bounded public station identities and fixed deta
  assert.equal(url.origin,'https://sitmat.kemenlh.go.id');assert.equal(url.searchParams.get('days'),'30');assert.equal(url.searchParams.has('geometry'),false);
  assert.equal(publicSelection({}),false);assert.equal(observationAudit({properties:{}}).recordCount,0);
 });
+test('TMAT calendar validation flags impossible dates and equivalent clock representations',async()=>{
+ const {calendarDate,auditRows}=await import('../scripts/audit-restoration-tmat.mjs');
+ assert.equal(calendarDate('29-Feb-2024'),'2024-02-29');
+ for(const value of ['29-Feb-2026','31-Apr-2026','04-XYZ-2026','2026-13-01','today',null])assert.equal(calendarDate(value),null);
+ const result=auditRows([{Tanggal:'04-Nov-2026',Jam:'07:00',WaterLevel:'0'},{Tanggal:'2026-11-04',Jam:'07:00:00',WaterLevel:'-95'},{Tanggal:'31-Apr-2026',Jam:'07:00',WaterLevel:'1'}]);
+ assert.equal(result.missingDateTime,1);assert.equal(result.observedCalendarDays,1);
+ assert.equal(result.conflictingTimes.length,1);assert.equal(result.conflictingTimes[0].selectedValue,null);
+ assert.deepEqual(result.conflictingTimes[0].records.map(row=>row.sourceRecordIndex),[0,1]);
+ assert.equal(result.conflictingTimes[0].timezone,null);assert.equal(result.completePeriodValidated,false);
+});

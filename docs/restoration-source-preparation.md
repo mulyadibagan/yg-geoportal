@@ -165,3 +165,13 @@ node scripts/audit-restoration-tmat.mjs "private-data/restoration-tmat-<id>"
 ```
 
 Semua hasil dan seri mentah tetap di direktori privat yang diabaikan Git dan dikecualikan dari Pages. Yang masuk branch review hanya script, tes dan dokumentasi agregat. Tidak ada upload data ke API staf, perubahan database, deploy atau menu baru. Kelanjutan paling penting adalah memperoleh sumber BBSDLP yang benar-benar mencakup delapan lokasi konflik dan metadata pengukuran dari pengelola SiTMAT; tidak mengganti kekosongan dengan skor perkiraan.
+
+### Penelusuran dan audit waktu lanjutan
+
+[Dataset Trase](https://trase.earth/open-data/datasets/spatial-metrics-indonesia-peat-area) merujuk peta resmi Kementan edisi Desember 2019, tetapi produk yang ditampilkan berupa agregat negara/provinsi/kabupaten. Agregat luas tidak dapat memilih kelas kedalaman atau memperbaiki geometri kasus lokal, sehingga tidak digunakan sebagai pengganti sumber spasial BBSDLP.
+
+[Halaman metodologi Inarth](https://inarth.or.id/peatland-gwl-national-project) yang berhasil dibaca melalui HTTP menjelaskan prakiraan mingguan berbasis regresi/machine learning, data iklim prakiraan dan dinamika GWL sebelumnya. Ini bukan dokumentasi satuan, zona waktu, datum atau kalibrasi stasiun Simatag; tidak dipakai mengesahkan seri pengukuran.
+
+Audit lokal kini memeriksa tanggal kalender yang benar, batas jam/menit/detik, serta kesetaraan penulisan tanggal dan jam. Kalender dinormalisasi hanya untuk mengenali waktu lokal yang sama, tanpa menetapkan zona waktu. Audit menyimpan setiap kelompok nilai bertentangan dengan indeks rekaman asli, tanggal/jam/nilai mentah dan `selectedValue:null`. Rentang hari teramati dicatat terpisah dari kelengkapan periode; tidak diasumsikan interval pengukuran atau 30 hari lengkap. Eksekusi ulang tetap menemukan dua rekaman berulang dengan nilai berbeda; tidak ada perubahan nilai sumber atau scoring.
+
+[Bahan permintaan verifikasi sumber](restoration-source-verification-requests.md) disiapkan untuk pengelola BBSDLP dan SiTMAT. Dokumen tersebut belum dikirim; rincian geometri dan kasus stasiun tetap di audit privat. Penyelesaian substantif masih memerlukan bukti sumber, bukan perubahan ambang skor atau penambahan proksi.

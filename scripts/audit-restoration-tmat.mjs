@@ -12,21 +12,40 @@ export function numeric(value){
  if(typeof value!=='string'||!/^[-+]?(?:\d+(?:\.\d*)?|\.\d+)$/.test(value.trim()))return null;
  const result=Number(value);return Number.isFinite(result)?result:null;
 }
+export function calendarDate(value){
+ if(typeof value!=='string')return null;
+ const iso=/^(\d{4})-(\d{2})-(\d{2})$/.exec(value);
+ const named=/^(\d{1,2})-([A-Za-z]{3})-(\d{4})$/.exec(value);
+ const months=['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
+ const year=iso?Number(iso[1]):named?Number(named[3]):NaN;
+ const month=iso?Number(iso[2]):named?months.indexOf(named[2].toLowerCase())+1:NaN;
+ const day=iso?Number(iso[3]):named?Number(named[1]):NaN;
+ if(!Number.isInteger(year)||year<1900||year>2100||month<1||month>12||day<1||day>31)return null;
+ const check=new Date(Date.UTC(year,month-1,day));
+ if(check.getUTCFullYear()!==year||check.getUTCMonth()!==month-1||check.getUTCDate()!==day)return null;
+ // Calendar normalization only. This does not assign UTC to the measurement.
+ return String(year)+'-'+String(month).padStart(2,'0')+'-'+String(day).padStart(2,'0');
+}
 export function auditRows(rows){
  if(!Array.isArray(rows))return {available:false,records:null};
- const seen=new Map();let numericValues=0,missingValues=0,invalidValues=0,missingDateTime=0,repeatedDateTime=0,conflictingDateTime=0;
- for(const row of rows){
+ const seen=new Map(),details=new Map(),days=new Set();let numericValues=0,missingValues=0,invalidValues=0,missingDateTime=0,repeatedDateTime=0,conflictingDateTime=0;
+ for(const [index,row] of rows.entries()){
   const value=numeric(row.WaterLevel);
   if(value!==null)numericValues++;
   else if(row.WaterLevel===null||row.WaterLevel===undefined||String(row.WaterLevel).trim()==='')missingValues++;
   else invalidValues++;
-  if(typeof row.Tanggal!=='string'||!row.Tanggal.trim()||typeof row.Jam!=='string'||!/^\d{2}:\d{2}(?::\d{2})?$/.test(row.Jam)||Number(row.Jam.slice(0,2))>23||Number(row.Jam.slice(3,5))>59){missingDateTime++;continue;}
-  const key=row.Tanggal+' '+row.Jam;
+  const date=calendarDate(row.Tanggal);
+  if(!date||typeof row.Jam!=='string'||!/^\d{2}:\d{2}(?::\d{2})?$/.test(row.Jam)||Number(row.Jam.slice(0,2))>23||Number(row.Jam.slice(3,5))>59||(row.Jam.length===8&&Number(row.Jam.slice(6,8))>59)){missingDateTime++;continue;}
+  days.add(date);
+  const key=date+' '+(row.Jam.length===5?row.Jam+':00':row.Jam);
   const comparable=value===null?JSON.stringify({raw:row.WaterLevel}):JSON.stringify(value);
   if(seen.has(key)){repeatedDateTime++;if(seen.get(key)!==comparable)conflictingDateTime++;}
   else seen.set(key,comparable);
+  const entries=details.get(key)||[];entries.push({sourceRecordIndex:index,sourceDate:row.Tanggal,sourceClock:row.Jam,rawWaterLevel:row.WaterLevel,comparable});details.set(key,entries);
  }
- return {available:true,records:rows.length,numericValues,missingValues,invalidValues,missingDateTime,repeatedDateTime,conflictingDateTime,timezoneConfirmed:false,datumConfirmed:false,calibrationConfirmed:false,scoringValidated:false};
+ const conflictingTimes=[...details].filter(([,entries])=>new Set(entries.map(row=>row.comparable)).size>1).map(([localCalendarTime,entries])=>({localCalendarTime,timezone:null,records:entries.map(({comparable,...row})=>row),selectedValue:null,status:'source-review-required'}));
+ const observedDates=[...days].sort();
+ return {available:true,records:rows.length,numericValues,missingValues,invalidValues,missingDateTime,repeatedDateTime,conflictingDateTime,conflictingTimes,observedCalendarDays:days.size,firstObservedDate:observedDates[0]??null,lastObservedDate:observedDates.at(-1)??null,expectedCadence:null,completePeriodValidated:false,timezoneConfirmed:false,datumConfirmed:false,calibrationConfirmed:false,scoringValidated:false};
 }
 export async function audit(directory){
  const privateRoot=await fs.realpath(path.join(root,'private-data')),input=await fs.realpath(path.resolve(root,directory));
