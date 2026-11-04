@@ -26,7 +26,7 @@ var LEGACY_OBJECT_ALIASES={
   var REPORT_CORRECTIONS={
     'YG-20260717-205241-378':{aliveCount:2730,deadOrDamagedCount:600,survivalPercent:82}
   };
-  var records=[],groups=[],masterObjects=[];
+  var records=[],groups=[],masterObjects=[],aramcoEvidenceOpened=false;
   var monitorMap=null,monitorMapLayer=null,presetApplied=false;
   var CLUSTER_MODES=['object','village','reporter','donor','phase'];
   var list=document.getElementById('monitor-list');
@@ -1118,6 +1118,8 @@ var LEGACY_OBJECT_ALIASES={
     records=nextRecords;
     groups=groupData(records);
     stats();filters();render();
+    if(!aramcoEvidenceOpened){var requestedReport=new URLSearchParams(location.search).get('report'),matchedReport=records.find(r=>String(r.id)===requestedReport&&r.donor==='Aramco Asia Singapore');if(matchedReport){var matchedGroup=groups.find(g=>g.history.some(r=>String(r.id)===requestedReport));if(matchedGroup){aramcoEvidenceOpened=true;openDetail(matchedGroup.key);}}}
+
   }
 
   window[CALLBACK]=applyData;
