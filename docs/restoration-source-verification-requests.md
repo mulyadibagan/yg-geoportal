@@ -10,9 +10,9 @@ Dokumen ini menyiapkan pertanyaan untuk pengelola data. Tidak ada email, formuli
 
 ### Draf pertanyaan awal — tanpa lampiran, belum dikirim
 
-Tujuan: brmp.sdlahan@pertanian.go.id  
-CC: sekretariatbbsdlp@yahoo.com  
-Subjek: Informasi ketersediaan dan prosedur akses Peta Lahan Gambut 2019 cakupan Riau
+- Tujuan: brmp.sdlahan@pertanian.go.id
+- CC: sekretariatbbsdlp@yahoo.com
+- Subjek: Informasi ketersediaan dan prosedur akses Peta Lahan Gambut 2019 cakupan Riau
 
 Yth. Tim Layanan Informasi Geospasial Tematik BRMP SDLP,
 
@@ -27,6 +27,8 @@ Mohon arahkan kami kepada pengelola dataset yang tepat apabila layanan ini bukan
 Terima kasih.
 
 Identitas penandatangan dan lampiran belum ditetapkan. Draf tidak boleh dikirim atas nama orang atau pejabat tertentu tanpa instruksinya.
+
+Keputusan pengguna pada 4 November 2026: **simpan draf saja**. Tidak ada izin pengiriman pesan atau lampiran.
 
 ### Rincian kebutuhan untuk pengajuan berikutnya
 
