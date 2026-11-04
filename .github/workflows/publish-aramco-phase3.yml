@@ -1,0 +1,49 @@
+name: Publish reviewed Aramco Phase III reconciliation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    environment: yg-webgis-staging
+    concurrency:
+      group: yg-webgis-worker-deploy
+      cancel-in-progress: false
+    defaults:
+      run:
+        working-directory: cloudflare/yg-webgis-public-data
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: cloudflare/yg-webgis-public-data/package-lock.json
+      - run: npm ci
+      - name: Check reviewed Aramco records and snapshot integrity
+        run: |
+          (cd ../.. && node --test tests/aramco-phase3-final.test.cjs)
+          npm run validate:snapshots
+          npm run check
+      - name: Publish reviewed snapshots and deploy the scoped reconciliation
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ vars.CLOUDFLARE_ACCOUNT_ID }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          VERSION="$(git rev-parse HEAD)-aramco-phase3"
+          node scripts/build-manifest.mjs "$VERSION"
+          for BUCKET in yg-webgis-public-snapshots-staging yg-webgis-public-snapshots; do
+            for NAME in dashboard objects; do
+              FILE=../../data/master-database-snapshot.json
+              if [ "$NAME" = dashboard ]; then FILE=../../data/dashboard-summary-snapshot.json; fi
+              npx wrangler r2 object put "$BUCKET/snapshots/$VERSION/$NAME.json" --remote --file "$FILE" --content-type application/json
+              npx wrangler r2 object put "$BUCKET/snapshots/current/$NAME.json" --remote --file "$FILE" --content-type application/json
+            done
+            npx wrangler r2 object put "$BUCKET/manifests/$VERSION.json" --remote --file tmp/current-manifest.json --content-type application/json
+            npx wrangler r2 object put "$BUCKET/manifests/current.json" --remote --file tmp/current-manifest.json --content-type application/json
+          done
+          npx wrangler deploy --env staging
+          npx wrangler deploy --env production
