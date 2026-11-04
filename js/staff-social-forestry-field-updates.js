@@ -15,7 +15,7 @@
  async function get(path){if(!active())throw Error('Login staf diperlukan.');var r=await fetch(base+path,{headers:{Authorization:'Bearer '+initial.token},cache:'no-store',credentials:'omit',referrerPolicy:'no-referrer',signal:AbortSignal.timeout(20000)});if(!r.ok)throw Error('HTTP '+r.status);if(!active())throw Error('Sesi staf berubah.');return r;}
  function text(tag,value,parent){var node=document.createElement(tag);node.textContent=value||'';parent.appendChild(node);return node;}
  function date(update){return new Date(update.observedAt).toLocaleString('id-ID',{day:'numeric',month:'long',year:'numeric',hour:'2-digit',minute:'2-digit',timeZone:'Asia/Jakarta'})+' WIB';}
- function photoUrl(photo){if(!/^\/api\/staff\/social-forestry-sungai-linau-photo-\d{8}$/.test(photo.path))return Promise.reject(Error('Foto tidak sesuai.'));
+ function photoUrl(photo){if(!/^\/api\/staff\/social-forestry-sungai-linau-photo-\d{8}(?:-\d{6})?$/.test(photo.path))return Promise.reject(Error('Foto tidak sesuai.'));
   if(!photoPromises.has(photo.path))photoPromises.set(photo.path,get(photo.path).then(function(r){return r.blob();}).then(function(blob){if(!active())throw Error('Sesi berakhir.');var url=URL.createObjectURL(blob);urls.push(url);return url;}).catch(function(e){photoPromises.delete(photo.path);throw e;}));return photoPromises.get(photo.path);
  }
  function showPhoto(photo,host,title){var placeholder=text('p','Memuat foto internal…',host);photoUrl(photo).then(function(url){if(!active()||!host.isConnected)return;var link=document.createElement('a');link.href=url;link.target='_blank';link.rel='noopener';var img=document.createElement('img');img.src=url;img.alt=title;link.appendChild(img);placeholder.replaceWith(link);if(context)context.map.getContainer().dispatchEvent(new Event('sf-photo-loaded'));}).catch(function(){placeholder.textContent='Foto internal belum dapat dimuat. Muat ulang halaman untuk mencoba lagi.';});}
@@ -42,7 +42,7 @@
  }
  function attachMarkers(){if(!context||!active()||!updates.length)return;if(markerGroup)return;markerGroup=L.featureGroup().addTo(context.map);context.control.addOverlay(markerGroup,'Titik laporan internal');
   updates.forEach(function(update){var loc=update.location||{},lat=Number(loc.latitude),lng=Number(loc.longitude),entry=entries.get(update.id);if(!entry||!Number.isFinite(lat)||!Number.isFinite(lng))return;
-   var marker=L.marker([lat,lng],{title:update.title,keyboard:true,icon:L.divIcon({className:'sf-report-pin',html:'<span aria-hidden="true">⌂</span>',iconSize:[28,28],iconAnchor:[14,14]})}).bindTooltip(update.title).bindPopup(function(){return popup(update,entry);},{className:'sf-report-popup',minWidth:240,maxWidth:340,maxHeight:Math.max(260,context.map.getSize().y-90),autoPan:false,keepInView:false,autoPanPaddingTopLeft:[18,18],autoPanPaddingBottomRight:[18,18]}).addTo(markerGroup);
+   var marker=L.marker([lat,lng],{title:update.title,keyboard:true,icon:L.divIcon({className:'sf-report-pin',html:'<span aria-hidden="true">'+(update.kind==='logging'?'!':'⌂')+'</span>',iconSize:[28,28],iconAnchor:[14,14]})}).bindTooltip(update.title).bindPopup(function(){return popup(update,entry);},{className:'sf-report-popup',minWidth:240,maxWidth:340,maxHeight:Math.max(260,context.map.getSize().y-90),autoPan:false,keepInView:false,autoPanPaddingTopLeft:[18,18],autoPanPaddingBottomRight:[18,18]}).addTo(markerGroup);
    entry.marker=marker;entry.button.disabled=false;
    marker.on('popupopen',function(){var container=context.map.getContainer();container.appendChild(marker.getPopup().getElement());var refresh=function(){if(marker.isPopupOpen())marker.getPopup().update();};container.addEventListener('sf-photo-loaded',refresh,{once:true});});
   });
@@ -85,3 +85,4 @@
  window.addEventListener('storage',function(event){if(event.key==='ygEditorSessionV1'&&!active())clear();});
  window.addEventListener('unload',clear);
 })();
+

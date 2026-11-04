@@ -209,6 +209,7 @@ const PRIVATE_DATA_ROUTES = {
   "/api/staff/social-forestry-riau": ["internal/social-forestry/riau.geojson", "application/geo+json; charset=utf-8"],
   "/api/staff/social-forestry-sungai-linau-field-updates": ["internal/social-forestry/2942/field-updates.json", "application/json; charset=utf-8"],
   "/api/staff/social-forestry-sungai-linau-photo-20261104": ["internal/social-forestry/2942/pondok-20261104.png", "image/png"],
+  "/api/staff/social-forestry-sungai-linau-photo-20261104-114630": ["internal/social-forestry/2942/logging-20261104-114630.png", "image/png"],
   "/api/staff/social-forestry-details": ["internal/social-forestry/details.json", "application/json; charset=utf-8"],
   "/api/staff/social-forestry-makmur-pesisir-analysis": ["internal/social-forestry/makmur-pesisir-spatial-analysis.json", "application/json; charset=utf-8"],
   "/api/staff/faperta-ur-data": ["internal/faperta/ur-data.json", "application/json; charset=utf-8"],
@@ -445,3 +446,4 @@ var index_default = { async fetch(request, env) {
 export {
   index_default as default
 };
+
