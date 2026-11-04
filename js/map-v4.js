@@ -45,6 +45,20 @@
 
 
   const REFERENCE_LAYERS = {
+    batas_kabupaten_riau: {
+      id: "batas_kabupaten_riau",
+      label: "Batas Kabupaten/Kota Riau",
+      file: "data/batas-kabupaten-riau.geojson",
+      version: "20261104-big1",
+      color: "#facc15",
+      count: 12,
+      countLabel: "12 kabupaten/kota",
+      type: "regency_boundary",
+      section: "administrative",
+      sourceLabel: "Badan Informasi Geospasial · DISIGT/BatasWilayah",
+      sourceUrl: "https://geoservices.big.go.id/gis/rest/services/DISIGT/BatasWilayah/MapServer/0",
+      scale: "Visualisasi disederhanakan ±0,001°; metadata sumber September 2023"
+    },
     social_forestry_intervention_yg: {
       id: "social_forestry_intervention_yg",
       label: "Perhutanan Sosial Intervensi YG",
@@ -2163,6 +2177,10 @@ L.control.scale({
   function referenceStyle(config, feature) {
     const props = feature.properties || {};
 
+    if (config.type === "regency_boundary") {
+      return { color: config.color, weight: 2, opacity: 0.95, fill: false, dashArray: "7 4" };
+    }
+
     if (config.type === "spatial_plan") {
       const name = String(
         props.RENCANA || props.rtrsys || props.POLA_RUANG || props.rtrppr || ""
@@ -2424,7 +2442,12 @@ L.control.scale({
           };
     }
 
-    if (config.type === "spatial_plan") {
+    if (config.type === "regency_boundary") {
+      rows += item("Kabupaten/Kota", props.nama);
+      rows += item("Provinsi", props.provinsi);
+      rows += item("Metadata sumber", props.metadata);
+      rows += item("Catatan", "Batas referensi untuk orientasi peta; geometri disederhanakan.");
+    } else if (config.type === "spatial_plan") {
       rows += item("Kelas pola ruang", props.RENCANA || props.rtrsys);
       rows += item("Peruntukan sumber", props.POLA_RUANG || props.rtrppr);
       rows += item("Provinsi", props.PROVINSI || props.wadmpr);
@@ -2725,6 +2748,7 @@ L.control.scale({
     }
 
     const isInteractiveReference =
+      config.type === "regency_boundary" ||
       config.type === "forest" ||
       config.type === "peat" ||
       config.type === "peat_function" ||
@@ -2752,6 +2776,11 @@ L.control.scale({
       bubblingMouseEvents: false,
       style: feature => referenceStyle(config, feature),
       onEachFeature: (feature, leafletLayer) => {
+        if (config.type === "regency_boundary") {
+          const label = document.createElement("span");
+          label.textContent = feature.properties.nama;
+          leafletLayer.bindTooltip(label, { permanent: true, direction: "center", className: "yg-regency-label", interactive: false });
+        }
         if (isInteractiveReference) {
           leafletLayer.bindPopup(
             referencePopup(config, feature),
@@ -2827,7 +2856,7 @@ L.control.scale({
         '" data-reference-layer-id="' + escapeHtml(layerId) +
         '" data-reference-section="' + escapeHtml(config.section || "general") +
         '" type="checkbox"' +
-        (layerId === "social_forestry_intervention_yg" ? ' checked' : '') + '>' +
+        (["social_forestry_intervention_yg", "batas_kabupaten_riau"].includes(layerId) ? ' checked' : '') + '>' +
         '<span class="swatch" style="background:' +
           escapeHtml(config.swatch || config.color) + '"></span>' +
         '<label for="layer-' + escapeHtml(layerId) + '">' +
@@ -5383,6 +5412,10 @@ L.control.scale({
   }).catch(error => {
     console.warn("Batas PS intervensi publik belum dapat dimuat", error);
   });
+  if (!isGhimboCoffeeView) loadReferenceLayer("batas_kabupaten_riau").then(layer => {
+    const checkbox = document.querySelector('[data-reference-layer-id="batas_kabupaten_riau"]');
+    if ((!checkbox || checkbox.checked) && !map.hasLayer(layer)) layer.addTo(map);
+  }).catch(error => console.warn("Batas kabupaten/kota belum dapat dimuat", error));
   loadDatabase().finally(startPublishedSnapshotWatch);
 })();
 
