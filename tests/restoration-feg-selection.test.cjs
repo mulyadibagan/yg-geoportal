@@ -12,8 +12,8 @@ function feature(code='KHG.test-A',name='Test name') {
   return {type:'Feature',properties:{kode_khg:code,nama_khg:name},geometry:{type:'Polygon',coordinates:[[[100,0],[101,0],[101,1],[100,0]]]}};
 }
 const fc = features => ({type:'FeatureCollection',features});
-async function app({feg=fc([feature(),feature()]),privateFetch,catalog={access:'staff_only',datasets:[]},display}={}) {
-  const nodes=new Map(),drawn=[],removed=[],privateCalls=[];
+async function app({feg=fc([feature(),feature()]),privateFetch,catalog={access:'staff_only',datasets:[]},display,displayFetch}={}) {
+  const nodes=new Map(),drawn=[],removed=[],privateCalls=[],displayRequests=[];
   class Element {
     constructor(tag='div'){this.tag=tag;this.children=[];this.listeners={};this.disabled=true;this.hidden=true;this.checked=false;this.value='';this.textContent='';}
     set id(value){this._id=value;nodes.set(value,this);}
@@ -31,11 +31,12 @@ async function app({feg=fc([feature(),feature()]),privateFetch,catalog={access:'
     if(options.onEachFeature)(data.type==='FeatureCollection'?data.features:[data]).forEach(f=>options.onEachFeature(f,{bindPopup(fn){layer.popups.push(fn);}}));
     return layer;
   }};
-  const window={YG_RESTORATION:A,YG_RESTORATION_CATALOG:C,YG_AUTH:{readStoredSession:()=>({token:'test-only'})},addEventListener(){},YG_STAFF_DATA:{privateFetch:async input=>{privateCalls.push(input);if(privateFetch)return privateFetch(input);return {ok:true,json:async()=>feg};}}};window.top=window;window.self=window;
+  let session={token:'test-only'};
+  const window={YG_RESTORATION:A,YG_RESTORATION_CATALOG:C,YG_AUTH:{readStoredSession:()=>session},addEventListener(){},YG_STAFF_DATA:{privateFetch:async input=>{privateCalls.push(input);if(privateFetch)return privateFetch(input);return {ok:true,json:async()=>feg};}}};window.top=window;window.self=window;
   const context={window,document,L,location:{hostname:'webgisyg.id',protocol:'https:'},AbortSignal,setTimeout,clearTimeout,crypto:webcrypto,
-    fetch:async url=>{
+    fetch:async (url,options)=>{
       if(url.endsWith('/catalog'))return {ok:true,json:async()=>catalog};
-      if(url.endsWith('/display'))return new Response(JSON.stringify(display));
+      if(url.endsWith('/display')){displayRequests.push({url,options});return displayFetch?displayFetch():new Response(JSON.stringify(display));}
       if(url==='data/restoration-priority-sources.json')return {ok:true,json:async()=>({sources:[]})};
       if(url.includes('batas_provinsi'))return {ok:true,json:async()=>fc([feature()])};
       if(url.includes('Gambut_BBSDLP')){const peat=feature();peat.properties={KABKOT:'Siak',Luas_Ha:10};return {ok:true,json:async()=>fc([peat])};}
@@ -46,8 +47,38 @@ async function app({feg=fc([feature(),feature()]),privateFetch,catalog={access:'
   assert.equal(nodes.get('workspace').hidden,false);
   const click=id=>nodes.get(id).listeners.click();
   const change=id=>nodes.get(id).listeners.change();
-  return {nodes,drawn,removed,privateCalls,click,change};
+  return {nodes,drawn,removed,privateCalls,displayRequests,click,change,endSession(){session=null;}};
 }
+
+function fireCatalog(display){
+ const uuid='12345678-1234-4123-8123-123456789abc',bytes=Buffer.from(JSON.stringify(display));
+ return {uuid,catalog:{access:'staff_only',datasets:[{datasetUuid:uuid,title:'KEBAKARANHUTLARIAU_PT_2026_250K',publisher:'Badan Penanggulangan Bencana Daerah Provinsi Riau',dataYear:2026,conflicts:[{field:'theme'}],artifacts:{display:{available:true,status:'ready',bytes:bytes.length,featureCount:display.features.length,sha256:createHash('sha256').update(bytes).digest('hex')}}}]}};
+}
+test('BPBD layer loads only on selection using staff authorization and preserves unassessed ecological totals',async()=>{
+ const display=fc([{type:'Feature',properties:{event:'test-only'},geometry:{type:'MultiPoint',coordinates:[[100.75,.25],[110,5]]}}]);
+ const {uuid,catalog}=fireCatalog(display),ui=await app({catalog,display});
+ assert.equal(ui.displayRequests.length,0);
+ const before=['area','polygon-count','priority-count'].map(id=>ui.nodes.get(id).textContent),id='layer-bpbd-'+uuid;
+ ui.nodes.get(id).checked=true;await ui.change(id);
+ assert.equal(ui.displayRequests.length,1);assert.equal(ui.displayRequests[0].options.headers.authorization,'Bearer test-only');
+ const shown=ui.drawn.at(-1).data;
+ assert.equal(shown.features.length,1);assert.equal(shown.features[0].geometry.coordinates.length,1);
+ assert.deepEqual(['area','polygon-count','priority-count'].map(id=>ui.nodes.get(id).textContent),before);
+ assert.match(ui.nodes.get('runtime-source-bpbd-'+uuid).textContent,/catatan metadata: 1/);
+});
+test('BPBD forbidden response hides staff workspace without accepting layer data',async()=>{
+ const display=fc([{type:'Feature',properties:{},geometry:{type:'Point',coordinates:[100.75,.25]}}]);
+ const {uuid,catalog}=fireCatalog(display),ui=await app({catalog,display,displayFetch:()=>new Response('denied',{status:403})});
+ const id='layer-bpbd-'+uuid;ui.nodes.get(id).checked=true;await ui.change(id);
+ assert.equal(ui.nodes.get('workspace').hidden,true);assert.equal(ui.nodes.get(id).checked,false);
+ assert.match(ui.nodes.get('state-bpbd-'+uuid).textContent,/HTTP 403/);
+});
+test('BPBD selection after the stored session ends sends no request and hides the workspace',async()=>{
+ const display=fc([{type:'Feature',properties:{},geometry:{type:'Point',coordinates:[100.75,.25]}}]);
+ const {uuid,catalog}=fireCatalog(display),ui=await app({catalog,display});ui.endSession();
+ const id='layer-bpbd-'+uuid;ui.nodes.get(id).checked=true;await ui.change(id);
+ assert.equal(ui.displayRequests.length,0);assert.equal(ui.nodes.get('workspace').hidden,true);assert.equal(ui.nodes.get(id).checked,false);
+});
 test('staff FEG button populates source KHG groups; focus keeps original parts and summary unchanged',async()=>{
   const feg=fc([feature(),feature()]),ui=await app({feg});
   assert.equal(ui.privateCalls.length,0);
