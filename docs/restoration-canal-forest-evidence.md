@@ -42,3 +42,17 @@ Antrean disusun untuk pekerjaan pemeriksaan, bukan peringkat ekologis: `Periksa 
 `review-units.geojson` menyediakan geometri poligon sumber asli beserta rute pemeriksaan dan label kabupaten sumber untuk peninjauan GIS privat. Tidak ada buffer, dissolve, garis atau batas baru. File tersebut belum diunggah ke hosting, tidak menjadi data publik dan bukan layer hasil prioritas final. Input asli tetap dipertahankan.
 
 Pemeriksaan katalog staf tersinkron dan arsip survei internal belum menemukan geometri garis kanal lapangan yang sesuai pada sumber yang diperiksa. Laporan/peta survei lokal dipertahankan sebagai bukti referensi privat; titik rencana sekat tidak dihubungkan menjadi garis kanal rekaan. Batas kawasan hutan di katalog bukan kelas tutupan hutan. Penelusuran ini tidak mengklaim seluruh arsip organisasi telah habis diperiksa.
+
+### Pemeriksaan koordinat respons pada 61 kandidat
+
+Jalankan tanpa jaringan dan simpan seluruh keluaran di `private-data`:
+
+```powershell
+node scripts/sample-restoration-candidate-loss.mjs <paket-review> <paket-BPBD> <paket-GFC>
+```
+
+Skrip memverifikasi checksum empat raster asli, versi GFC-2025-v1.13, keselarasan grid lossyear/datamask, checksum BPBD, identitas unit BBSDLP dan keanggotaan setiap koordinat pada poligon asli menggunakan Turf. Tidak ada buffer, resampling, estimasi luas, atau skor. Batas piksel memakai interval setengah terbuka agar koordinat ekuator tidak masuk dua tile. Kelas datamask kosong/perairan tetap terpisah dari kehilangan tutupan pohon.
+
+Hasil pemeriksaan 4 November 2026: 61 unit, 826 sampel titik respons; 49 sampel pada 12 unit berimpit dengan piksel kehilangan tutupan pohon pada tahun kalender yang sama. Sebanyak 49 unit lainnya perlu bukti spasial tambahan, bukan disimpulkan tidak mengalami kebakaran atau kehilangan tutupan. Titik respons tidak mewakili batas area terbakar; perimpitan tahun tidak membuktikan sebab kebakaran. GFC mencakup perkebunan, sehingga belum membuktikan bukaan hutan alami. Kanal/jalan 2017 masih bukti tingkat unit, bukan kondisi kanal terkini.
+
+Keluaran privat `review.json`, `review-units.geojson` (61 geometri asli tanpa perubahan), dan `manifest.json` menyimpan rujukan rekaman, koordinat piksel native, nilai asli, versi/checksum dan rute pemeriksaan. Semua unit tetap `Belum dinilai`, persetujuan sumber `false`, skor `null`. Dua uji tambahan memeriksa batas piksel/ekuator, data kosong/perairan, nilai kelas tidak sah, tanggal tidak sah, serta batas cakupan 2025/2026. Total 117 tes lulus; tidak ada perubahan UI, kontrol akses atau produksi pada tahap ini.
