@@ -9,3 +9,10 @@ test('public milestones exclude older phase final reports and preserve verified 
  assert(!section.innerHTML.includes('Final Report Fase I'));assert(section.innerHTML.includes('not submitted'));
  const ids=new Set(require('../data/master-database-snapshot.json').features.map(f=>f.properties.Object_ID));for(const r of require('../data/aramco-phase3-final.json').monitoring.verifiedRecords)assert(ids.has(r.id));
 });
+test('profile retains separate milestone tags on one verified monitoring report',()=>{
+ const donor=require('../data/donors.json').find(d=>d.id==='DNR-ARAMCO'),programme=donor.programs.find(p=>p.id==='PRG-ARAMCO-PHASE-03'),source=fs.readFileSync('js/aramco-dashboard.js','utf8');
+ const c=vm.createContext({seededEvidence:donor.verifiedEvidence,liveEvidence:[],esc:s=>String(s??''),publicCopy:s=>s,normalize:s=>String(s||'').toLowerCase()});
+ vm.runInContext(source.slice(source.indexOf('  function combinedEvidence()'),source.indexOf('  function renderEvidence(')),c);
+ vm.runInContext(source.slice(source.indexOf('  function outputMarkup('),source.indexOf('  function flattenEvidence(')),c);
+ for(const [id,count]of [['OUT-ARAMCO-P3-01','4/4'],['OUT-ARAMCO-P3-03','3/3'],['OUT-ARAMCO-P3-06','2/2'],['OUT-ARAMCO-P3-07','1/2']])assert(c.outputMarkup(programme.outputs.find(o=>o.id===id),programme.targets).includes(count+' verified'),id);
+});
