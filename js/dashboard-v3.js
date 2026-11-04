@@ -737,7 +737,7 @@
     const penabuluSopPinned = "https://drive.google.com/thumbnail?id=1h1S-K3MLPEHKNHazOUjzSRN5kEh_9o8E&sz=w1200";
     const penabuluWomenGroupPinned = "https://drive.google.com/thumbnail?id=1DTCCNQnzs31pohWySwQKonmexcrIy9sX&sz=w1600";
     const penabuluMicroMillPinned = "https://drive.google.com/thumbnail?id=1txXo6MOZS-sMAsK4KB65FjMeGIuZyoAU&sz=w1200";
-    const dryingHouse = findFeaturePhoto(features, ["rumah jemur", "temiang"]);
+    const dryingHouse = "assets/penabulu/drying-house.jpg";
     const waterTower = penabuluWaterTowerPinned ||
       findFeaturePhoto(features, ["menara", "temiang"]);
     const nursery = findFeaturePhoto(features, ["nursery", "temiang"]);

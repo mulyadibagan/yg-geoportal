@@ -94,6 +94,7 @@
   }
 
   function evidenceDestination(row) {
+    if (row.evidenceId === "EV-PENABULU-1.3.2") return { href: "assets/penabulu/activity-1-3-2-20260921-1.jpeg", label: "Buka foto pembibitan →", external: true };
     if (isCapacityEvidence(row)) {
       return {
         href: 'capacity-building.html?report=' +
@@ -279,7 +280,19 @@
     return photos[String(name || '')] || '';
   }
 
+  function renderPenabuluOverview(rows) {
+    var node = document.getElementById('penabulu-overview-metrics');
+    var programme = programmeForDonor('Yayasan Penabulu');
+    if (!node || !programme) return;
+    var activities = (programme.outputs || []).reduce(function (all, output) { return all.concat(output.activities || []); }, []);
+    var ids = activities.map(function (activity) { return activity.id; });
+    var done = new Set(rows.filter(function (row) { return ids.indexOf(row.indicatorId) >= 0; }).map(function (row) { return row.indicatorId; })).size;
+    var percent = ids.length ? Math.round(done / ids.length * 1000) / 10 : 0;
+    node.innerHTML = '<div class="penabulu-overview-grid"><article><strong>' + done + '/' + ids.length + '</strong><span>Aktivitas terdokumentasi</span></article><article><strong>' + percent.toLocaleString('id-ID') + '%</strong><span>Cakupan dokumentasi aktivitas</span></article><article><strong>' + rows.length + '</strong><span>Dokumentasi terverifikasi</span></article></div><progress max="100" value="' + percent + '" aria-label="Cakupan dokumentasi aktivitas">' + percent + '%</progress>';
+  }
+
   function renderPenabuluEvidence(rows) {
+    renderPenabuluOverview(rows);
     var list = document.getElementById('penabulu-evidence-list');
     var status = document.getElementById('penabulu-evidence-status');
     if (!list || !status) return;
@@ -291,7 +304,7 @@
       return;
     }
     list.innerHTML = rows.map(function (row) {
-      var destination = row.evidenceUrl ? evidenceDestination(row) : null;
+      var destination = row.evidenceUrl || row.evidenceId === 'EV-PENABULU-1.3.2' ? evidenceDestination(row) : null;
       var sourceLink = destination
         ? '<a href="' + esc(destination.href) + '"' +
           (destination.external ? ' target="_blank" rel="noopener"' : '') + '>' +
