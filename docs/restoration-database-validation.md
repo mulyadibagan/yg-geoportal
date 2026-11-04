@@ -42,6 +42,8 @@ Kategori **Pemadaman** dan **Water drop** adalah record respons, bukan jumlah ke
 
 ## Keluaran dan uji
 
+`bpbd.geometryReviewQueue` mencatat unit yang gagal pemeriksaan geometri dan referensi respons yang berada di bounding box-nya. `excludedGeometryCandidateIds` menghubungkan setiap respons ke kandidat tersebut. Ini daftar penelaahan: bounding box tidak membuktikan titik berada dalam poligon dan tidak mengizinkan koreksi geometri otomatis. MultiPoint yang menyentuh kandidat sama beberapa kali tetap menghasilkan satu referensi respons per kandidat. Semua rincian berada di matriks privat.
+
 `validation-matrix.json` mencatat alasan per unit, konteks infrastruktur, kandidat pengamatan dan ringkasan lima indikator. Hasil aktual tersedia hanya pada paket privat yang dicetak script. Tidak ada file hasil operasional atau koordinat internal yang ditambahkan ke dokumentasi ini.
 
 Tes menggunakan geometri stasiun dan gambut nyata dari snapshot repository. Kasus algoritma mencakup nilai nol/kosong/tidak numerik/bertentangan, salah domain, ID laporan berulang, unit yang gagal geometri, serta piksel yang tidak tersedia. Seluruh kasus tersebut harus tetap menolak pengesahan otomatis. Tidak ada dependency baru, endpoint baru, perubahan UI atau deploy pada pekerjaan validasi ini.

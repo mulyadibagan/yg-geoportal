@@ -31,11 +31,11 @@ export function audit(units,snapshot,bpbd={sources:[],records:[]}){
  });
  const inventory=I.select(snapshot);
  function membership(coordinates){
-  const matches=[];let excluded=0;
+  const matches=[],excludedUnitIds=[];let excluded=0;
   for(const row of rows){const b=row.bbox;if(coordinates[0]<b[0]||coordinates[0]>b[2]||coordinates[1]<b[1]||coordinates[1]>b[3])continue;
-   if(!row.technical){excluded++;continue;}if(A.contains(coordinates,row.feature.geometry))matches.push(row);
+   if(!row.technical){excluded++;excludedUnitIds.push(row.feature.id);continue;}if(A.contains(coordinates,row.feature.geometry))matches.push(row);
   }
-  return {matches,excluded};
+  return {matches,excluded,excludedUnitIds};
  }
  const context={fdrs:inventory.fdrs.features.length,blocks:inventory.blocks.features.length,matchedInfrastructureRecords:0,unmatchedInfrastructureRecords:0,ambiguousInfrastructureRecords:0,incompleteInfrastructureMembership:0};
  for(const kind of ['fdrs','blocks'])for(const feature of inventory[kind].features){
@@ -73,13 +73,13 @@ export function audit(units,snapshot,bpbd={sources:[],records:[]}){
  const responseRecords=[];
  for(const record of bpbd.records){
   const points=record.feature.geometry.type==='Point'?[record.feature.geometry.coordinates]:record.feature.geometry.coordinates;
-  const matched=new Set();let incomplete=false;
-  for(const point of points){const result=membership(point);if(result.excluded)incomplete=true;for(const row of result.matches)matched.add(row);}
+  const matched=new Set(),excludedUnitIds=new Set();let incomplete=false;
+  for(const point of points){const result=membership(point);if(result.excluded)incomplete=true;for(const id of result.excludedUnitIds)excludedUnitIds.add(id);for(const row of result.matches)matched.add(row);}
   if(matched.size)responseMembership.matchedRecords++;else responseMembership.unmatchedRecords++;
   if(matched.size>1)responseMembership.ambiguousRecords++;if(incomplete)responseMembership.incompleteRecords++;
   for(const row of matched)row.bpbd.push(record.ref);
   const {feature,...metadata}=record;
-  responseRecords.push({...metadata,unitIds:[...matched].map(row=>row.feature.id),incompleteMembership:incomplete,uniqueMembership:matched.size===1&&!incomplete});
+  responseRecords.push({...metadata,unitIds:[...matched].map(row=>row.feature.id),excludedGeometryCandidateIds:[...excludedUnitIds],incompleteMembership:incomplete,uniqueMembership:matched.size===1&&!incomplete});
  }
  const matrix=rows.map(row=>{
   const p=row.feature.properties,loss=p.evidence?.treeCoverLoss,burned=p.evidence?.burnedIndications;
@@ -89,7 +89,8 @@ export function audit(units,snapshot,bpbd={sources:[],records:[]}){
    blockedBy:[...(!row.technical?['geometry-review-required']:[]),...(p.qa?.analysisUnitApproved!==true?['analysis-unit-not-approved']:[]),...(p.qa?.reviewFlags?.length||p.qa?.remainingIdenticalGeometry?['source-review-required']:[]),...(A.assess(p.restorationIndicators).missing.length?['critical-indicators-incomplete']:[])],declaredInputStatus:A.assess(p.restorationIndicators).missing.length?'incomplete':'declared-input-complete',status:'Belum dinilai',score:null,approvalGranted:false};
  });
  // Preserve membership uncertainty and date/category checks beside version-bound references.
- const bpbdEvidence={sourceScope:'Official downloads for staff-catalogue UUIDs; equivalence to protected R2 copies not verified',sources:bpbd.sources,membership:responseMembership,records:responseRecords};
+ const geometryReviewQueue=rows.filter(row=>!row.technical).map(row=>({unitId:row.feature.id,sourceFeatureIndex:row.feature.properties.sourceFeatureIndex,bpbdResponseRefs:responseRecords.filter(record=>record.excludedGeometryCandidateIds.includes(row.feature.id)).map(record=>record.ref),reason:'Point lies in bounding box of structurally rejected geometry; containment not evaluated',approvalGranted:false}));
+ const bpbdEvidence={sourceScope:'Official downloads for staff-catalogue UUIDs; equivalence to protected R2 copies not verified',sources:bpbd.sources,membership:responseMembership,records:responseRecords,geometryReviewQueue};
  const indicatorSummary=A.INDICATORS.map(def=>({id:def.id,label:def.label,unitsWithEvidence:matrix.filter(row=>{
   const e=row.indicatorEvidence[def.id];return def.id==='degradation'||def.id==='hydrology'?e.candidateReportIds.length>0:def.id==='fireHistory'?e.partialBurnIndications>0||e.bpbdResponseRecordRefs.length>0:def.id==='vegetationLoss'?e.nativeRasterObserved:e.sourceDepthClass!==null;
  }).length,validatedByThisAudit:0,blockers:{degradation:['Peat-specific condition observations and reviewed degradation method required'],fireHistory:['Response records are not unique fires; incident identity, coverage and reviewed normalization required'],hydrology:['Measured TMAT, time/datum/calibration and reviewed disturbance method required'],vegetationLoss:['Tree-cover loss is not all vegetation; reviewed period, denominator and normalization required'],peatSensitivity:['Conflicting source classes and reviewed sensitivity method require resolution']}[def.id]}));

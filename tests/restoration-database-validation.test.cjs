@@ -29,6 +29,20 @@ test('BPBD packages reject unknown provenance before opening source files',async
  fs.writeFileSync(path.join(privateDir,'manifest.json'),JSON.stringify({access:'staff_only',records:[{uuid:'unknown'},{uuid:'unknown2'}]}));
  try{await assert.rejects(loadPackage(privateDir,fs.realpathSync(directory)),/Unknown BPBD source/);}finally{fs.rmSync(directory,{recursive:true,force:true});}
 });
+test('BPBD geometry review queue names excluded candidates without assigning containment',async()=>{
+ const {inspect}=await import('../scripts/audit-restoration-bpbd.mjs');
+ const {audit}=await import('../scripts/validate-restoration-database-evidence.mjs');
+ const record={...station,geometry:{type:'MultiPoint',coordinates:[station.geometry.coordinates,station.geometry.coordinates]},properties:{tanggal:'2026-01-12',kategori:'Pemadaman'}};
+ const source=inspect(fc([record]),{uuid:'test-only',sha256:'test-only',titleYear:2026});
+ const matrix=audit(units(false),fc([]),{sources:[source.source],records:source.records});
+ assert.equal(matrix.bpbd.membership.incompleteRecords,1);
+ assert.equal(matrix.bpbd.records[0].uniqueMembership,false);
+ assert.deepEqual(matrix.bpbd.records[0].unitIds,[]);
+ assert.deepEqual(matrix.bpbd.records[0].excludedGeometryCandidateIds,['test-unit-only']);
+ assert.equal(matrix.bpbd.geometryReviewQueue[0].bpbdResponseRefs.length,1);
+ assert.equal(matrix.units[0].indicatorEvidence.fireHistory.bpbdResponseRecordRefs.length,0);
+ assert.equal(matrix.units[0].score,null);
+});
 test('zero TMAT remains a native observation without ecological normalization or approval',async()=>{
  const {audit}=await import('../scripts/validate-restoration-database-evidence.mjs');
  const input=units(),source=fc([observation()]),before=JSON.stringify({input,source});
