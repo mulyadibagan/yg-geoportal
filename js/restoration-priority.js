@@ -2,6 +2,7 @@
   'use strict';
   const A = window.YG_RESTORATION;
   const C = window.YG_RESTORATION_CATALOG;
+  const I = window.YG_RESTORATION_INVENTORY;
   const $ = id => document.getElementById(id);
   const BASE = 'https://webgis-api.yayasangambut.org';
   const state = { map: null, peat: [], boundary: null, filtered: [], cache: new Map(), layers: new Map(), session: null };
@@ -12,7 +13,8 @@
     { id: 'khg', label: 'KHG', note: 'Data belum tersedia · batas dan relasi spasial belum terverifikasi' },
     { id: 'feg', label: 'Fungsi ekosistem gambut SK.130', path: 'data/FEG_SK130_RIAU.geojson', color: '#905ead', private: true, note: 'Endpoint staf eksisting · konteks seluruh Riau' },
     { id: 'canals', label: 'Jaringan kanal', note: 'Data belum tersedia · titik sekat bukan jaringan kanal' },
-    { id: 'blocks', label: 'Sekat kanal terpetakan', path: 'data/sekat_kanal.geojson', color: '#147e94', note: 'Titik infrastruktur eksisting, bukan skor gangguan hidrologi' },
+    { id: 'blocks', label: 'Sekat kanal · inventaris database', path: BASE + '/snapshots/current/objects.json', inventory: true, color: '#147e94', note: 'Titik aktif dari snapshot database YG · konteks kesiapan, bukan jaringan kanal/skor' },
+    { id: 'fdrs', label: 'FDRS / Water Table · inventaris database', path: BASE + '/snapshots/current/objects.json', inventory: true, color: '#4262a3', note: 'Titik alat aktif dari snapshot database YG · bukan nilai pengukuran TMAT' },
     { id: 'landcover', label: 'Tutupan lahan', note: 'Data belum tersedia · belum ada poligon/raster menyeluruh yang terverifikasi' },
     { id: 'hotspots', label: 'Hotspot FIRMS confidence tinggi', path: 'data/hotspot-high-confidence.geojson', color: '#d46026', note: 'Hanya titik di dalam gambut tersaring · bukan bukti kebakaran terverifikasi' },
     { id: 'burned', label: 'Area terindikasi terbakar', path: 'data/burned-area-estimates.geojson', color: '#a64139', note: 'Estimasi Sentinel-2 dNBR/NBR, bukan validasi lapangan' }
@@ -31,6 +33,15 @@
   }
   async function layerData(def) {
     if (state.cache.has(def.id)) return state.cache.get(def.id);
+    if (def.inventory) {
+      if (!state.pendingData.has('inventory')) state.pendingData.set('inventory',
+        fetch(def.path, {cache:'no-store',signal:AbortSignal.timeout(15000)}).then(I.read).then(result => {
+          state.cache.set('blocks',result.blocks); state.cache.set('fdrs',result.fdrs);
+          const skipped=Object.values(result.excluded).reduce((sum,value)=>sum+value,0);
+          for(const key of ['blocks','fdrs'])state.cache.get(key).inventoryExcluded=skipped;
+        }).finally(()=>state.pendingData.delete('inventory')));
+      await state.pendingData.get('inventory'); return state.cache.get(def.id);
+    }
     if (!state.pendingData.has(def.id)) state.pendingData.set(def.id,
       fetchJSON(def.path, def.private).then(collection).then(data => { state.cache.set(def.id, data); return data; }).finally(() => state.pendingData.delete(def.id)));
     return state.pendingData.get(def.id);
@@ -57,7 +68,7 @@
         return p[0] >= b[0] && p[0] <= b[2] && p[1] >= b[1] && p[1] <= b[3] && A.contains(p, peat.geometry);
       }));
     if (!regency || def.id === 'feg') return data.features;
-    if (def.id === 'blocks') return data.features.filter(f => A.district(f.properties?.Kabupaten) === A.district(regency));
+    if (def.inventory) return data.features.filter(f => A.district(f.properties?.Kabupaten) === A.district(regency));
     if (def.id === 'burned') return data.features.filter(f => (f.properties?.regencies || []).some(v => A.district(v) === A.district(regency)));
     return data.features;
   }
@@ -82,6 +93,7 @@
     source.textContent = def.label + ' · metadata runtime · versi generatedAt: ' + (data.generatedAt || 'belum tersedia') +
       ' · periode: ' + (data.coverageStart || 'belum tersedia') + ' sampai ' + (data.coverageEnd || 'belum tersedia') +
       ' · objek sumber: ' + data.features.length + ' · jalur: ' + (def.private ? 'endpoint staf eksisting' : def.path) + ' · belum tervalidasi untuk scoring';
+    if (def.inventory) source.textContent += ' · data snapshot, bukan pembacaan langsung Sheets · record dikecualikan: ' + data.inventoryExcluded + ' · hitungan objek bukan jumlah aset fisik terverifikasi';
   }
   async function toggle(def, input) {
     if (!input.checked) {

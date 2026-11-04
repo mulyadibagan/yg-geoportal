@@ -39,6 +39,7 @@ jobs:
           node --check js/restoration-priority.js
           node --check js/restoration-scoring.js
           node --check js/restoration-catalog.js
+          node --check js/restoration-inventory.js
           node --check scripts/check-restoration-inputs.mjs
           node --check scripts/prepare-restoration-sources.mjs
           node --check scripts/reconcile-restoration-evidence.mjs

@@ -1,5 +1,7 @@
 # Persiapan data indikator asli — internal
 
+Prioritas sumber: gunakan tabel database YG dan arsip katalog staf yang sudah ada terlebih dahulu; sumber luar hanya melengkapi kekurangan yang telah dibuktikan. [Integrasi inventaris database eksisting](restoration-existing-database.md) menjelaskan layer FDRS/sekat kanal dari snapshot, perbedaan versi terhadap Sheets, dan pemisahannya dari scoring ekologis.
+
 ## Hasil yang benar-benar disiapkan
 
 Jalankan di checkout repository, tanpa server localhost. Persiapan dasar memakai Node bawaan; overlay/raster memakai versi pustaka GIS yang sudah digunakan WebGIS, dipasang terisolasi di folder privat tanpa mengubah dependency produksi:
