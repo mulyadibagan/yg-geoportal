@@ -261,6 +261,9 @@ merge_monitoring_supplemental(data, ROOT)
 merge_monitoring_supplemental(capacity_sources['reports'], ROOT)
 if public_reports is not None:
     merge_monitoring_supplemental(public_reports, ROOT)
+# Reapply the reviewed Aramco-only reconciliation on every public snapshot refresh.
+import subprocess
+data=json.loads(subprocess.run(['node',str(ROOT/'scripts'/'reconcile-aramco-phase3.cjs'),'--stdin'],input=json.dumps(data),text=True,capture_output=True,check=True).stdout)
 data['snapshotGeneratedAt']=snapshot_generated_at
 master_target=ROOT/'data'/'master-database-snapshot.json'
 master_changed=write_if_changed(master_target,data,('snapshotGeneratedAt',))

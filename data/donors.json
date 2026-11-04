@@ -42,7 +42,7 @@
     "indicators": [
       {
         "label": "Pohon mangrove ditanam",
-        "value": "43.742",
+        "value": "44.125",
         "progress": 100
       },
       {
@@ -321,7 +321,7 @@
         "name": "",
         "period": "Juli 2025–Desember 2026",
         "status": "Aktif",
-        "dataAsOf": "26 Agustus 2026",
+        "dataAsOf": "2026-10-28",
         "summary": "Rehabilitasi hingga 9 hektare mangrove dengan target 18.000 pohon di empat desa, pembangunan infrastruktur, peningkatan kapasitas, pengembangan mata pencaharian perempuan, pembelajaran lintas negara, perlindungan, monitoring, dan pelaporan.",
         "detailsPending": false,
         "targets": {
@@ -331,7 +331,7 @@
             "Buruk Bakul": 4200,
             "Kelapa Pati": 6270,
             "Sepahat": 4000,
-            "Tanjung Kuras": 3627
+            "Tanjung Kuras": 4010
           },
           "rehabilitationAreaByVillage": {
             "Buruk Bakul": 2.08,
@@ -392,22 +392,34 @@
               {
                 "id": "ACT-ARAMCO-P3-REH-BB",
                 "name": "Mangrove rehabilitation in Buruk Bakul",
-                "indicator": "Target 4,000 trees · realized 4,200 trees"
+                "indicator": "Target 4,000 seedlings · realized 4,200 seedlings · Completed",
+                "target": 4000,
+                "realization": 4200,
+                "unit": "seedlings"
               },
               {
                 "id": "ACT-ARAMCO-P3-REH-KP",
                 "name": "Mangrove rehabilitation in Kelapa Pati",
-                "indicator": "Target 6,000 trees · realized 6,270 trees"
+                "indicator": "Target 6,000 seedlings · realized 6,270 seedlings · Completed",
+                "target": 6000,
+                "realization": 6270,
+                "unit": "seedlings"
               },
               {
                 "id": "ACT-ARAMCO-P3-REH-SP",
                 "name": "Mangrove rehabilitation in Sepahat",
-                "indicator": "Target 4,000 trees · realized 4,000 trees · 200 replacement seedlings"
+                "indicator": "Target 4,000 seedlings · realized 4,000 seedlings · Completed",
+                "target": 4000,
+                "realization": 4000,
+                "unit": "seedlings"
               },
               {
                 "id": "ACT-ARAMCO-P3-REH-TK",
                 "name": "Mangrove rehabilitation in Tanjung Kuras",
-                "indicator": "Target 4,000 trees · realized 3,627 trees"
+                "indicator": "Target 4,000 seedlings · realized 4,010 seedlings · Completed",
+                "target": 4000,
+                "realization": 4010,
+                "unit": "seedlings"
               }
             ]
           },
@@ -473,11 +485,13 @@
               },
               {
                 "id": "ACT-ARAMCO-P3-CB-SIAK",
-                "name": "Pelatihan lanjutan pengelolaan mangrove di Tanjung Kuras",
-                "indicator": "Terjadwal 29 Agustus 2026 · belum dihitung sebagai realisasi",
+                "name": "Community-Based Mangrove Restoration and Monitoring Training – Tanjung Kuras",
+                "indicator": "Completed / Verified · 29 August 2026 · 31 participants (24 men, 7 women; 13 youth aged 18–35) · post-test 13.06/15 (87.1%) · completion 100%",
                 "target": 1,
-                "realization": 0,
-                "unit": "kegiatan"
+                "realization": 1,
+                "unit": "kegiatan",
+                "reportUrl": "prepost-live-session.html?session=SESS-20260827-135540-314",
+                "reportLabel": "buka pelatihan dan evaluasi"
               }
             ]
           },
@@ -546,11 +560,16 @@
               {
                 "id": "ACT-ARAMCO-P3-FINAL",
                 "name": "Final project report",
-                "indicator": "Dalam penyusunan · working draft diperbarui Agustus 2026 · belum diserahkan"
+                "indicator": "In preparation / being finalized · planned completion late November 2026 · not submitted"
               }
             ]
           }
-        ]
+        ],
+        "realization": {
+          "mangroveTrees": 18480,
+          "rehabilitationAreaHa": 8.6658
+        },
+        "reconciliationSource": "data/aramco-phase3-final.json"
       }
     ],
     "timeline": [
@@ -614,6 +633,111 @@
         "note": "Laporan final program telah selesai.",
         "access": "public",
         "staffOnly": false
+      },
+      {
+        "evidenceId": "ARAMCO-P3-Buruk Bakul",
+        "donorName": "Aramco Asia Singapore",
+        "programmeId": "PRG-ARAMCO-PHASE-03",
+        "indicatorId": "ACT-ARAMCO-P3-REH-BB",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Buruk Bakul — 4200 / 4000 seedlings",
+        "evidenceUrl": "aramco-phase3-map.html?village=Buruk%20Bakul",
+        "verificationBasis": "Verified records and final-report reconciliation",
+        "note": "Completed; replacement planting excluded from establishment total.",
+        "access": "public",
+        "staffOnly": false,
+        "verifiedAt": "2026-11-04",
+        "verifiedAtLabel": "4 November 2026"
+      },
+      {
+        "evidenceId": "ARAMCO-P3-Kelapa Pati",
+        "donorName": "Aramco Asia Singapore",
+        "programmeId": "PRG-ARAMCO-PHASE-03",
+        "indicatorId": "ACT-ARAMCO-P3-REH-KP",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Kelapa Pati — 6270 / 6000 seedlings",
+        "evidenceUrl": "aramco-phase3-map.html?village=Kelapa%20Pati",
+        "verificationBasis": "Verified records and final-report reconciliation",
+        "note": "Completed; replacement planting excluded from establishment total.",
+        "access": "public",
+        "staffOnly": false,
+        "verifiedAt": "2026-11-04",
+        "verifiedAtLabel": "4 November 2026"
+      },
+      {
+        "evidenceId": "ARAMCO-P3-Sepahat",
+        "donorName": "Aramco Asia Singapore",
+        "programmeId": "PRG-ARAMCO-PHASE-03",
+        "indicatorId": "ACT-ARAMCO-P3-REH-SP",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Sepahat — 4000 / 4000 seedlings",
+        "evidenceUrl": "aramco-phase3-map.html?village=Sepahat",
+        "verificationBasis": "Verified records and final-report reconciliation",
+        "note": "Completed; replacement planting excluded from establishment total.",
+        "access": "public",
+        "staffOnly": false,
+        "verifiedAt": "2026-11-04",
+        "verifiedAtLabel": "4 November 2026"
+      },
+      {
+        "evidenceId": "MANGROVE-TANJUNG-KURAS-PHASE-III-2026-001",
+        "donorName": "Aramco Asia Singapore",
+        "programmeId": "PRG-ARAMCO-PHASE-03",
+        "indicatorId": "ACT-ARAMCO-P3-REH-TK",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Tanjung Kuras — 4010 / 4000 seedlings",
+        "evidenceUrl": "aramco-phase3-map.html?village=Tanjung%20Kuras",
+        "verificationBasis": "Verified records and final-report reconciliation",
+        "note": "Completed; replacement planting excluded from establishment total.",
+        "access": "public",
+        "staffOnly": false,
+        "verifiedAt": "2026-11-04",
+        "verifiedAtLabel": "4 November 2026"
+      },
+      {
+        "evidenceId": "CB-2026-007",
+        "donorName": "Aramco Asia Singapore",
+        "programmeId": "PRG-ARAMCO-PHASE-03",
+        "indicatorId": "ACT-ARAMCO-P3-CB-SEPAHAT",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Sepahat training — 13 May 2026",
+        "evidenceUrl": "capacity-building.html?report=CB-2026-007",
+        "verificationBasis": "Verified records and final-report reconciliation",
+        "note": "Existing verified training and evaluation report.",
+        "access": "public",
+        "staffOnly": false,
+        "verifiedAt": "2026-11-04",
+        "verifiedAtLabel": "4 November 2026"
+      },
+      {
+        "evidenceId": "CB-2026-009",
+        "donorName": "Aramco Asia Singapore",
+        "programmeId": "PRG-ARAMCO-PHASE-03",
+        "indicatorId": "ACT-ARAMCO-P3-CB-KP-ECOTOURISM",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Kelapa Pati ecotourism training — 24 May 2026",
+        "evidenceUrl": "capacity-building.html?report=CB-2026-009",
+        "verificationBasis": "Verified records and final-report reconciliation",
+        "note": "Existing verified training report.",
+        "access": "public",
+        "staffOnly": false,
+        "verifiedAt": "2026-11-04",
+        "verifiedAtLabel": "4 November 2026"
+      },
+      {
+        "evidenceId": "SESS-20260827-135540-314",
+        "donorName": "Aramco Asia Singapore",
+        "programmeId": "PRG-ARAMCO-PHASE-03",
+        "indicatorId": "ACT-ARAMCO-P3-CB-SIAK",
+        "evidenceType": "Evidence Nonspasial",
+        "evidenceTitle": "Community-Based Mangrove Restoration and Monitoring Training — 29 August 2026",
+        "evidenceUrl": "prepost-live-session.html?session=SESS-20260827-135540-314",
+        "verificationBasis": "Verified records and final-report reconciliation",
+        "note": "31 participants · post-test 87.1% · completion 100%. Existing session, no duplicate training.",
+        "access": "public",
+        "staffOnly": false,
+        "verifiedAt": "2026-11-04",
+        "verifiedAtLabel": "4 November 2026"
       }
     ]
   },

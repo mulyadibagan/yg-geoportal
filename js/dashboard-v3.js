@@ -1049,11 +1049,12 @@
         String(item.id || "") === "PRG-ARAMCO-PHASE-03" ||
         /^fase\s*3$/i.test(String(item.phase || ""))
       );
-      const assignments = Array.isArray(remote && remote.assignments)
+      const seeded=(donor&&donor.verifiedEvidence||[]).filter(row=>row.programmeId==='PRG-ARAMCO-PHASE-03');
+      const assignments = (Array.isArray(remote && remote.assignments)
         ? remote.assignments.filter(row =>
             String(row.donorId || "") === "DNR-ARAMCO" &&
             String(row.programmeId || "") === "PRG-ARAMCO-PHASE-03"
-          ) : [];
+          ) : []).concat(seeded);
 
       if (!programme || !Array.isArray(programme.outputs)) {
         container.innerHTML = '<div class="funding-heading"><div><span>Data terverifikasi</span>' +
@@ -1430,7 +1431,7 @@
     const aramcoMonitoring = layerAssets(aramcoAssets, ["monitoring_reports"]);
     const aramcoMappedTrees = sumProperties(aramcoMangrove,
       ["Jumlah_Bib", "Jumlah_Bibit", "Jumlah bibit", "jumlah_bibit", "Jumlah_Tanam", "Pohon"]);
-    setMetric("aramco-tree-count", Math.max(42545, aramcoMappedTrees));
+    Promise.all([fetch('data/donors.json',{cache:'no-store'}).then(r=>r.json()),window.YG_ARAMCO_PHASE3.ready]).then(([donors,final])=>{const donor=window.YG_ARAMCO_PHASE3.reconcileDonors(donors,final).find(d=>d.id==='DNR-ARAMCO');setMetric('aramco-tree-count',window.YG_ARAMCO_PHASE3.cumulative(donor));});
     setMetric("aramco-village-count",
       officialMetric(villageCount(aramcoProgrammeAssets), 4));
     const aramcoMappedArea = sumProperties(aramcoMangrove,
