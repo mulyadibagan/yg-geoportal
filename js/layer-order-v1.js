@@ -2,6 +2,7 @@
   "use strict";
 
   const ADMIN_REFERENCE_IDS = new Set([
+    "batas_kabupaten_riau",
     "batas_administrasi_desa_riau"
   ]);
   const INTERVENTION_REFERENCE_IDS = new Set([
