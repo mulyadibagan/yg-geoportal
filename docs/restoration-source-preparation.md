@@ -138,3 +138,30 @@ node --test tests/restoration-big-reference.test.cjs
 Permintaan berdasarkan bounding box geometri lokal ditolak pemeriksaan persetujuan otomatis karena berpotensi mengungkap lokasi internal. Akuisisi diganti menggunakan kode KHG dan ID objek publik saja; pencocokan geometri harus berlangsung lokal setelah paket lengkap terverifikasi. Tidak ada data privat yang dikirim sebagai parameter pencarian.
 
 **Keputusan analisis:** konflik kelas dan administrasi belum ditutup. Seluruh indikator tetap null/tidak tervalidasi, termasuk hidrologi. Langkah selanjutnya ialah menyelesaikan unduhan referensi publik, melakukan overlay lokal dengan pemeriksaan topologi, dan memperoleh seri TMAT yang memiliki metadata pengukuran. Tidak ada perubahan produksi, menu publik, endpoint atau akses staf pada tahap ini.
+
+## Akuisisi lengkap dan perbandingan lokal, 4 November 2026
+
+Status unduhan BIG di bagian sebelumnya adalah hasil percobaan awal. **Kelanjutan berhasil:** 9.141 fitur, 92 bagian GeoJSON asli, 34.690.554 byte, beserta metadata, indeks ID dan manifest final tersimpan hanya di `private-data`. Proses dapat dilanjutkan dari direktori parsial; semua bagian yang dipakai ulang diperiksa lagi jumlah/identitas objeknya. Pemrosesan offline memverifikasi checksum metadata, indeks dan seluruh bagian, memastikan setiap ID dari indeks hadir tepat sekali, serta mencocokkan total byte/fitur. Ini snapshot pengambilan bertahap, bukan jaminan transaksi atomik layanan atau validasi lapangan.
+
+`compare-restoration-big-reference.mjs` memverifikasi hash sumber BBSDLP 2019 sebelum membandingkan delapan kelompok geometri identik yang berbeda atribut. Semua delapan geometri kelompok lolos pemeriksaan konservatif Turf booleanValid/kinks. Tujuh kelompok tidak memiliki kandidat bounding box dari paket FEG; satu kelompok memiliki satu kandidat tetapi tidak ada irisan poligon positif. Hasil delapan kelompok adalah `no-reference-overlap`, tanpa error overlay atau fitur kandidat yang dikecualikan. Tidak ada geometri yang digeser, diperluas atau diisi dari tetangga agar menghasilkan kecocokan. Kontrol positif memakai poligon sumber asli yang sama berhasil menghasilkan irisan pada tes. **Tidak ada konflik kelas yang dapat diputuskan dari referensi FEG ini.** Referensi ini juga tidak menyediakan atribut administrasi yang dapat mengesahkan koreksi KK/KABKOT.
+
+### Seri TMAT resmi yang berhasil diperoleh
+
+[SiTMAT Kementerian Lingkungan Hidup](https://sitmat.kemenlh.go.id/) memuat peta publik melalui `/api/air-gambut` dan detail stasiun melalui `/api/air-gambut/masyarakat/station-detail`. Endpoint tersebut ditemukan pada bundle publik situs resmi; akuisisi tidak menggunakan login, token YG, kanal konsesi atau endpoint yang memerlukan autentikasi.
+
+`acquire-restoration-tmat.mjs` memperoleh indeks publik 125 stasiun dan memilih 37 titik menggunakan envelope regional publik tetap, **bukan** klip administrasi Riau atau footprint internal. Semua 37 respons detail permintaan 30 hari berhasil diperoleh, dengan ID sumber, koordinat indeks, tanggal pengambilan, URL dan SHA-256. Semua respons terpilih bersumber `simatag`. Dua puluh dua stasiun memiliki 19.846 baris pada `ListIOTSensorWaterLevel`; 15 stasiun memiliki seri kosong. Angka tersebut menghitung representasi detail saja, tidak ditambahkan dengan representasi ringkasan harian `history`.
+
+`audit-restoration-tmat.mjs` memverifikasi paket lengkap, identitas, checksum dan kesesuaian koordinat indeks/detail. Pada 19.846 baris terdapat kolom `Tanggal`, `Jam`, dan `WaterLevel`; seluruh nilai pada kolom seri yang terisi lolos pembacaan numerik ketat, tetapi terdapat dua pengulangan tanggal/jam dengan nilai berbeda pada satu stasiun. Nilai bertentangan dipertahankan dalam sumber dan ditandai; tidak dipilih, dirata-ratakan atau dihapus otomatis. Nilai kosong/NaN tidak diganti nol. Angka nol yang benar tetap nol.
+
+Pencocokan titik dilakukan **lokal** terhadap batas desa referensi dan BBSDLP: 16 dari 37 titik masuk batas referensi Riau, 14 masuk setidaknya satu poligon BBSDLP. Dari 16 titik dalam referensi Riau, tujuh memiliki seri, berjumlah 8.978 baris; ketujuhnya juga masuk poligon BBSDLP. Keberadaan titik dalam poligon tidak mengesahkan kondisi hidrologi seluruh poligon. Label provinsi/kabupaten respons stasiun kosong; hasil overlay dicatat sebagai konteks batas referensi, bukan koreksi administrasi resmi. Hash kedua sumber geometri dicatat pada audit.
+
+**Metadata masih belum lengkap untuk indikator:** respons belum menyatakan satuan secara eksplisit; antarmuka publik memakai cm untuk Simatag, tetapi ini dicatat sebagai bukti label tampilan. Zona waktu pengukuran, datum permukaan tanah, metode/kalibrasi sensor, kualitas pengukuran serta keterwakilan spasial belum terverifikasi. String tanggal/jam asli dipertahankan tanpa menambahkan offset zona waktu. Permintaan 30 hari tidak membuktikan 30 hari rekaman lengkap pada setiap stasiun. Sumber ini merupakan kemajuan dari tooltip tanpa identitas, tetapi belum layak diberi `validated:true` atau skor hidrologi.
+
+```powershell
+node scripts/acquire-restoration-big-reference.mjs "private-data/restoration-big-reference-<id>"
+node scripts/compare-restoration-big-reference.mjs "private-data/restoration-big-reference-<id>"
+node scripts/acquire-restoration-tmat.mjs
+node scripts/audit-restoration-tmat.mjs "private-data/restoration-tmat-<id>"
+```
+
+Semua hasil dan seri mentah tetap di direktori privat yang diabaikan Git dan dikecualikan dari Pages. Yang masuk branch review hanya script, tes dan dokumentasi agregat. Tidak ada upload data ke API staf, perubahan database, deploy atau menu baru. Kelanjutan paling penting adalah memperoleh sumber BBSDLP yang benar-benar mencakup delapan lokasi konflik dan metadata pengukuran dari pengelola SiTMAT; tidak mengganti kekosongan dengan skor perkiraan.

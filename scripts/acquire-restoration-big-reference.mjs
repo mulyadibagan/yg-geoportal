@@ -28,26 +28,32 @@ async function readOnce(url){
   if(data.error)throw Error('Public service rejected query');
   return {bytes,data,sha256:createHash('sha256').update(bytes).digest('hex')};
 }
-export async function acquire(){
+export async function acquire(resume){
   const privateRoot=path.join(root,'private-data');await fs.mkdir(privateRoot,{recursive:true});
   if(await fs.realpath(privateRoot)!==path.join(await fs.realpath(root),'private-data'))throw Error('Private root redirected');
-  const output=await fs.mkdtemp(path.join(privateRoot,'restoration-big-reference-'));
-  const meta=await read(BASE+'?f=pjson');
+  const output=resume?await fs.realpath(path.resolve(root,resume)):await fs.mkdtemp(path.join(privateRoot,'restoration-big-reference-'));
+  if(path.dirname(output)!==await fs.realpath(privateRoot)||!path.basename(output).startsWith('restoration-big-reference-'))throw Error('Resume requires a direct private reference directory');
+  try{await fs.access(path.join(output,'manifest.json'));throw Error('Reference already complete');}catch(error){if(error.code!=='ENOENT')throw error;}
+  async function cached(name,url){
+    const target=path.join(output,name);
+    try{if((await fs.stat(target)).size>64*1024*1024)throw Error('Cached response exceeds bound');const bytes=await fs.readFile(target);return {bytes,data:JSON.parse(bytes.toString('utf8')),sha256:createHash('sha256').update(bytes).digest('hex')};}
+    catch(error){if(error.code!=='ENOENT')throw error;}
+    const result=await read(url);await fs.writeFile(target,result.bytes,{flag:'wx'});return result;
+  }
+  const meta=await cached('layer-metadata.json',BASE+'?f=pjson');
   const oidFields=(meta.data.fields||[]).filter(field=>field.type==='esriFieldTypeOID');
   if(!String(meta.data.capabilities||'').split(',').includes('Query')||oidFields.length!==1||oidFields[0].name!=='objectid_1')throw Error('Unexpected source schema');
-  await fs.writeFile(path.join(output,'layer-metadata.json'),meta.bytes,{flag:'wx'});
-  const index=await read(queryUrl()),ids=index.data.objectIds;
+  const index=await cached('public-object-ids.json',queryUrl()),ids=index.data.objectIds;
   if(!Array.isArray(ids)||!ids.length||ids.length>25000||ids.some(id=>!Number.isSafeInteger(id)||id<0)||new Set(ids).size!==ids.length)throw Error('Incomplete public object ID index');
-  await fs.writeFile(path.join(output,'public-object-ids.json'),index.bytes,{flag:'wx'});
   ids.sort((a,b)=>a-b);const parts=[];let totalBytes=0;
   for(let start=0;start<ids.length;start+=100){
-    const selected=ids.slice(start,start+100),url=queryUrl(selected),part=await read(url);
+    const selected=ids.slice(start,start+100),url=queryUrl(selected);
+    const name='features-'+String(parts.length+1).padStart(4,'0')+'.geojson';
+    const part=await cached(name,url);
     if(part.data.type!=='FeatureCollection'||!Array.isArray(part.data.features)||part.data.exceededTransferLimit===true)throw Error('Incomplete GeoJSON response');
     const received=part.data.features.map(feature=>feature.properties?.objectid_1??feature.id);
     if(received.length!==selected.length||new Set(received).size!==selected.length||received.some(id=>!selected.includes(id)))throw Error('Object ID mismatch');
     totalBytes+=part.bytes.length;if(totalBytes>256*1024*1024)throw Error('Reference exceeds 256 MiB');
-    const name='features-'+String(parts.length+1).padStart(4,'0')+'.geojson';
-    await fs.writeFile(path.join(output,name),part.bytes,{flag:'wx'});
     parts.push({name,url,bytes:part.bytes.length,sha256:part.sha256,featureCount:received.length,objectIds:selected});
     if(parts.length%10===0)console.error('Received '+Math.min(start+100,ids.length)+' public reference features');
   }
@@ -59,4 +65,4 @@ export async function acquire(){
       'Depth strings are preserved verbatim; no soil-class correction or ecological score is inferred.','Successful download is not validation of source topology or suitability.']},null,2),{flag:'wx'});
   return {output,featureCount:ids.length,parts:parts.length,totalBytes};
 }
-if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){try{if(process.argv.length!==2)throw Error('No input parameters supported');console.log(JSON.stringify(await acquire(),null,2));}catch(error){console.error('Reference acquisition incomplete: '+error.message);process.exitCode=1;}}
+if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){try{if(process.argv.length>3)throw Error('Only an optional private resume directory is supported');console.log(JSON.stringify(await acquire(process.argv[2]),null,2));}catch(error){console.error('Reference acquisition incomplete: '+error.message);process.exitCode=1;}}
