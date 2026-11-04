@@ -23,7 +23,7 @@ jobs:
       - run: npm ci
       - name: Check reviewed Aramco records and snapshot integrity
         run: |
-          node --test ../../tests/aramco-phase3-final.test.cjs
+          (cd ../.. && node --test tests/aramco-phase3-final.test.cjs)
           npm run validate:snapshots
           npm run check
       - name: Publish reviewed snapshots and deploy the scoped reconciliation
