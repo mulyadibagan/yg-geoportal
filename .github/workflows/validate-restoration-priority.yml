@@ -24,6 +24,7 @@ on:
       - scripts/validate-restoration-database-evidence.mjs
       - scripts/audit-restoration-bpbd.mjs
       - scripts/diagnose-restoration-geometry.mjs
+      - scripts/extract-restoration-research-tmat.py
       - .github/workflows/validate-restoration-priority.yml
 
 permissions:
@@ -56,6 +57,7 @@ jobs:
           node --check scripts/validate-restoration-database-evidence.mjs
           node --check scripts/audit-restoration-bpbd.mjs
           node --check scripts/diagnose-restoration-geometry.mjs
+          python3 -c "from pathlib import Path; p=Path('scripts/extract-restoration-research-tmat.py'); compile(p.read_text(encoding='utf-8'), str(p), 'exec')"
       - name: Prepare isolated existing GIS library versions
         run: npm install --prefix private-data/restoration-runtime --no-save --ignore-scripts --no-audit --no-fund @turf/turf@7.2.0 geotiff@2.1.3 jsts@2.7.1
       - name: Test scoring, access and existing reference workspace

@@ -59,4 +59,16 @@ Konteks: paket publik yang diperoleh menyimpan ID, koordinat, URL sumber, checks
 
 ## Syarat menutup kasus
 
+### Draf tambahan metadata seri penelitian — disimpan saja, tidak dikirim
+
+Rujukan: Deshmukh dkk. (2023), DOI 10.1038/s41586-023-05860-9; Zenodo 7728463 versi v.03, `Deshmukh_ED_Fig. 2.xlsx`, Panel a. Workbook asli dan checksum penerbit sudah diperiksa. Mohon informasi untuk menilai penggunaan seri rata-rata tiga piezometer sebagai bukti penelitian, tanpa mengasumsikannya mewakili semua unit gambut Riau:
+
+- ID, koordinat WGS84 beserta ketelitian dan periode operasi masing-masing piezometer yang membentuk seri rata-rata; apakah bobot/jumlah alat berubah sepanjang seri.
+- Definisi nilai harian: zona waktu, batas hari, metode agregasi, jumlah pembacaan minimum, kode kualitas, perlakuan data hilang/interpolasi dan koreksi yang diterapkan.
+- Referensi nol ke peat hollow surface, pengaruh perubahan/subsidensi permukaan, metode kompensasi tekanan atmosfer, identitas alat dan riwayat kalibrasi/offset yang relevan.
+- Ketersediaan seri native per alat beserta flag QA, metadata versi dan lisensi yang berlaku untuk penggunaan analisis internal.
+- Batas keterwakilan spasial/periode, serta cara yang dapat dipertanggungjawabkan untuk menghubungkan seri ke unit analisis tanpa menyalin koordinat tower sebagai lokasi ketiga alat.
+
+Tidak ada email, formulir permintaan, komitmen biaya atau data/geometri internal yang dikirim. Kelengkapan tabel terbitan tidak dianggap kelengkapan perekaman instrumen.
+
 Jawaban umum tentang metodologi tidak otomatis mengesahkan setiap stasiun/poligon. Simpan sumber jawaban, identitas penelaah, tanggal, versi data, lingkup kasus yang disetujui dan alasan keputusan. Pertahankan kasus tanpa bukti sebagai belum dinilai; jangan mengisi kekosongan memakai mayoritas kelas, tetangga terdekat atau skor perkiraan.

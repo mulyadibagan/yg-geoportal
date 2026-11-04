@@ -4,6 +4,18 @@ const runtime=createRequire(path.join(__dirname,'../private-data/restoration-run
 const T=runtime('@turf/turf');
 const J=runtime('jsts');
 const source=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/Gambut_BBSDLP_2019.geojson')));
+test('two real self-touching rings yield separate review-only hole candidates preserving every source edge',async()=>{
+ const {reviewSelfTouch,independentValidity}=await import('../scripts/diagnose-restoration-geometry.mjs');
+ for(const [index,indices] of [[493,[331,334]],[609,[0,127]]]){
+  const feature=source.features[index],before=JSON.stringify(feature),result=reviewSelfTouch(feature,J);
+  assert.deepEqual(result.repeatedVertexIndices,indices);
+  assert.equal(result.boundaryEdgesPreserved,true);assert.equal(result.boundaryContactDimension,0);
+  assert.equal(result.candidate.coordinates.length,2);assert.equal(result.candidateValidity.valid,true);
+  assert.equal(result.sourceModified,false);assert.equal(result.analysisUnitApproved,false);
+  assert.equal(independentValidity(feature,J).valid,false);assert.equal(JSON.stringify(feature),before);
+ }
+ assert.equal(reviewSelfTouch(source.features[298],J),null);
+});
 test('independent JSTS topology resolves engine disagreement on actual unmodified source cases',async()=>{
  const {independentValidity}=await import('../scripts/diagnose-restoration-geometry.mjs');
  for(const index of [298,304,311,615,617,643]){

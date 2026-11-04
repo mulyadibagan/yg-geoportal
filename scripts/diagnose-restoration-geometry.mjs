@@ -13,6 +13,25 @@ export function independentValidity(feature,J){
  return {engine:'JSTS IsValidOp',valid,error:error?{code:error.getErrorType(),message:error.getMessage(),coordinate:coordinate?[coordinate.x,coordinate.y]:null}:null,
   selfTouchingRingFormingHoleAllowed:false,precisionReductionApplied:false,geometryModified:false,analysisUnitApproved:false};
 }
+export function reviewSelfTouch(feature,J){
+ const g=feature.geometry,originalCheck=independentValidity(feature,J);
+ if(g.type!=='Polygon'||g.coordinates.length!==1||originalCheck.valid||originalCheck.error?.code!==6)return null;
+ const ring=g.coordinates[0],seen=new Map(),repeats=[];
+ for(let i=0;i<ring.length-1;i++){const key=JSON.stringify(ring[i]);if(seen.has(key))repeats.push([seen.get(key),i]);else seen.set(key,i);}
+ if(repeats.length!==1)return {status:'requires-manual-ring-review',candidate:null};
+ const [a,b]=repeats[0],cycles=[ring.slice(a,b+1),[...ring.slice(b,-1),...ring.slice(0,a+1)]];
+ if(cycles.some(c=>c.length<4))return {status:'requires-manual-ring-review',candidate:null};
+ const reader=new J.io.GeoJSONReader(),parts=cycles.map(c=>reader.read({type:'Polygon',coordinates:[c]}));
+ if(parts.some(p=>!new J.operation.valid.IsValidOp(p).isValid()))return {status:'invalid-cycle-review',candidate:null};
+ const outer=parts[0].covers(parts[1])?0:parts[1].covers(parts[0])?1:null;
+ if(outer===null||parts[0].getBoundary().intersection(parts[1].getBoundary()).getDimension()!==0)return {status:'non-nested-or-shared-edge-review',candidate:null};
+ const candidate={type:'Polygon',coordinates:[cycles[outer],cycles[1-outer]]};
+ const edgeSignature=rings=>{const entries=rings.flatMap(r=>r.slice(0,-1).map((p,i)=>JSON.stringify([p,r[i+1]]))).sort();return JSON.stringify(entries);};
+ const boundaryEdgesPreserved=edgeSignature([ring])===edgeSignature(candidate.coordinates);
+ const check=independentValidity({type:'Feature',geometry:candidate},J);
+ return {status:'review-only-shell-hole-representation',repeatedVertexIndices:[a,b],cycleVertexCounts:cycles.map(c=>c.length),boundaryContactDimension:0,boundaryEdgesPreserved,
+  candidateValidity:check,sourceModified:false,analysisUnitApproved:false,candidate:boundaryEdgesPreserved&&check.valid?candidate:null};
+}
 export function diagnose(feature,T){
  const geometry=feature?.geometry;
  if(!['Polygon','MultiPolygon'].includes(geometry?.type))throw Error('Polygon source required');
@@ -67,11 +86,14 @@ export async function run(directory){
  const cases=queue.map(q=>{
   const row=matrix.units.find(unit=>unit.unitId===q.unitId);
   if(!row||row.geometryCheckPassed!==false||row.sourceFeatureIndex!==q.sourceFeatureIndex||!Number.isSafeInteger(q.sourceFeatureIndex)||q.sourceFeatureIndex<0||!source.features[q.sourceFeatureIndex])throw Error('Invalid source review reference');
-  return {unitId:q.unitId,sourceFeatureIndex:q.sourceFeatureIndex,sourceRowNumber:q.sourceFeatureIndex+1,candidateResponseRecords:q.bpbdResponseRefs.length,...diagnose(source.features[q.sourceFeatureIndex],T),independentTopology:independentValidity(source.features[q.sourceFeatureIndex],J)};
+  const feature=source.features[q.sourceFeatureIndex];
+  return {unitId:q.unitId,sourceFeatureIndex:q.sourceFeatureIndex,sourceRowNumber:q.sourceFeatureIndex+1,candidateResponseRecords:q.bpbdResponseRefs.length,...diagnose(feature,T),independentTopology:independentValidity(feature,J),ringReview:reviewSelfTouch(feature,J)};
  });
  const output=await fs.mkdtemp(path.join(privateRoot,'restoration-geometry-diagnostic-'));
  const report={access:'staff_only',sourceSha256:sha(sourceBytes),matrixSha256:sha(matrixBytes),inputManifestSha256:sha(manifestBytes),turfVersion:'7.2.0',jstsVersion:'2.7.1',jstsBundleSha256:sha(await fs.readFile(require.resolve('jsts'))),cases,geometryModified:false,approvalGranted:false,limitations:['JSTS IsValidOp is separate from Turf booleanValid/kinks algorithms, not an independent expert review or GEOS certification.','Boundary intersections and positive-area component intersections are distinct.','No snapping, buffering, union, simplification, component removal or source correction is applied.','Source row numbers are one-based; sourceFeatureIndex is zero-based.','Engine disagreements do not alter original eligibility flags or source conflicts.']};
  await fs.writeFile(path.join(output,'diagnostic.json'),JSON.stringify(report,null,2),{flag:'wx'});
+ const candidates={type:'FeatureCollection',features:cases.filter(c=>c.ringReview?.candidate).map(c=>({type:'Feature',id:'review-only-'+c.unitId,geometry:c.ringReview.candidate,properties:{reviewOnly:true,sourceUnitId:c.unitId,sourceFeatureIndex:c.sourceFeatureIndex,sourceSha256:sha(sourceBytes),analysisUnitApproved:false,scoringValidated:false,purpose:'Separate review candidate, never a replacement source or scoring input'}}))};
+ await fs.writeFile(path.join(output,'review-only-candidates.geojson'),JSON.stringify(candidates),{flag:'wx'});
  return {output,cases:cases.length,withCandidateResponses:cases.filter(c=>c.candidateResponseRecords>0).length,withinComponentIssues:cases.filter(c=>c.findings.includes('within-component-geometry-issue')).length,positiveComponentIntersections:cases.filter(c=>c.findings.includes('positive-area-between-components')).length,jstsValid:cases.filter(c=>c.independentTopology.valid).length,jstsInvalid:cases.filter(c=>!c.independentTopology.valid).length,geometryModified:false,approvalGranted:false};
 }
 if(process.argv[1]&&import.meta.url===pathToFileURL(process.argv[1]).href){try{if(process.argv.length!==3)throw Error('Provide private validation package directory');console.log(JSON.stringify(await run(process.argv[2]),null,2));}catch(e){console.error(e.message);process.exitCode=1;}}
