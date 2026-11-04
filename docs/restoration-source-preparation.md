@@ -110,3 +110,31 @@ Metadata pembanding: [katalog Kementerian Pertanian yang diperiksa](https://geos
 3. Bukti kondisi/degradasi dan aturan sensitivitas pada unit/periode yang disepakati. GFC hanya bukti kehilangan tutupan pohon; tidak membuktikan gangguan hidrologi atau sensitivitas gambut.
 
 Sampai sumber tersebut dapat diperoleh atau aksesnya tersedia, pekerjaan yang tersisa terblokir oleh data/pembuktian, bukan fungsi scoring. Seluruh lima indikator dan persetujuan tetap kosong. PR ini dapat ditinjau sebagai pekerjaan persiapan data; tidak boleh disebut hasil prioritas restorasi yang sudah selesai.
+
+## Sumber TMAT dan pembanding BBSDLP, 4 November 2026
+
+### TMAT: pisahkan aktual dari prakiraan
+
+[Portal TMAT](https://tmat-klh.inarth.or.id/) menautkan dua aplikasi berbeda:
+
+- [Prakiraan Riau](https://inarth.shinyapps.io/TMAT-Riau/): menampilkan baseline 22 Agustus 2026, 125 titik dan prakiraan tujuh hari. Ini keluaran model, bukan pengukuran aktual. Tidak digunakan untuk indikator hidrologi.
+- [Kanal aktual nasional](https://tmat.shinyapps.io/TMAT-aktual-nasional/): saat diperiksa, header bertanggal 14 Juli 2026. Pilihan Riau menampilkan 263 titik menurut tiga kategori; tooltip satu titik di panel Rokan Hulu menampilkan `Normal: -23 cm`. Tanggal header bukan bukti waktu pengukuran titik tersebut. Tampilan yang diperiksa tidak menyediakan ID stasiun, koordinat, waktu per rekaman, protokol/kalibrasi atau ekspor seri yang memadai. Angka tooltip belum dipasangkan dengan unit analisis dan tidak dimasukkan sebagai nilai indikator.
+
+Legenda kanal aktual menggabungkan kondisi sangat rendah dan tanpa data dalam salah satu kategori; jumlah kategori tidak boleh dipakai sebagai ukuran gangguan hidrologi. Portal memakai identitas KLH/BPLH pada host non-pemerintah: hubungan penerbit, metode dan otoritas dataset masih perlu diverifikasi. Tidak ada kredensial staf YG yang diberikan ke layanan tersebut. Akses tampilan publik tidak berarti data pengukuran telah tervalidasi.
+
+### Pembanding resmi yang ditemukan
+
+[Laporan Tahunan BBSDLP 2019](https://sdlahan.brmp.pertanian.go.id/informasi-publik/download/laporan-tahunan/laporan-tahunan-bbsdlp-2019), diterbitkan 2020, bagian 4.1 pada halaman cetak 29 (halaman PDF 46), menjelaskan kelas kedalaman gambut Sumatera. Kelas ditulis sebagai interval/kategori; laporan tidak menyediakan keputusan kelas untuk delapan kelompok geometri lokal yang berkonflik. Batas kategori tidak diubah menjadi kedalaman titik tengah atau skor sensitivitas. Nilai tepat 700 cm tidak ditafsirkan sendiri karena teks menggunakan batas `<700` dan `>700`.
+
+[Layanan publik BIG, layer 48](https://kspservices.big.go.id/satupeta/rest/services/PUBLIK/SUMBER_DAYA_ALAM_DAN_LINGKUNGAN/MapServer/48) menyediakan **Peta Fungsi Ekosistem Gambut Skala 1:50.000**, dengan atribut `kode_khg`, `peat_thick`, `tnh_gambut`, `feg_peat` dan `feg_50k`. Indeks aktual menghasilkan 9.141 ID objek untuk filter kode publik `KHG.14%` atau `KHG.12-14%`. Filter kode ini bukan klip batas administrasi Riau. Atribut ketebalan berupa rentang teks; sumber ini bukan salinan asli BBSDLP 2019. Tahun geometri tidak ditetapkan dari tahun SK dalam deskripsi layanan.
+
+`scripts/acquire-restoration-big-reference.mjs` mengambil metadata, indeks ID publik, lalu GeoJSON asli per 100 objek; setiap respons diperiksa identitas/jumlah objek dan SHA-256. Tidak ada penyederhanaan geometri, pengiriman footprint lokal, kredensial staf atau pengesahan indikator. Respons dibatasi 64 MiB, keseluruhan 256 MiB, dan setiap permintaan maksimum tiga percobaan. Hanya paket dengan `manifest.json` final boleh dianggap akuisisi lengkap. Direktori parsial akibat timeout tetap privat dan **belum layak menjadi pembanding lengkap**. Pada pemeriksaan ini unduhan lengkap belum berhasil; enam bagian pada salah satu percobaan tersimpan, tanpa manifest final.
+
+```powershell
+node scripts/acquire-restoration-big-reference.mjs
+node --test tests/restoration-big-reference.test.cjs
+```
+
+Permintaan berdasarkan bounding box geometri lokal ditolak pemeriksaan persetujuan otomatis karena berpotensi mengungkap lokasi internal. Akuisisi diganti menggunakan kode KHG dan ID objek publik saja; pencocokan geometri harus berlangsung lokal setelah paket lengkap terverifikasi. Tidak ada data privat yang dikirim sebagai parameter pencarian.
+
+**Keputusan analisis:** konflik kelas dan administrasi belum ditutup. Seluruh indikator tetap null/tidak tervalidasi, termasuk hidrologi. Langkah selanjutnya ialah menyelesaikan unduhan referensi publik, melakukan overlay lokal dengan pemeriksaan topologi, dan memperoleh seri TMAT yang memiliki metadata pengukuran. Tidak ada perubahan produksi, menu publik, endpoint atau akses staf pada tahap ini.

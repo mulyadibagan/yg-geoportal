@@ -16,6 +16,7 @@ on:
       - scripts/reconcile-restoration-evidence.mjs
       - scripts/extract-restoration-tree-loss.mjs
       - scripts/acquire-restoration-gfc.mjs
+      - scripts/acquire-restoration-big-reference.mjs
       - .github/workflows/validate-restoration-priority.yml
 
 permissions:
@@ -39,7 +40,8 @@ jobs:
           node --check scripts/reconcile-restoration-evidence.mjs
           node --check scripts/extract-restoration-tree-loss.mjs
           node --check scripts/acquire-restoration-gfc.mjs
+          node --check scripts/acquire-restoration-big-reference.mjs
       - name: Prepare isolated existing GIS library versions
         run: npm install --prefix private-data/restoration-runtime --no-save --ignore-scripts --no-audit --no-fund @turf/turf@7.2.0 geotiff@2.1.3
       - name: Test scoring, access and existing reference workspace
-        run: node --test tests/restoration-priority.test.cjs tests/restoration-catalog.test.cjs tests/restoration-feg-selection.test.cjs tests/restoration-inputs.test.cjs tests/restoration-source-preparation.test.cjs tests/restoration-reconciliation.test.cjs tests/restoration-tree-loss.test.cjs tests/riau-geoportal-internal.test.cjs tests/riau-reference-workspace.test.cjs tests/riau-reference-loading.test.cjs
+        run: node --test tests/restoration-*.test.cjs tests/riau-geoportal-internal.test.cjs tests/riau-reference-workspace.test.cjs tests/riau-reference-loading.test.cjs
