@@ -20,6 +20,7 @@ on:
       - scripts/compare-restoration-big-reference.mjs
       - scripts/acquire-restoration-tmat.mjs
       - scripts/audit-restoration-tmat.mjs
+      - scripts/acquire-restoration-research-peat.mjs
       - .github/workflows/validate-restoration-priority.yml
 
 permissions:
@@ -47,6 +48,7 @@ jobs:
           node --check scripts/compare-restoration-big-reference.mjs
           node --check scripts/acquire-restoration-tmat.mjs
           node --check scripts/audit-restoration-tmat.mjs
+          node --check scripts/acquire-restoration-research-peat.mjs
       - name: Prepare isolated existing GIS library versions
         run: npm install --prefix private-data/restoration-runtime --no-save --ignore-scripts --no-audit --no-fund @turf/turf@7.2.0 geotiff@2.1.3
       - name: Test scoring, access and existing reference workspace
