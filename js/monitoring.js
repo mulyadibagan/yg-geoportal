@@ -1189,7 +1189,9 @@ var LEGACY_OBJECT_ALIASES={
   }
 
   function loadSnapshotImmediately(){
-    return fetch(SNAPSHOT_URL,{cache:'no-store'})
+    var query=new URLSearchParams(location.search),scope=(query.get('search')||'').toLowerCase(),requested=query.get('report');
+    var source=(scope==='aramco'||requested)&&window.YG_ARAMCO_PHASE3?window.YG_ARAMCO_PHASE3.ready.then(d=>{var aramco=scope==='aramco'||(d.monitoring.verifiedRecords||[]).some(r=>r.id.replace('MONITORING-','')===requested);return aramco?'data/dashboard-summary-snapshot.json?v=20261104-final1':SNAPSHOT_URL;}):Promise.resolve(SNAPSHOT_URL);
+    return source.then(url=>fetch(url,{cache:'no-store'}))
       .then(function(response){
         if(!response.ok)throw new Error('HTTP '+response.status);
         return response.json();
