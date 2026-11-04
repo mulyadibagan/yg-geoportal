@@ -1,5 +1,7 @@
 # Analisis Prioritas Restorasi Gambut — pengembangan internal
 
+**Fokus aktif 4 November 2026:** sesuai arahan pengguna, halaman memakai penapisan kebakaran, bukaan hutan gambut dan kanal. TMAT bukan prasyarat. Lihat [kontrak tiga tekanan](restoration-three-pressure-screening.md). Uraian mesin lima indikator di bawah merupakan riwayat implementasi; tidak lagi menjadi model aktif halaman. Perubahan fokus ini disiapkan pada PR #527 dan belum dideploy.
+
 Baseline PR #507 telah di-merge dan terbit pada 1 November 2026. Perubahan 3 November di bawah disiapkan pada branch/PR terpisah dan belum diterbitkan. Modul belum menghasilkan prioritas ekologis nyata karena lima indikator belum lengkap/tervalidasi.
 
 ## Pengelompokan FEG menurut kode KHG — 3 November 2026

@@ -65,8 +65,8 @@
       const row = document.createElement('p'); row.textContent = key + ': ' + (value ?? 'Data belum tersedia'); content.appendChild(row);
     });
     if (title === 'Gambut BBSDLP 2019') {
-      const result = A.assess(p.restorationIndicators);
-      const row = document.createElement('p'); row.textContent = 'Kebutuhan ekologis: ' + result.category + (result.score === null ? ' · indikator kritis belum lengkap/valid' : ' · ' + number(result.score)); content.appendChild(row);
+      const result = A.assessPressures(p.restorationPressures);
+      const row = document.createElement('p'); row.textContent = 'Prioritas tiga tekanan: ' + result.category + (result.complete ? ' · ' + result.pressureCount + ' tekanan terverifikasi' : ' · bukti tiga tekanan belum lengkap/valid'); content.appendChild(row);
     }
     return content;
   }
@@ -91,7 +91,7 @@
     const features = scoped(def, data);
     const layer = L.geoJSON({ type: 'FeatureCollection', features }, {
       style: f => ({ color: def.color, weight: 1, fillOpacity: def.id === 'peat' ? .36 : .15,
-        fillColor: def.id === 'peat' ? ({ Tinggi: '#b43b38', Sedang: '#d89a32', Rendah: '#4a9661' }[A.assess(f.properties?.restorationIndicators).category] || '#adb7b3') : def.color }),
+        fillColor: def.id === 'peat' ? ({ Tinggi: '#b43b38', Sedang: '#d89a32', Rendah: '#4a9661' }[A.assessPressures(f.properties?.restorationPressures).category] || '#adb7b3') : def.color }),
       pointToLayer: (f, ll) => L.circleMarker(ll, { radius: def.id === 'hotspots' ? 4 : 6, color: def.color, weight: 1, fillOpacity: .8 }),
       onEachFeature: (f, l) => l.bindPopup(() => popup(f, def.label))
     }).addTo(state.map);
@@ -133,16 +133,16 @@
   }
   function filter() {
     state.filtered = A.select(state.peat, $('regency').value, '');
-    const summary = A.summarize(state.filtered);
+    const summary = A.summarize(state.filtered, 'pressures');
     $('area').textContent = summary.sourceAreaHa === null ? 'Data belum tersedia' : number(summary.sourceAreaHa) + ' ha';
     $('polygon-count').textContent = number(summary.count);
     $('unassessed').textContent = number(summary.unassessed) + ' poligon belum dinilai';
     $('priority-count').textContent = summary.assessed ? number(summary.priorityCount) : 'Belum dinilai';
     $('region-status').textContent = summary.assessed
       ? number(summary.assessed) + ' dari ' + number(summary.count) + ' poligon telah dinilai. Poligon lain tetap memerlukan validasi.'
-      : 'Wilayah prioritas belum dapat ditetapkan: lima indikator ekologis belum lengkap atau tervalidasi. Daftar berikut adalah wilayah kajian dari data gambut asli.';
+      : 'Wilayah prioritas belum dapat ditetapkan: bukti kebakaran, bukaan hutan gambut, dan kanal belum lengkap atau tervalidasi. Daftar berikut adalah wilayah kajian dari data gambut asli.';
     $('regions').replaceChildren();
-    A.regions(state.filtered).forEach(region => {
+    A.regions(state.filtered, 'pressures').forEach(region => {
       const row = document.createElement('tr');
       [region.name, number(region.sourceAreaHa), number(region.count), region.assessed ? number(region.priorityCount) : 'Belum dinilai', number(region.unassessed)].forEach(value => {
         const cell = document.createElement('td'); cell.textContent = value; row.appendChild(cell);
@@ -160,7 +160,7 @@
       note.id = 'state-' + def.id; note.textContent = def.note;
       label.append(input, ' ' + def.label, note); $('layers').appendChild(label);
     });
-    $('indicators').innerHTML = A.INDICATORS.map(i => '<tr><td>' + esc(i.label) + '</td><td>' + Math.round(i.weight * 100) + '%</td><td>Belum dinilai · data/metode belum tervalidasi</td></tr>').join('');
+    $('indicators').innerHTML = A.PRESSURES.map(i => '<tr><td>' + esc(i.label) + '</td><td>Bukti spasial</td><td>Belum dinilai · sumber dan overlay perlu diperiksa</td></tr>').join('');
     $('regency').addEventListener('change', filter); $('khg').addEventListener('change', focusKHG); $('fit').addEventListener('click', fit);
     $('load-khg').addEventListener('click', loadKHG);
     $('use-feg-khg').addEventListener('click', loadFEGGroups);
