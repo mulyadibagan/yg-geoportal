@@ -4,6 +4,27 @@ const runtime=createRequire(path.join(__dirname,'../private-data/restoration-run
 const T=runtime('@turf/turf');
 const J=runtime('jsts');
 const source=JSON.parse(fs.readFileSync(path.join(__dirname,'../data/Gambut_BBSDLP_2019.geojson')));
+test('actual shell/hole candidates preserve hole exclusion and set-operation identities without approval',async()=>{
+ const {reviewSelfTouch}=await import('../scripts/diagnose-restoration-geometry.mjs');
+ const {validateCandidate}=await import('../scripts/validate-restoration-ring-candidates.mjs');
+ for(const index of [493,609]){
+  const feature=source.features[index],before=JSON.stringify(feature),candidate={type:'Feature',geometry:reviewSelfTouch(feature,J).candidate,properties:{reviewOnly:true,analysisUnitApproved:false,scoringValidated:false}};
+  const result=validateCandidate(feature,candidate,J,T);
+  assert.ok(Object.values(result.checks).every(Boolean));assert.equal(result.technicalChecksPassed,true);
+  assert.equal(result.testedResponseRecords,0);assert.equal(result.pointComparisonPassed,null);
+  assert.equal(result.sourceGeometryApproved,false);assert.equal(result.candidateApproved,false);assert.equal(result.score,null);
+  assert.ok(result.turfKinkDetections>0,'Keep disagreement about point contacts visible');
+  assert.equal(JSON.stringify(feature),before);
+ }
+});
+test('candidate validation refuses shell-only geometry or promoted approval flags',async()=>{
+ const {reviewSelfTouch}=await import('../scripts/diagnose-restoration-geometry.mjs');
+ const {validateCandidate}=await import('../scripts/validate-restoration-ring-candidates.mjs');
+ const feature=source.features[493],geometry=reviewSelfTouch(feature,J).candidate;
+ const properties={reviewOnly:true,analysisUnitApproved:false,scoringValidated:false};
+ assert.throws(()=>validateCandidate(feature,{geometry:{type:'Polygon',coordinates:[geometry.coordinates[0]]},properties},J,T),/differs/);
+ assert.throws(()=>validateCandidate(feature,{geometry,properties:{...properties,analysisUnitApproved:true}},J,T),/differs/);
+});
 test('two real self-touching rings yield separate review-only hole candidates preserving every source edge',async()=>{
  const {reviewSelfTouch,independentValidity}=await import('../scripts/diagnose-restoration-geometry.mjs');
  for(const [index,indices] of [[493,[331,334]],[609,[0,127]]]){

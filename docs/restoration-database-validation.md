@@ -54,6 +54,14 @@ Pemeriksaan tambahan menggunakan **JSTS 2.7.1 `IsValidOp`**, yang sudah tersedia
 
 Telaah ring berulang hanya menghasilkan kandidat jika sumber berupa Polygon satu ring yang ditolak JSTS dengan kode ring-self-intersection, memiliki tepat satu vertex berulang, dua siklus valid yang bersarang dan pertemuan batas berdimensi nol. Semua ruas terarah asli beserta jumlah kemunculannya harus persis sama sebelum/sesudah pemisahan shell/hole. `review-only-candidates.geojson` disimpan privat terpisah dengan ID `review-only-...`, `reviewOnly:true`, dan persetujuan false. File ini bukan pengganti sumber atau input scoring. Status sumber tetap gagal; representasi kandidat yang valid belum membuktikan maksud kartografis pembuat peta. Tidak ada snapping, buffer, union atau penghapusan loop.
 
+Validasi kandidat dan perbandingan titik respons asli dapat dijalankan secara lokal:
+
+```powershell
+node scripts/validate-restoration-ring-candidates.mjs "private-data/restoration-geometry-diagnostic-<id>" "private-data/restoration-bpbd-records-<id>"
+```
+
+Kandidat harus persis hasil derivasi sumber dengan hash/index/ID yang cocok, serta flag review-only dan persetujuan false. Pemeriksaan mencakup hole-interior yang dikecualikan, identitas irisan/selisih dengan diri sendiri, validitas JSTS default, pelestarian semua ruas dan penolakan kandidat shell-only atau flag persetujuan yang dipromosikan. Titik BPBD tetap koordinat sumber; perbandingan memakai even-odd sumber/kandidat dan JSTS covers, dengan status titik batas eksplisit. Representasi invalid asli hanya dipakai sebagai referensi diagnostik; kesamaan pada record teramati bukan pembuktian semua titik atau maksud pembuat peta. Jika paket BPBD tidak disertakan, `pointComparisonPassed:null`, bukan kelulusan dari nol record. Turf kinks dan gate aplikasi yang masih berbeda tetap tercatat dan tidak dilonggarkan. Hasil serta referensi record tetap privat.
+
 `bpbd.geometryReviewQueue` mencatat unit yang gagal pemeriksaan geometri dan referensi respons yang berada di bounding box-nya. `excludedGeometryCandidateIds` menghubungkan setiap respons ke kandidat tersebut. Ini daftar penelaahan: bounding box tidak membuktikan titik berada dalam poligon dan tidak mengizinkan koreksi geometri otomatis. MultiPoint yang menyentuh kandidat sama beberapa kali tetap menghasilkan satu referensi respons per kandidat. Semua rincian berada di matriks privat.
 
 `validation-matrix.json` mencatat alasan per unit, konteks infrastruktur, kandidat pengamatan dan ringkasan lima indikator. Hasil aktual tersedia hanya pada paket privat yang dicetak script. Tidak ada file hasil operasional atau koordinat internal yang ditambahkan ke dokumentasi ini.
