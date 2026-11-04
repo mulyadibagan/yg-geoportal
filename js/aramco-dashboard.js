@@ -4,7 +4,7 @@
   var GROUP_FILE='data/community-groups.json?v=20260824-gender2';
   var MANGROVE_FILE='data/area_mangrove.geojson?v=20260824-village-planting1';
   var TRAINING_FILE='data/capacity-building.json?v=20260824-village-training1';
-  var OBJECTS_FILE='https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json';
+  var OBJECTS_FILE='data/master-database-snapshot.json?v=20261104-final1';
   var DONOR_API='https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/api/donor/programmes';
   var groups=[],seededEvidence=[],liveEvidence=[],plantingByVillage={},trainingByVillage={},infrastructureByVillage={},photosByVillage={},programmePhotos=[],currentDonor=null;
   function esc(v){return String(v==null?'':v).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
