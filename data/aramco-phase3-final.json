@@ -135,7 +135,26 @@
   "monitoring": {
     "period": "10 & 29 August 2026",
     "note": "Monitoring results from August 2026 relate to planting established before the additional 283 seedlings planted on 28 October 2026. The October planting cohort requires subsequent monitoring and should not be included in the August survival calculation.",
-    "cohortStatus": "28 October 2026 planting cohort — monitoring pending"
+    "cohortStatus": "28 October 2026 planting cohort — monitoring pending",
+    "verifiedRecords": [
+      {
+        "village": "Buruk Bakul",
+        "id": "MONITORING-YG-20260713-202057-344"
+      },
+      {
+        "village": "Kelapa Pati",
+        "id": "MONITORING-YG-20260819-191049-223"
+      },
+      {
+        "village": "Sepahat",
+        "id": "MONITORING-YG-20260721-012602-224"
+      },
+      {
+        "village": "Tanjung Kuras",
+        "id": "MONITORING-YG-20260814-105232-198"
+      }
+    ],
+    "protectionRecordId": "MONITORING-YG-20260721-012602-224"
   },
   "reporting": {
     "status": "In preparation / being finalized",
