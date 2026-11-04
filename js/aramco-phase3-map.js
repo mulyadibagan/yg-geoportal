@@ -25,16 +25,17 @@
     var area=features.reduce(function(sum,f){return sum+num((f.properties||{}).Luas_Ha);},0),trees=features.reduce(function(sum,f){return sum+num((f.properties||{}).Jumlah_Bib);},0);
     document.getElementById('phase-map-polygons').textContent=fmt(features.length);
     document.getElementById('phase-map-area').textContent=fmtArea(area)+' ha';
-    document.getElementById('phase-map-seedlings').textContent=fmt(trees);
+    window.YG_ARAMCO_PHASE3.ready.then(d=>{const v=d.villages.find(v=>v.name===village);document.getElementById('phase-map-seedlings').textContent=fmt(window.YG_ARAMCO_PHASE3.villageCount(v));});
     document.getElementById('phase-map-status').textContent=features.length+' polygon '+village+' ditampilkan · desa dan fase lain disembunyikan';
     if(layer.getBounds().isValid())map.fitBounds(layer.getBounds(),{padding:[35,35],maxZoom:16});else map.setView([1.45,102.07],11);
+    if(village==='Tanjung Kuras'){window.YG_ARAMCO_PHASE3.ready.then(d=>{const node=document.createElement('section');node.className='phase-map-summary';const v=d.villages.find(v=>v.name===village),count=window.YG_ARAMCO_PHASE3.villageCount(v);node.innerHTML='<h3>'+esc(d.activity.date)+' · '+fmt(d.activity.seedlings)+' seedlings</h3><p>'+fmt(count)+' / '+fmt(v.target)+' seedlings · '+(count/v.target*100).toFixed(2)+'% · Completed</p><p>'+esc(d.monitoring.cohortStatus)+'</p><a href="aramco-activity.html?activity='+d.activity.id+'">Open planting activity and photographs →</a>';document.getElementById('phase-map-status').after(node);});}
     if(village==='Buruk Bakul'){
       fetch('https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/objects.json',{cache:'no-store'}).then(function(response){if(!response.ok)throw new Error('HTTP '+response.status);return response.json();}).then(function(objects){
         var event=(objects.features||[]).find(function(feature){return String((feature.properties||{}).Object_ID||'')==='COMMUNITY-YG-20260725-213658-266';});
         if(!event||!event.geometry)return;
         var p=event.properties||{},marker=L.geoJSON(event,{pointToLayer:function(feature,latlng){return L.circleMarker(latlng,{radius:9,color:'#fff',weight:3,fillColor:'#ffbf3f',fillOpacity:1});},onEachFeature:function(feature,point){point.bindPopup('<div class="phase-map-popup"><h3>Planting Event · 200 bibit</h3><dl><dt>Tanggal</dt><dd>8 Juli 2026</dd><dt>Lokasi</dt><dd>Buruk Bakul</dd><dt>Jenis tanaman</dt><dd>'+esc(p.Jenis_Tanaman||'Mangrove')+'</dd><dt>Peserta</dt><dd>'+fmt(num(p.Jumlah_Peserta))+' orang</dd><dt>ID objek</dt><dd>'+esc(p.Object_ID||'—')+'</dd></dl><a href="webgis.html?object='+encodeURIComponent(p.Object_ID||'')+'" target="_blank" rel="noopener noreferrer">Buka evidence planting event ↗</a></div>',{maxWidth:360});point.bindTooltip('Planting Event · 200 bibit',{direction:'top'});}}).addTo(map);
-        trees+=num(p.Jumlah_Tanam);
-        document.getElementById('phase-map-seedlings').textContent=fmt(trees);
+        // The event is already included in the canonical village establishment total.
+        window.YG_ARAMCO_PHASE3.ready.then(d=>{document.getElementById('phase-map-seedlings').textContent=fmt(window.YG_ARAMCO_PHASE3.villageCount(d.villages.find(v=>v.name===village)));});
         document.getElementById('phase-map-status').textContent=features.length+' polygon (4.000 bibit) + 1 titik planting event (200 bibit) · total 4.200';
         var combined=layer.getBounds();marker.eachLayer(function(point){if(point.getLatLng)combined.extend(point.getLatLng());});if(combined.isValid())map.fitBounds(combined,{padding:[35,35],maxZoom:15});
       }).catch(function(error){console.warn('Planting event belum dapat dimuat',error);});

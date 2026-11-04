@@ -1,0 +1,145 @@
+{
+  "schema": "aramco-phase3-final-v1",
+  "asOf": "2026-10-28",
+  "reviewedAt": "2026-11-04",
+  "source": {
+    "title": "YG Aramco Phase III Final Report 2025–2026 — working draft",
+    "url": "https://docs.google.com/document/d/14yiOMDsnpZ3T0ZFnSye38ATEdumKaMjV/edit",
+    "submissionStatus": "In preparation / being finalized"
+  },
+  "audit": {
+    "previousTanjungKuras": 3627,
+    "previousSubtotal": 3727,
+    "discrepancy": 100,
+    "cause": "Stale source-data subtotal in donors.json; not a missing map filter. The five dated planting records in the reviewed report sum to 3727.",
+    "reviewBasis": "Final report and explicit director reconciliation instruction, 3 November 2026."
+  },
+  "villages": [
+    {
+      "name": "Buruk Bakul",
+      "target": 4000,
+      "establishmentTrees": 4200,
+      "includedEventTrees": 200
+    },
+    {
+      "name": "Kelapa Pati",
+      "target": 6000,
+      "establishmentTrees": 6270
+    },
+    {
+      "name": "Sepahat",
+      "target": 4000,
+      "establishmentTrees": 4000,
+      "replacementTrees": 200,
+      "replacementDate": "2026-07-09"
+    },
+    {
+      "name": "Tanjung Kuras",
+      "target": 4000,
+      "objectId": "MANGROVE-TANJUNG-KURAS-PHASE-III-2026-001",
+      "events": [
+        {
+          "id": "ARAMCO-P3-TK-2026-04-09",
+          "date": "2026-04-09",
+          "seedlings": 1200,
+          "kind": "establishment"
+        },
+        {
+          "id": "ARAMCO-P3-TK-2026-05-10",
+          "date": "2026-05-10",
+          "seedlings": 1200,
+          "kind": "establishment"
+        },
+        {
+          "id": "ARAMCO-P3-TK-2026-07-06",
+          "date": "2026-07-06",
+          "seedlings": 180,
+          "kind": "establishment"
+        },
+        {
+          "id": "ARAMCO-P3-TK-2026-08-10",
+          "date": "2026-08-10",
+          "seedlings": 1027,
+          "kind": "establishment"
+        },
+        {
+          "id": "ARAMCO-P3-TK-2026-08-20",
+          "date": "2026-08-20",
+          "seedlings": 120,
+          "kind": "establishment"
+        },
+        {
+          "id": "ARAMCO-P3-TK-2026-10-28",
+          "date": "2026-10-28",
+          "seedlings": 283,
+          "kind": "establishment"
+        }
+      ]
+    }
+  ],
+  "activity": {
+    "id": "ARAMCO-P3-TK-2026-10-28",
+    "title": "Mangrove Planting – Tanjung Kuras – 28 October 2026",
+    "date": "2026-10-28",
+    "location": "Mangrove Planting Area, Tanjung Kuras Village, Sungai Apit Sub-district, Siak Regency",
+    "seedlings": 283,
+    "participants": {
+      "total": 7,
+      "men": 6,
+      "women": 1,
+      "organizations": [
+        {
+          "name": "Yayasan Gambut",
+          "total": 4,
+          "men": 3,
+          "women": 1
+        },
+        {
+          "name": "BELATRAM",
+          "total": 3,
+          "men": 3,
+          "women": 0
+        }
+      ]
+    },
+    "description": "On 28 October 2026, an additional 283 mangrove seedlings were planted in the mangrove rehabilitation area of Tanjung Kuras Village, Sungai Apit Sub-district, Siak Regency. The activity involved seven participants, comprising four Yayasan Gambut representatives (three men and one woman) and three male members of the BELATRAM Group. This activity brought cumulative Phase III planting in Tanjung Kuras to 4,010 seedlings, completing and slightly exceeding the 4,000-tree target.",
+    "photos": [
+      "https://webgisyg.id/assets/aramco/tanjung-kuras-20261028-01.png",
+      "https://webgisyg.id/assets/aramco/tanjung-kuras-20261028-02.png"
+    ],
+    "documentationType": "planting_activity",
+    "monitoringStatus": "pending"
+  },
+  "training": {
+    "evidenceId": "SESS-20260827-135540-314",
+    "title": "Community-Based Mangrove Restoration and Monitoring Training",
+    "village": "Tanjung Kuras",
+    "date": "2026-08-29",
+    "participants": 31,
+    "men": 24,
+    "women": 7,
+    "youth18to35": 13,
+    "postTestRespondents": 31,
+    "averageScore": 13.06,
+    "maxScore": 15,
+    "averagePercent": 87.1,
+    "completionRate": 100,
+    "url": "prepost-live-session.html?session=SESS-20260827-135540-314",
+    "topics": [
+      "Community-based mangrove restoration techniques",
+      "Coastal protection and climate change",
+      "Smartphone/WebGIS-based mangrove monitoring"
+    ],
+    "youthSource": "Final report and director verification; youth category differs from the legacy prepost age-category aggregation."
+  },
+  "monitoring": {
+    "period": "10 & 29 August 2026",
+    "note": "Monitoring results from August 2026 relate to planting established before the additional 283 seedlings planted on 28 October 2026. The October planting cohort requires subsequent monitoring and should not be included in the August survival calculation.",
+    "cohortStatus": "28 October 2026 planting cohort — monitoring pending"
+  },
+  "reporting": {
+    "status": "In preparation / being finalized",
+    "plannedCompletion": "Late November 2026",
+    "submitted": false
+  }
+}

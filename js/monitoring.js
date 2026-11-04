@@ -455,6 +455,7 @@ var LEGACY_OBJECT_ALIASES={
     // 3.330 bibit, sekitar 600 mati, dan survival sekitar 82%.
     var correction=REPORT_CORRECTIONS[String(p.reportId||p.Source_Report_ID||'').trim()];
     if(correction)Object.keys(correction).forEach(function(key){m[key]=correction[key];});
+    if(/tanjung kuras/i.test(village+' '+title)&&/08[/-]2026|2026-08/.test(p.activityDate||'')){const note=p.Monitoring_Cohort_Note||window.YG_ARAMCO_PHASE3_NOTE;if(note&&!String(m.notes||'').includes(note))m.notes=(m.notes||'')+' '+note;}
     reconcileSurvival(m);
     var areaKey=isFinite(targetArea)&&targetArea>0?targetArea.toFixed(4):'';
     var boundsKey=geometryKey(feature&&feature.geometry);
