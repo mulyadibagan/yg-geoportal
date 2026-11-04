@@ -9,3 +9,5 @@ Untuk tiap `fire`, `forestOpening`, `canals`, kontrak masukan memerlukan `presen
 Kebakaran: bedakan indikasi terbakar, hotspot dan record respons pemadaman. Bukaan hutan: gunakan bukti perubahan pada lahan gambut; kehilangan tutupan pohon bukan otomatis seluruh pembukaan hutan. Kanal: gunakan geometri jaringan kanal/drainase, bukan titik sekat. Data terdahulu tetap bukti kandidat dan tidak otomatis dipromosikan ke kontrak baru.
 
 Belum ada hasil privat diunggah atau nilai tekanan fiktif diisi. Kebutuhan data berikutnya dipusatkan pada jaringan kanal asli, penetapan bukaan hutan gambut dan periode kebakaran yang sesuai. Akses staf, penyimpanan privat, endpoint dan database produksi tidak berubah. Perubahan kode ini belum dideploy.
+
+Alur akuisisi kanal asli dan penggabungan dengan observasi bukaan tutupan pohon/kebakaran tersedia pada [persiapan bukti tiga tekanan](restoration-canal-forest-evidence.md). Paket tersebut menghasilkan kandidat berbukti, bukan pengesahan otomatis atas proksi kanal/jalan atau bukaan hutan alam.
