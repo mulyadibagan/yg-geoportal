@@ -27,8 +27,10 @@ function renderMap(feature,name){
   var b=layer.getBounds();if(b.isValid())map.fitBounds(b,{padding:[24,24],maxZoom:14});
   layer.bindTooltip(name,{direction:"center"});
   monthlyHotspotLayer=L.layerGroup().addTo(map);
-  L.control.layers(null,{"Batas Perhutanan Sosial":layer,"Hotspot laporan final":monthlyHotspotLayer},{collapsed:true,position:"topright"}).addTo(map);
+  var profileLayerControl=L.control.layers(null,{"Batas Perhutanan Sosial":layer,"Hotspot laporan final":monthlyHotspotLayer},{collapsed:true,position:"topright"}).addTo(map);
   drawMonthlyHotspotPoints(monthlyHotspotPoints);
+  window.YG_PS_PROFILE_MAP={map:map,feature:feature,control:profileLayerControl,key:key};
+  document.dispatchEvent(new CustomEvent("yg:ps-map-ready",{detail:window.YG_PS_PROFILE_MAP}));
 }
 function drawMonthlyHotspotPoints(points){
   monthlyHotspotPoints=points||[];if(!monthlyHotspotLayer)return;monthlyHotspotLayer.clearLayers();
