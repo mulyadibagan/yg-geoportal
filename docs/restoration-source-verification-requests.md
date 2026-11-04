@@ -4,6 +4,32 @@ Dokumen ini menyiapkan pertanyaan untuk pengelola data. Tidak ada email, formuli
 
 ## BBSDLP / pengelola data sumber daya lahan Kementerian Pertanian
 
+### Kanal resmi terverifikasi, 4 November 2026
+
+[Layanan Informasi Geospasial Tematik BRMP SDLP](https://sdlahan.brmp.pertanian.go.id/informasi-publik/informasi-geospasial-tematik) menyebut tujuan `brmp.sdlahan@pertanian.go.id`, CC `sekretariatbbsdlp@yahoo.com`. Alamat tujuan dan CC diperiksa dari halaman layanan resmi, bukan ditebak dari nama domain. Layanan meminta surat kepada Kepala BRMP SDLP, identitas, proposal dan batas area penelitian. Halaman menyebut layanan peta gambut melalui PNBP; jumlah tarif belum diperoleh dan tidak ada komitmen pembayaran. Konfirmasi ketersediaan, persyaratan terkini dan penawaran resmi harus mendahului pengajuan lampiran sensitif atau pembayaran.
+
+### Draf pertanyaan awal — tanpa lampiran, belum dikirim
+
+Tujuan: brmp.sdlahan@pertanian.go.id  
+CC: sekretariatbbsdlp@yahoo.com  
+Subjek: Informasi ketersediaan dan prosedur akses Peta Lahan Gambut 2019 cakupan Riau
+
+Yth. Tim Layanan Informasi Geospasial Tematik BRMP SDLP,
+
+Untuk persiapan analisis internal prioritas restorasi gambut di Provinsi Riau pada WebGIS Yayasan Gambut, mohon informasi ketersediaan Peta Lahan Gambut Indonesia skala 1:50.000 edisi Desember 2019 cakupan Riau dalam format vektor asli, beserta metadata, kamus atribut, dan riwayat revisinya.
+
+Mohon konfirmasi prosedur pengajuan, kelengkapan surat/proposal dan batas wilayah yang diperlukan, tarif/penawaran resmi apabila berlaku, serta ketentuan penggunaan data untuk analisis dan penyimpanan internal dengan akses terbatas staf.
+
+Kami juga memerlukan penjelasan mekanisme verifikasi ketika geometri identik memiliki atribut kelas ketebalan atau jenis tanah berbeda pada suatu turunan data. Pada tahap pertanyaan awal ini belum disertakan identitas pemohon, proposal, koordinat atau geometri kasus.
+
+Mohon arahkan kami kepada pengelola dataset yang tepat apabila layanan ini bukan kanal penanggung jawab versi tersebut.
+
+Terima kasih.
+
+Identitas penandatangan dan lampiran belum ditetapkan. Draf tidak boleh dikirim atas nama orang atau pejabat tertentu tanpa instruksinya.
+
+### Rincian kebutuhan untuk pengajuan berikutnya
+
 Mohon akses versi resmi **Peta Lahan Gambut Indonesia skala 1:50.000, edisi Desember 2019**, cakupan Riau, beserta:
 
 - Data vektor asli dan identitas/versi revisi, checksum atau identifikator distribusi.
