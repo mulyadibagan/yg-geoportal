@@ -42,6 +42,14 @@ Kategori **Pemadaman** dan **Water drop** adalah record respons, bukan jumlah ke
 
 ## Keluaran dan uji
 
+Untuk menelaah kandidat geometri secara baca-saja dengan runtime Turf 7.2.0 yang sudah tersedia:
+
+```powershell
+node scripts/diagnose-restoration-geometry.mjs "private-data/restoration-database-validation-<id>"
+```
+
+Script memeriksa hash BBSDLP terhadap manifest privat dan referensi unit terhadap matriks. Maksimal 64 kasus; tiap geometri dibatasi 128 komponen/30.000 vertex. Laporan privat membedakan masalah dalam ring dari pertemuan batas antarkomponen, mencatat hasil irisan komponen, indeks vertex berulang/segmen panjang nol dan error. `sourceFeatureIndex` berbasis nol, `sourceRowNumber` berbasis satu. Ketiadaan irisan berluas positif pada Turf tidak membuktikan validitas topologi; pemeriksaan ini bukan validator independen. Tidak ada perbaikan, snapping, union, perubahan flag kelayakan, pemberian luas prioritas atau pengesahan otomatis.
+
 `bpbd.geometryReviewQueue` mencatat unit yang gagal pemeriksaan geometri dan referensi respons yang berada di bounding box-nya. `excludedGeometryCandidateIds` menghubungkan setiap respons ke kandidat tersebut. Ini daftar penelaahan: bounding box tidak membuktikan titik berada dalam poligon dan tidak mengizinkan koreksi geometri otomatis. MultiPoint yang menyentuh kandidat sama beberapa kali tetap menghasilkan satu referensi respons per kandidat. Semua rincian berada di matriks privat.
 
 `validation-matrix.json` mencatat alasan per unit, konteks infrastruktur, kandidat pengamatan dan ringkasan lima indikator. Hasil aktual tersedia hanya pada paket privat yang dicetak script. Tidak ada file hasil operasional atau koordinat internal yang ditambahkan ke dokumentasi ini.
