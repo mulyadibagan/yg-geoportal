@@ -38,6 +38,36 @@ test('selection labels preserve source attributes without inventing KHG names',(
   assert.equal(C.label({properties:{NAMA_KHG:'Nama sumber'}},0),'Nama sumber');
   assert.equal(C.label({properties:{}},4),'Poligon KHG 5');
 });
+test('BPBD candidates preserve conflicting metadata and require staff catalogue integrity and publisher',()=>{
+ const row={...entry(),title:'KEBAKARANHUTLARIAU_PT_2025_250K',publisher:'Badan Penanggulangan Bencana Daerah Provinsi Riau',dataYear:2026,conflicts:[{field:'year'}]};
+ const catalog={access:'staff_only',datasets:[row]};
+ const result=C.candidates(catalog,'fire');assert.equal(result.length,1);
+ assert.equal(result[0].year,2026);assert.equal(result[0].title,row.title);assert.equal(result[0].metadataConflictCount,1);
+ assert.equal(C.candidates({...catalog,access:'public'},'fire').length,0);
+ assert.equal(C.candidates({...catalog,datasets:[row,row]},'fire').length,0);
+ assert.equal(C.candidates({...catalog,datasets:[{...row,publisher:'Unverified publisher'}]},'fire').length,0);
+ assert.equal(C.candidates(catalog,'unknown').length,0);
+});
+test('BPBD preview verifies native point geometries, checksum and feature count',async()=>{
+ const data={type:'FeatureCollection',features:[{type:'Feature',properties:{},geometry:{type:'MultiPoint',coordinates:[[100,0],[101,1]]}}]};
+ const bytes=Buffer.from(JSON.stringify(data)),item={bytes:bytes.length,featureCount:1,sha256:createHash('sha256').update(bytes).digest('hex')};
+ assert.equal((await C.readDisplay(new Response(bytes),item,webcrypto,C.validatePoints)).features.length,1);
+ await assert.rejects(C.readDisplay(new Response(bytes),{...item,featureCount:2},webcrypto,C.validatePoints));
+ await assert.rejects(C.readDisplay(new Response(bytes),{...item,sha256:'0'.repeat(64)},webcrypto,C.validatePoints));
+ assert.throws(()=>C.validatePoints(fixture()),/Point/);
+ assert.throws(()=>C.validatePoints({...data,crs:{properties:{name:'EPSG:3857'}}}),/WGS84/);
+ assert.throws(()=>C.validatePoints({type:'FeatureCollection',features:[{type:'Feature',geometry:{type:'Point',coordinates:[500000,100000]}}]}),/Koordinat/);
+});
+test('BPBD scope retains only source point coordinates inside filtered peat and does not mutate source',()=>{
+ const A=require('../js/restoration-scoring.js');const coordinates=[[100.75,.25],[105,5]];
+ const feature={type:'Feature',id:'test-only',properties:{year:2025},geometry:{type:'MultiPoint',coordinates}};
+ const before=JSON.stringify(feature),peat=fixture().features;
+ const result=C.scopePoints([feature],peat,A.contains);
+ assert.equal(result.length,1);assert.equal(result[0].geometry.coordinates.length,1);
+ assert.equal(result[0].geometry.coordinates[0],coordinates[0]);assert.equal(result[0].properties,feature.properties);
+ assert.equal(JSON.stringify(feature),before);assert.deepEqual(C.scopePoints([feature],[],A.contains),[]);
+ assert.equal(Object.hasOwn(result[0].properties,'restorationIndicators'),false);
+});
 test('FEG grouping uses source codes and keeps the exact original geometry objects',()=>{
   const first=fixture().features[0], second=fixture().features[0];
   first.properties={kode_khg:'KHG.source-A',nama_khg:'Nama sumber A'};

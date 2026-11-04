@@ -71,7 +71,7 @@ async function bootScenario({ host = 'webgisyg.id', protocol = 'https:', session
   const nodes = new Map(), calls = [];
   function element() { return { textContent: '', hidden: true, append() {}, appendChild() {}, addEventListener() {} }; }
   const document = { getElementById: id => { if (!nodes.has(id)) nodes.set(id, element()); return nodes.get(id); }, createElement: element };
-  const window = { YG_RESTORATION: A, YG_AUTH: { readStoredSession: () => session } }; window.top = framed ? {} : window; window.self = window;
+  const window = { YG_RESTORATION: A, YG_RESTORATION_CATALOG: require('../js/restoration-catalog.js'), YG_AUTH: { readStoredSession: () => session } }; window.top = framed ? {} : window; window.self = window;
   const context = { window, document, location: { hostname: host, protocol }, AbortSignal,
     fetch: async (...args) => { calls.push(args); if (onFetch) return onFetch(args, nodes); if (fail) throw Error('network unavailable'); return response; } };
   vm.runInNewContext(fs.readFileSync(path.join(root, 'js/restoration-priority.js'), 'utf8'), context);

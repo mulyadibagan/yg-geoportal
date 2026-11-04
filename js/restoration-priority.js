@@ -33,6 +33,17 @@
   }
   async function layerData(def) {
     if (state.cache.has(def.id)) return state.cache.get(def.id);
+    if (def.catalog) {
+      if (!state.pendingData.has(def.id)) state.pendingData.set(def.id, (async () => {
+        const current = window.YG_AUTH?.readStoredSession();
+        if (!current || current.token !== state.session.token) { $('workspace').hidden = true; status('Akses ditolak. Login staf ulang diperlukan.'); throw Error('Sesi staf berubah atau berakhir'); }
+        const response = await fetch(def.path, {headers:{authorization:'Bearer '+current.token},cache:'no-store',signal:AbortSignal.timeout(45000)});
+        if (response.status === 401 || response.status === 403) { $('workspace').hidden = true; status('Akses ditolak. Login staf ulang diperlukan.'); }
+        const data = await C.readDisplay(response, def.catalog, crypto, C.validatePoints);
+        state.cache.set(def.id,data); return data;
+      })().finally(()=>state.pendingData.delete(def.id)));
+      return state.pendingData.get(def.id);
+    }
     if (def.inventory) {
       if (!state.pendingData.has('inventory')) state.pendingData.set('inventory',
         fetch(def.path, {cache:'no-store',signal:AbortSignal.timeout(15000)}).then(I.read).then(result => {
@@ -61,6 +72,7 @@
   }
   function scoped(def, data) {
     const regency = $('regency').value;
+    if (def.catalog) return C.scopePoints(data.features, state.filtered, A.contains);
     if (def.id === 'peat') return state.filtered;
     if (def.id === 'hotspots') return data.features.filter(f => f.geometry?.type === 'Point' &&
       state.filtered.some(peat => {
@@ -94,6 +106,7 @@
       ' · periode: ' + (data.coverageStart || 'belum tersedia') + ' sampai ' + (data.coverageEnd || 'belum tersedia') +
       ' · objek sumber: ' + data.features.length + ' · jalur: ' + (def.private ? 'endpoint staf eksisting' : def.path) + ' · belum tervalidasi untuk scoring';
     if (def.inventory) source.textContent += ' · data snapshot, bukan pembacaan langsung Sheets · record dikecualikan: ' + data.inventoryExcluded + ' · hitungan objek bukan jumlah aset fisik terverifikasi';
+    if (def.catalog) source.textContent += ' · judul asli: ' + def.catalog.title + ' · penerbit: ' + def.catalog.publisher + ' · tahun metadata: ' + (def.catalog.year ?? 'belum diketahui') + ' · UUID: ' + def.catalog.uuid + ' · versi SHA-256: ' + def.catalog.sha256 + ' · catatan metadata: ' + def.catalog.metadataConflictCount + ' · titik kejadian bukan luas terbakar/jumlah kejadian unik';
   }
   async function toggle(def, input) {
     if (!input.checked) {
@@ -256,6 +269,7 @@
       const catalog = await response.json();
       if (catalog.access !== 'staff_only' || !Array.isArray(catalog.datasets)) throw new Error('Respons verifikasi katalog tidak valid');
       status('Sesi staf diverifikasi backend · pengembangan internal · analisis belum dinilai');
+      C.candidates(catalog,'fire').forEach(item => definitions.push({id:'bpbd-'+item.uuid,label:'Lokasi kebakaran BPBD · '+item.title.match(/_(\d{4})_/)[1]+' (judul sumber)',path:BASE+'/api/staff/riau-geoportal/datasets/'+item.uuid+'/display',catalog:item,color:'#a54b38',note:'Titik asli dalam gambut tersaring · bukan luas terbakar/skor · '+item.metadataConflictCount+' catatan metadata'}));
       renderControls(); $('workspace').hidden = false;
       const manifest = await fetchJSON('data/restoration-priority-sources.json');
       manifest.sources.forEach(s => {

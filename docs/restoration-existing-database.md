@@ -22,3 +22,13 @@ Kedua layer merupakan konteks inventaris/kesiapan pelaksanaan. Semua indikator k
 ## Verifikasi
 
 Tes memakai geometri nyata dari snapshot repository untuk memeriksa pelestarian sumber, penolakan ID ambigu/status pembangunan/koordinat proyeksi, penghapusan field privat dan masukan skor, pembatasan ukuran, kegagalan HTTP/JSON, serta gate staf sebelum kontrol tersedia. Pembaca juga dijalankan secara baca-saja terhadap endpoint snapshot eksisting. Pengujian browser terhadap UI baru belum dilakukan karena perubahan belum dideploy dan kontrol origin staf sengaja tetap berlaku.
+
+## Lokasi kebakaran BPBD dari arsip staf
+
+Katalog yang sudah lolos otorisasi staf juga dipakai untuk membuat pilihan layer `KEBAKARANHUTLARIAU_PT_<tahun>_250K` dari penerbit BPBD. Hanya entri siap-peta dengan UUID tidak ambigu, ukuran paling banyak 12 MiB, checksum SHA-256 dan jumlah fitur yang lengkap diterima. Data diambil melalui endpoint `/api/staff/riau-geoportal/datasets/<UUID>/display` yang sudah ada, menggunakan sesi staf saat ini. Respons 401/403 menyembunyikan workspace. Tidak ada endpoint, menu publik atau penyimpanan statis baru untuk data BPBD.
+
+Setiap respons diperiksa byte, checksum dan jumlah fiturnya sebelum validasi struktur Point/MultiPoint WGS84. Memuat data hanya terjadi setelah pengguna memilih layer. Tahun pada label adalah tahun pada **judul sumber**, bukan penetapan periode kejadian. Tahun metadata, judul asli, penerbit, UUID, checksum dan jumlah catatan konflik ditampilkan pada sumber runtime; konflik tidak diperbaiki atau disembunyikan otomatis.
+
+Titik dipilih dengan point-in-polygon pada poligon gambut yang tersaring. Untuk MultiPoint, hanya koordinat asli yang lolos dipertahankan dalam tampilan; sumber tidak diubah. Tidak ada koordinat baru, interpolasi, buffer, estimasi area terbakar atau deduplikasi kejadian yang dibuat. Jumlah fitur bukan jumlah kejadian kebakaran unik. Ketidakpastian batas BBSDLP tetap berlaku; tidak ada klaim overlay KHG atau topologi unit sudah disahkan.
+
+Tes tambahan memeriksa identitas/penerbit/katalog staf, konflik tahun yang dipertahankan, checksum dan jumlah fitur, geometri proyeksi, pemilihan titik sumber tanpa mutasi, permintaan hanya saat layer dipilih, bearer staf, penolakan 403, serta ringkasan ekologis yang tetap tidak berubah. Integrasi UI baru ini belum diuji browser atau dideploy. Layer tersebut merupakan bukti lokasi kejadian; indikator riwayat kebakaran tetap belum dinilai sampai periode, duplikasi dan metode telah divalidasi.

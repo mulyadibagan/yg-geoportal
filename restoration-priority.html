@@ -46,7 +46,7 @@
           <h3>Legenda kebutuhan ekologis</h3>
           <ul class="legend"><li><i class="high"></i>Tinggi · 75–100</li><li><i class="medium"></i>Sedang · 50–&lt;75</li><li><i class="low"></i>Rendah · 0–&lt;50</li><li><i class="unknown"></i>Data belum tersedia / belum dinilai</li></ul>
         </aside>
-        <section class="panel map-panel"><h2>Peta referensi Provinsi Riau</h2><div id="map" aria-label="Peta interaktif Riau"></div><p class="muted">Filter kabupaten berlaku pada poligon gambut, inventaris FDRS/sekat kanal, hotspot dalam gambut tersaring, dan estimasi terbakar berdasarkan atribut kabupaten. FEG merupakan konteks seluruh Riau. Inventaris alat dan sekat menunjukkan infrastruktur yang tercatat, bukan pengukuran atau penilaian kebutuhan ekologis. Estimasi terbakar tidak dipotong ulang; luasnya tidak masuk ringkasan gambut.</p></section>
+        <section class="panel map-panel"><h2>Peta referensi Provinsi Riau</h2><div id="map" aria-label="Peta interaktif Riau"></div><p class="muted">Filter kabupaten berlaku pada poligon gambut, inventaris FDRS/sekat kanal, titik BPBD/hotspot dalam gambut tersaring, dan estimasi terbakar berdasarkan atribut kabupaten. FEG merupakan konteks seluruh Riau. Inventaris alat dan sekat menunjukkan infrastruktur yang tercatat, bukan pengukuran atau penilaian kebutuhan ekologis. Titik BPBD bukan luas terbakar atau jumlah kejadian unik. Estimasi terbakar tidak dipotong ulang; luasnya tidak masuk ringkasan gambut.</p></section>
       </div>
       <section class="panel analysis" aria-labelledby="regions-title"><h2 id="regions-title">Wilayah kajian & status prioritas</h2><p id="region-status" role="status"></p><div class="table-wrap"><table><thead><tr><th>Kabupaten/kota</th><th>Luas sumber (ha)</th><th>Poligon gambut</th><th>Prioritas tinggi (poligon)</th><th>Belum dinilai (poligon)</th></tr></thead><tbody id="regions"></tbody></table></div><p class="muted">Luas mengikuti atribut sumber BBSDLP 2019, bukan luas restorasi atau irisan KHG. Tidak ada peringkat ekologis untuk wilayah yang belum dinilai. Gunakan filter kabupaten untuk memfokuskan peta.</p></section>
       <details class="panel analysis"><summary>Indikator & metode penilaian</summary><h2>Mesin analisis kebutuhan ekologis</h2><p>Semua lima indikator wajib tersedia, tervalidasi, memiliki sumber/tahun/versi serta metode normalisasi yang disetujui. Tidak ada penggantian data kosong dengan nol atau pembobotan ulang.</p><div class="table-wrap"><table><thead><tr><th>Indikator</th><th>Bobot</th><th>Status</th></tr></thead><tbody id="indicators"></tbody></table></div><p>Kesiapan pelaksanaan: <strong>Belum dinilai</strong>. Tidak digabung ke skor ekologis.</p></details>
@@ -56,8 +56,8 @@
   <script src="js/auth.js?v=20261006-api-domain1"></script>
   <script src="js/staff-data-access.js?v=20261006-api-domain1"></script>
   <script src="js/restoration-scoring.js?v=20261103-regions1"></script>
-  <script src="js/restoration-catalog.js"></script>
+  <script src="js/restoration-catalog.js?v=20261104-bpbd1"></script>
   <script src="js/restoration-inventory.js?v=20261104-database1"></script>
-  <script src="js/restoration-priority.js?v=20261104-database1"></script>
+  <script src="js/restoration-priority.js?v=20261104-db-bpbd1"></script>
 </body>
 </html>
