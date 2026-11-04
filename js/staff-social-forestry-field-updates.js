@@ -4,6 +4,7 @@
  if(!['2942','2942.0','sk.4281/menlhk-pskl/pkps/psl.0/7/2020'].includes(key))return;
  var anchor=document.getElementById('sf-spatial-analysis');if(!anchor)return;
  var style=document.createElement('style');style.textContent='#sf-field-updates{margin-bottom:24px}#sf-field-updates .vp-section-head{margin-bottom:8px}.sf-field-report{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:12px;padding:14px 0;border-top:1px solid #dce7e0}.sf-field-report details{min-width:0}.sf-field-report summary{cursor:pointer;line-height:1.5}.sf-field-report summary strong{font-size:15px}.sf-field-report summary small{display:block;margin:5px 0 0 18px;color:#61746a}.sf-field-report .sf-report-body{padding:10px 0 0 18px;overflow-wrap:anywhere;font-size:14px;line-height:1.65}.sf-report-body p{margin:8px 0}.sf-report-body figure{margin:14px 0}.sf-report-body img{display:block;width:100%;max-width:420px;max-height:420px;object-fit:contain;border-radius:10px;background:#edf3ef}.sf-report-body figcaption{font-size:12px;color:#61746a}.sf-field-report>button{align-self:start;white-space:normal}#village-map{height:560px;min-height:560px}.sf-report-popup{position:absolute!important;left:50%!important;top:18px!important;bottom:auto!important;transform:translateX(-50%)!important;margin:0!important;z-index:700}.sf-report-popup .leaflet-popup-tip-container{display:none}.sf-report-popup .leaflet-popup-content{margin:14px 18px;max-width:calc(100vw - 100px);overflow-wrap:anywhere}.sf-internal-popup strong{display:block;font-size:15px;line-height:1.4;white-space:normal}.sf-internal-popup p{margin:8px 0;line-height:1.5}.sf-internal-popup .sf-popup-meta{font-size:12px;color:#61746a}.sf-internal-popup .sf-popup-description{max-height:84px;overflow:auto;overscroll-behavior:contain}.sf-internal-popup img{display:block;width:100%;height:180px;object-fit:contain;background:#edf3ef;border-radius:8px}.sf-internal-popup button{width:100%;padding:8px}.sf-internal-popup button{min-height:36px;border:1px solid #bcd1c4;border-radius:8px;background:#eef7f1;color:#16563d;font-weight:700;cursor:pointer}.sf-report-pin{display:grid!important;place-items:center;background:#d97706;border:2px solid #fff;border-radius:50%;box-shadow:0 1px 7px #173e2c70;color:#fff;font-size:18px}.sf-loss-note{font-size:12px!important;line-height:1.5}@media(max-width:600px){#village-map{height:520px;min-height:520px}.sf-internal-popup img{height:150px}.sf-field-report{grid-template-columns:minmax(0,1fr)}.sf-field-report>button{justify-self:start;margin-left:18px}}';
+ style.textContent+=' body.sf-map-expanded{overflow:hidden}#village-map.sf-map-fullscreen{position:fixed!important;inset:0!important;width:100vw!important;height:100dvh!important;min-height:0!important;max-height:none!important;border-radius:0!important;z-index:10000!important;background:#173e2c}.sf-map-fullscreen-control button{display:block;border:0;background:#fff;color:#173e2c;font:700 18px/30px sans-serif;width:34px;height:34px;cursor:pointer}.sf-map-fullscreen-control button:focus-visible{outline:3px solid #d97706;outline-offset:2px}';
  document.head.appendChild(style);
  var section=document.createElement('section');section.id='sf-field-updates';section.className='vp-card';section.setAttribute('aria-label','Update internal lapangan');
  section.innerHTML='<div class="vp-section-head"><div><span class="vp-kicker">CATATAN LAPANGAN</span><h2>Update internal lapangan</h2></div><span class="sf-internal-badge">INTERNAL · STAF YG</span></div><p role="status">Memuat laporan internal…</p>';
@@ -46,7 +47,27 @@
    marker.on('popupopen',function(){var container=context.map.getContainer();container.appendChild(marker.getPopup().getElement());var refresh=function(){if(marker.isPopupOpen())marker.getPopup().update();};container.addEventListener('sf-photo-loaded',refresh,{once:true});});
   });
  }
- function onMap(ctx){if(context||!active())return;context=ctx;attachLoss(ctx);attachMarkers();}
+
+ function attachFullscreen(ctx){
+  var map=ctx.map,container=map.getContainer(),expanded=false,previousOverflow='',previousFocus=null;
+  var control=L.control({position:'topleft'}),button;
+  function resize(){map.invalidateSize({pan:false});if(map.getPopup&&map.getPopup())map.getPopup().update();}
+  function setExpanded(value){
+   if(expanded===value)return;expanded=value;
+   if(value){previousOverflow=document.body.style.overflow;previousFocus=document.activeElement;document.body.style.overflow='hidden';}
+   container.classList.toggle('sf-map-fullscreen',value);document.body.classList.toggle('sf-map-expanded',value);
+   if(!value)document.body.style.overflow=previousOverflow;
+   button.textContent=value?'✕':'⛶';button.title=value?'Keluar layar penuh':'Peta layar penuh';button.setAttribute('aria-label',button.title);button.setAttribute('aria-pressed',String(value));
+   requestAnimationFrame(function(){resize();button.focus({preventScroll:true});if(!value){container.scrollIntoView({block:'center'});if(previousFocus&&previousFocus.isConnected)previousFocus.focus({preventScroll:true});}});
+  }
+  control.onAdd=function(){var box=L.DomUtil.create('div','leaflet-bar sf-map-fullscreen-control');button=L.DomUtil.create('button','',box);button.type='button';button.textContent='⛶';button.title='Peta layar penuh';button.setAttribute('aria-label',button.title);button.setAttribute('aria-pressed','false');button.setAttribute('aria-controls',container.id);L.DomEvent.disableClickPropagation(box);L.DomEvent.disableScrollPropagation(box);button.addEventListener('click',function(){setExpanded(!expanded);});return box;};
+  control.addTo(map);
+  function escape(event){if(expanded&&event.key==='Escape'){event.preventDefault();setExpanded(false);}}
+  document.addEventListener('keydown',escape);
+  map.on('unload',function(){if(expanded){document.body.style.overflow=previousOverflow;document.body.classList.remove('sf-map-expanded');}document.removeEventListener('keydown',escape);});
+ }
+
+ function onMap(ctx){if(context||!active())return;context=ctx;attachFullscreen(ctx);attachLoss(ctx);attachMarkers();}
  document.addEventListener('yg:ps-map-ready',function(event){onMap(event.detail);});
  if(window.YG_PS_PROFILE_MAP)onMap(window.YG_PS_PROFILE_MAP);
  get('/api/staff/social-forestry-sungai-linau-field-updates').then(function(r){return r.json();}).then(function(data){
