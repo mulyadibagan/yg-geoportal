@@ -1,0 +1,37 @@
+#penabulu-dashboard .funding-hero { padding:24px 28px; }
+#penabulu-dashboard .funding-penabulu-logo { width:160px; margin:10px 0; padding:8px 12px; }
+#penabulu-dashboard .funding-hero h2 { margin:8px 0; font-size:28px; }
+#penabulu-dashboard .funding-meta { margin-top:12px; gap:12px; }
+#penabulu-dashboard .funding-penabulu-summary-modal { margin-top:12px; font-size:14px; line-height:1.5; }
+#penabulu-dashboard .funding-penabulu-hero-actions { margin-top:12px; }
+#penabulu-dashboard .funding-content { padding:24px 28px; }
+#penabulu-dashboard .penabulu-overview h3 { margin:0 0 14px; }
+#penabulu-dashboard .penabulu-overview-grid { display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:12px; }
+#penabulu-dashboard .penabulu-overview-grid article { padding:16px; border:1px solid #cce3dc; border-radius:12px; background:#f0f8f5; }
+#penabulu-dashboard .penabulu-overview-grid strong { display:block; color:#0b7055; font-size:28px; }
+#penabulu-dashboard .penabulu-overview-grid span { display:block; margin-top:5px; color:#405b51; font-size:12px; }
+#penabulu-dashboard progress { display:block; width:100%; height:10px; margin-top:14px; accent-color:#0b7055; }
+#penabulu-dashboard .penabulu-section { margin-top:24px; }
+#penabulu-dashboard .penabulu-target-card { padding:16px; }
+#penabulu-dashboard .penabulu-detail { margin-top:12px; border:1px solid #dce7e1; border-radius:12px; background:#fff; }
+#penabulu-dashboard .penabulu-detail > summary { padding:17px 18px; cursor:pointer; color:#23443a; font-weight:700; }
+#penabulu-dashboard .penabulu-detail > summary:hover { background:#f0f8f5; border-radius:12px; }
+#penabulu-dashboard .penabulu-detail > summary:focus-visible { outline:3px solid #087c65; outline-offset:2px; }
+#penabulu-dashboard .penabulu-detail > section { padding:0 18px 18px; margin-top:4px; }
+#penabulu-dashboard .penabulu-detail .funding-heading { margin-bottom:14px; }
+#penabulu-dashboard .penabulu-gallery-grid { grid-template-columns:repeat(3,minmax(0,1fr)); }
+#penabulu-dashboard .penabulu-gallery-photo { padding:0; overflow:hidden; }
+#penabulu-dashboard .penabulu-gallery-photo img { height:180px; }
+#penabulu-dashboard .penabulu-output-photo img { height:150px; }
+@media(max-width:600px) {
+  #penabulu-dashboard .funding-hero, #penabulu-dashboard .funding-content { padding:20px 16px; }
+  #penabulu-dashboard .funding-meta { grid-template-columns:1fr; }
+  #penabulu-dashboard .funding-hero h2 { font-size:24px; }
+  #penabulu-dashboard .penabulu-overview-grid { gap:7px; }
+  #penabulu-dashboard .penabulu-overview-grid article { padding:12px 8px; }
+  #penabulu-dashboard .penabulu-overview-grid strong { font-size:23px; }
+  #penabulu-dashboard .penabulu-overview-grid span { font-size:11px; overflow-wrap:anywhere; }
+  #penabulu-dashboard .penabulu-target-grid, #penabulu-dashboard .penabulu-output-grid, #penabulu-dashboard .penabulu-gallery-grid { grid-template-columns:repeat(2,minmax(0,1fr)); }
+  #penabulu-dashboard .penabulu-target-card { padding:12px; }
+  #penabulu-dashboard .penabulu-detail > section { padding:0 12px 12px; }
+}
