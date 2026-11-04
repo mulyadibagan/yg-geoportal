@@ -29,4 +29,16 @@ ZIP mengembang sekitar 28 GB jika seluruhnya diekstrak. Pipeline hanya membaca t
 
 Penggabungan memeriksa kesamaan hash unit/BBSDLP dan identitas baris per unit. Tiga sinyal positif menghasilkan **kandidat tiga tekanan**, bukan validasi proksi atau prioritas final. Unknown tetap null. `restorationPressures` belum diisi, skor null, persetujuan false; unit yang bermasalah tidak dibuka otomatis. Hitungan unit bukan jumlah area unik hasil dissolve. Definisi kanal/drainase, bukaan hutan dan periode perlu diperiksa sebelum memasukkan data ke model aktif.
 
+## Antrean pemeriksaan kandidat
+
+```powershell
+node scripts/review-restoration-three-pressure-candidates.mjs "private-data/restoration-three-pressure-evidence-<id>" "private-data/restoration-canal-evidence-<id>" "private-data/restoration-database-validation-<id>"
+```
+
+Pemeriksaan memakai kembali paket yang sudah diperoleh, tanpa audit/unduhan sumber ulang. Hash paket dan sumber unit harus cocok. Tahun kehilangan tutupan pohon dibaca dari kelas lossyear native; tanggal/kategori respons BPBD dipertahankan dengan referensi versi yang sama dan keanggotaan unit yang sesuai. Tanggal tidak valid dipisahkan, bukan ditebak. Sumber dengan identitas ganda, referensi berubah atau kelas tahunan yang tidak didukung ditolak.
+
+Antrean disusun untuk pekerjaan pemeriksaan, bukan peringkat ekologis: `Periksa konflik sumber` jika flag sumber/identitas geometri tercatat; `Antrean peninjauan lokasi` jika ada tahun kebakaran/kehilangan tutupan pohon yang sama dan tidak ada flag tersebut/tanggal bermasalah; sisanya `Periksa periode bukti`. Ketiadaan flag bukan pengesahan batas. Catatan 2026 yang berada di luar cakupan GFC-2025 diberi status eksplisit, bukan dianggap tidak ada bukaan. Kesamaan tahun dalam unit tidak membuktikan kebakaran dan loss berada pada piksel sama atau berkaitan sebab-akibat; kanal 2017 tetap berbeda periode. Tidak ada skor, kategori prioritas final atau flag persetujuan diubah. Daftar kasus tetap privat.
+
+`review-units.geojson` menyediakan geometri poligon sumber asli beserta rute pemeriksaan dan label kabupaten sumber untuk peninjauan GIS privat. Tidak ada buffer, dissolve, garis atau batas baru. File tersebut belum diunggah ke hosting, tidak menjadi data publik dan bukan layer hasil prioritas final. Input asli tetap dipertahankan.
+
 Pemeriksaan katalog staf tersinkron dan arsip survei internal belum menemukan geometri garis kanal lapangan yang sesuai pada sumber yang diperiksa. Laporan/peta survei lokal dipertahankan sebagai bukti referensi privat; titik rencana sekat tidak dihubungkan menjadi garis kanal rekaan. Batas kawasan hutan di katalog bukan kelas tutupan hutan. Penelusuran ini tidak mengklaim seluruh arsip organisasi telah habis diperiksa.
