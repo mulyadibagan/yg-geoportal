@@ -1190,24 +1190,48 @@ var LEGACY_OBJECT_ALIASES={
 
   function loadSnapshotImmediately(){
     var query=new URLSearchParams(location.search),scope=(query.get('search')||'').toLowerCase(),requested=query.get('report');
+    var cacheKey='yg-monitoring-snapshot-v1:'+scope.slice(0,80)+':'+String(requested||'').slice(0,120);
+    var primaryLoaded=false;
+    var status=document.createElement('p');status.id='monitor-loading-status';status.setAttribute('role','status');
+    document.getElementById('summary-status-chart').after(status);
+    function note(text){status.textContent=text;}
+    function consume(data,kind){
+      var reports=data&&data.capacitySources&&data.capacitySources.reports||data;
+      if(!reports||!Array.isArray(reports.features)||!reports.features.length)throw Error('Snapshot laporan kosong.');
+      var objectFeatures=Array.isArray(data.features)?data.features:[];
+      masterObjects=objectFeatures.map(normalizeMaster).filter(Boolean);
+      applyData(reports);
+      if(!records.length)throw Error('Snapshot laporan tidak valid.');
+      var stamp=data.snapshotGeneratedAt||data.generatedAt||reports.generatedAt;
+      var label=stamp&&!isNaN(new Date(stamp).getTime())?' · snapshot '+new Date(stamp).toLocaleString('id-ID'):'';
+      note(kind==='live'?'Data monitoring dimuat'+label:kind==='cache'?'Menampilkan data tersimpan sambil memeriksa pembaruan'+label:'Menampilkan snapshot cadangan'+label+'; memeriksa data terbaru.');
+      if(kind==='live'){
+        primaryLoaded=true;
+        try{var text=JSON.stringify({savedAt:Date.now(),data:data});if(text.length<1500000)sessionStorage.setItem(cacheKey,text);}catch(e){}
+      }
+    }
+    try{
+      var cached=JSON.parse(sessionStorage.getItem(cacheKey)||'null');
+      if(cached&&Date.now()-cached.savedAt<15*60*1000)consume(cached.data,'cache');
+    }catch(e){}
+    function request(url){
+      var controller=new AbortController(),timer=setTimeout(function(){controller.abort();},8000);
+      return fetch(url,{cache:'no-store',signal:controller.signal}).then(function(response){
+        if(!response.ok)throw Error('HTTP '+response.status);return response.json();
+      }).finally(function(){clearTimeout(timer);});
+    }
     var source=(scope==='aramco'||requested)&&window.YG_ARAMCO_PHASE3?window.YG_ARAMCO_PHASE3.ready.then(d=>{var aramco=scope==='aramco'||(d.monitoring.verifiedRecords||[]).some(r=>r.id.replace('MONITORING-','')===requested);return aramco?'data/dashboard-summary-snapshot.json?v=20261104-final1':SNAPSHOT_URL;}):Promise.resolve(SNAPSHOT_URL);
-    return source.then(url=>fetch(url,{cache:'no-store'}))
-      .then(function(response){
-        if(!response.ok)throw new Error('HTTP '+response.status);
-        return response.json();
-      })
-      .then(function(data){
-        var reports=data&&data.capacitySources&&data.capacitySources.reports||data;
-        var features=reports&&Array.isArray(reports.features)?reports.features:[];
-        if(!features.length)return;
-        var objectFeatures=data&&Array.isArray(data.features)?data.features:[];
-        masterObjects=objectFeatures.map(normalizeMaster).filter(Boolean);
-        applyData(reports);
-      })
-      .catch(function(error){
-        console.warn('Snapshot monitoring tidak dapat dimuat:',error);
-        throw error;
+    var backup=new Promise(function(resolve){setTimeout(resolve,1200);}).then(function(){
+      if(primaryLoaded||records.length)return;
+      return request('data/dashboard-summary-snapshot.json?v=20261105-fast1').then(function(data){if(!primaryLoaded&&!records.length)consume(data,'backup');});
+    }).catch(function(error){console.warn('Snapshot cadangan belum tersedia:',error);});
+    return source.then(request).then(function(data){consume(data,'live');}).catch(function(error){
+      console.warn('Snapshot monitoring tidak dapat dimuat:',error);
+      return backup.then(function(){
+        if(records.length){note('Pembaruan langsung belum tersedia. Data snapshot terakhir tetap ditampilkan.');return;}
+        note('Mencoba sumber data monitoring cadangan…');throw error;
       });
+    });
   }
 
   loadSnapshotImmediately().catch(function(){
