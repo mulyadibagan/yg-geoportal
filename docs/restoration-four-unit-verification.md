@@ -40,3 +40,25 @@ node scripts/review-restoration-four-unit-forest.mjs --verify <paket-hasil-lengk
 ```
 
 Keluaran `review.json`, `review-units.geojson`, dokumen sumber, rentang byte dan `manifest.json` berada hanya dalam direktori diabaikan Git `private-data`. Empat geometri BBSDLP asli dipertahankan tanpa perubahan, nilai skor null dan persetujuan false. Pembacaan ulang lokal memverifikasi 27 nilai sumber serta interpretasinya tanpa jaringan. Tiga unit test baru memeriksa kelas kosong/non-TMF/perkebunan, konflik waktu, rentang tidak lengkap/berubah dan pembatasan URL publik. Total 122 tes lokal lulus, termasuk regresi akses staf dan privasi. UI browser tidak diuji ulang karena tahap ini hanya mengubah alat bukti offline.
+
+## Paket pemeriksaan lokasi, 5 November 2026
+
+`prepare-restoration-site-review.mjs` menyiapkan lima target dari koordinat BPBD asli pada empat unit. Sembilan rujukan respons dipertahankan; catatan berulang pada koordinat identik dalam unit yang sama dikelompokkan untuk pemeriksaan, tanpa menyimpulkan kejadian kebakaran unik. Koordinat tiga dimensi sumber dipertahankan utuh; komponen Z tidak ditafsirkan sebagai pengukuran tinggi. Tidak ada titik kanal, garis kanal atau titik tengah baru yang dibuat.
+
+```powershell
+node scripts/prepare-restoration-site-review.mjs <paket-hasil-hutan> <paket-BPBD> <paket-metadata-STAC>
+```
+
+Sebelum ekspor, 27 nilai raster dibaca ulang dari rentang tersimpan tanpa jaringan. Identitas unit, keanggotaan poligon, koordinat dan tanggal dibandingkan dengan sumber BPBD yang checksum-nya diperiksa. Metadata koleksi dan item STAC `N10_E100_2024`, `N10_E100_2025` dan `N10_E100` diperiksa terhadap versi koleksi 1.2025, URL aset, ukuran berkas dan grid raster aktual. Metadata cocok, tetapi tidak menjelaskan ketidaksesuaian antara kelas tahunan dan transisi pada satu unit: konflik tetap terbuka, tidak diperbaiki otomatis. Tidak ada bukti untuk menyimpulkan konflik sudah selesai atau sumber berbeda versi.
+
+Keluaran privat:
+
+- `verification-targets.geojson`: lima koordinat respons asli beserta rujukan dan fakta sumber, untuk pencocokan bukti lokasi. Ini target pemeriksaan, bukan titik kanal terverifikasi.
+- `verification-form.json`: formulir per target dengan daftar observasi kosong, penelaah/tanggal telaah null dan status Belum diperiksa.
+- `metadata-review.json`, salinan metadata STAC dan `manifest.json`: batas hasil telaah serta hash/rujukan sumber.
+
+Bukti yang diminta tetap terbatas pada tanggal dan lokasi pengamatan, identifikasi kanal/jalan/sungai, kondisi kanal yang diamati, fungsi drainase serta foto/dokumen asli yang dapat dicocokkan. Tidak meminta TMAT. Tidak ada pengisian kondisi, skor, persetujuan atau penetapan prioritas otomatis. Satu pengamatan titik tidak berlaku sebagai pemeriksaan seluruh poligon.
+
+Penelusuran arsip tambahan menemukan laporan perbaikan sekat bertanggal Agustus 2026. Lokasinya disebut Temiang; teks yang diperoleh tidak memuat koordinat untuk mencocokkannya dengan kelima target. Catatan ini disimpan privat sebagai sumber yang belum tercocokkan, bukan verifikasi kondisi kanal pada empat kandidat. Dokumen panduan, TOR dan file salinan kode tidak dijadikan hasil survei. Penelusuran ini tidak mengklaim seluruh arsip organisasi telah diperiksa; tidak ada pesan permintaan bukti yang dikirim ke pihak lain.
+
+Tiga tes tambahan memeriksa pengelompokan tanpa kehilangan rujukan, pelestarian koordinat Z, pemisahan unit, formulir tetap kosong, serta penolakan identitas berulang/koordinat invalid/skor atau persetujuan sumber yang sudah terisi. Pengujian penuh: 125 tes lulus. Paket nyata berisi 4 unit, 5 target dan 9 rujukan; observasi selesai, konflik diselesaikan dan prioritas final masing-masing masih 0. Tidak ada perubahan UI, akses staf, endpoint atau produksi.

@@ -34,6 +34,7 @@ on:
       - scripts/review-restoration-canal-pixels.mjs
       - scripts/acquire-restoration-jrc-forest.mjs
       - scripts/review-restoration-four-unit-forest.mjs
+      - scripts/prepare-restoration-site-review.mjs
       - .github/workflows/validate-restoration-priority.yml
 
 permissions:
@@ -75,6 +76,7 @@ jobs:
           node --check scripts/review-restoration-canal-pixels.mjs
           node --check scripts/acquire-restoration-jrc-forest.mjs
           node --check scripts/review-restoration-four-unit-forest.mjs
+          node --check scripts/prepare-restoration-site-review.mjs
           python3 -c "from pathlib import Path; p=Path('scripts/extract-restoration-research-tmat.py'); compile(p.read_text(encoding='utf-8'), str(p), 'exec')"
       - name: Prepare isolated existing GIS library versions
         run: npm install --prefix private-data/restoration-runtime --no-save --ignore-scripts --no-audit --no-fund @turf/turf@7.2.0 geotiff@2.1.3 jsts@2.7.1
