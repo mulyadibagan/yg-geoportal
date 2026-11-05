@@ -8,7 +8,7 @@
   <script src="js/staff-frame-guard.js"></script>
   <title>Analisis Prioritas Restorasi Gambut | YG GeoPortal</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
-  <link rel="stylesheet" href="css/restoration-priority.css?v=20261103-regions1">
+  <link rel="stylesheet" href="css/restoration-priority.css?v=20261104-pressures1">
 </head>
 <body>
   <header><a href="staff-riau-reference.html">← Peta Referensi Riau</a><span>YG GeoPortal · Internal</span></header>
@@ -21,7 +21,7 @@
       <div class="stats" aria-live="polite">
         <article><span>Luas sumber gambut tersaring</span><strong id="area">—</strong><small>Jumlah atribut Luas_Ha BBSDLP, bukan luas irisan KHG</small></article>
         <article><span>Poligon gambut</span><strong id="polygon-count">—</strong><small id="unassessed">Belum dinilai</small></article>
-        <article><span>Poligon prioritas tinggi</span><strong id="priority-count">—</strong><small>Hanya hasil scoring lengkap</small></article>
+        <article><span>Poligon prioritas tinggi</span><strong id="priority-count">—</strong><small>Tumpang tindih tiga tekanan terverifikasi</small></article>
       </div>
       <div class="layout">
         <aside class="panel">
@@ -43,21 +43,21 @@
           <details class="data-options"><summary>Layer referensi</summary><fieldset id="layers" disabled><legend>Data peta</legend></fieldset></details>
           <button id="fit" type="button" disabled>Zoom ke wilayah tersaring</button>
           <p id="layer-status" role="status"></p>
-          <h3>Legenda kebutuhan ekologis</h3>
-          <ul class="legend"><li><i class="high"></i>Tinggi · 75–100</li><li><i class="medium"></i>Sedang · 50–&lt;75</li><li><i class="low"></i>Rendah · 0–&lt;50</li><li><i class="unknown"></i>Data belum tersedia / belum dinilai</li></ul>
+          <h3>Legenda prioritas tiga tekanan</h3>
+          <ul class="legend"><li><i class="high"></i>Tinggi · tiga tekanan</li><li><i class="medium"></i>Sedang · dua tekanan</li><li><i class="low"></i>Rendah · satu tekanan</li><li><i class="unknown"></i>Data belum tersedia / belum dinilai</li></ul>
         </aside>
         <section class="panel map-panel"><h2>Peta referensi Provinsi Riau</h2><div id="map" aria-label="Peta interaktif Riau"></div><p class="muted">Filter kabupaten berlaku pada poligon gambut, inventaris FDRS/sekat kanal, titik BPBD/hotspot dalam gambut tersaring, dan estimasi terbakar berdasarkan atribut kabupaten. FEG merupakan konteks seluruh Riau. Inventaris alat dan sekat menunjukkan infrastruktur yang tercatat, bukan pengukuran atau penilaian kebutuhan ekologis. Titik BPBD bukan luas terbakar atau jumlah kejadian unik. Estimasi terbakar tidak dipotong ulang; luasnya tidak masuk ringkasan gambut.</p></section>
       </div>
       <section class="panel analysis" aria-labelledby="regions-title"><h2 id="regions-title">Wilayah kajian & status prioritas</h2><p id="region-status" role="status"></p><div class="table-wrap"><table><thead><tr><th>Kabupaten/kota</th><th>Luas sumber (ha)</th><th>Poligon gambut</th><th>Prioritas tinggi (poligon)</th><th>Belum dinilai (poligon)</th></tr></thead><tbody id="regions"></tbody></table></div><p class="muted">Luas mengikuti atribut sumber BBSDLP 2019, bukan luas restorasi atau irisan KHG. Tidak ada peringkat ekologis untuk wilayah yang belum dinilai. Gunakan filter kabupaten untuk memfokuskan peta.</p></section>
-      <details class="panel analysis"><summary>Indikator & metode penilaian</summary><h2>Mesin analisis kebutuhan ekologis</h2><p>Semua lima indikator wajib tersedia, tervalidasi, memiliki sumber/tahun/versi serta metode normalisasi yang disetujui. Tidak ada penggantian data kosong dengan nol atau pembobotan ulang.</p><div class="table-wrap"><table><thead><tr><th>Indikator</th><th>Bobot</th><th>Status</th></tr></thead><tbody id="indicators"></tbody></table></div><p>Kesiapan pelaksanaan: <strong>Belum dinilai</strong>. Tidak digabung ke skor ekologis.</p></details>
-      <details class="panel analysis"><summary>Sumber & keterbatasan data</summary><div id="sources"></div><p>Belum tersedia: batas KHG yang terhubung ke poligon, jaringan kanal dan kondisi hidrologi, degradasi, kehilangan vegetasi antarwaktu, serta aturan sensitivitas gambut. Tutupan lahan pada titik hotspot bukan layer tutupan lahan menyeluruh.</p></details>
+      <details class="panel analysis"><summary>Indikator & metode penilaian</summary><h2>Prioritas dari tiga tekanan</h2><p>Penapisan awal berdasarkan tumpang tindih kebakaran, bukaan hutan di lahan gambut, dan kanal/drainase: tiga tekanan = tinggi, dua = sedang, satu = rendah. Ini aturan penapisan, tanpa skor 0–100 atau bobot perkiraan. Ketiga status perlu diketahui dari sumber dan overlay yang terverifikasi. Data kosong tidak dianggap tidak ada tekanan. TMAT bukan prasyarat.</p><div class="table-wrap"><table><thead><tr><th>Indikator</th><th>Peran</th><th>Status</th></tr></thead><tbody id="indicators"></tbody></table></div><p>Kesiapan pelaksanaan: <strong>Belum dinilai</strong>. Tidak digabung ke skor ekologis.</p></details>
+      <details class="panel analysis"><summary>Sumber & keterbatasan data</summary><div id="sources"></div><p>Kebutuhan utama: bukti kebakaran sesuai periode, bukaan hutan gambut, dan jaringan kanal yang bisa dioverlay pada unit yang sama. Titik sekat bukan jaringan kanal. Kehilangan tutupan pohon merupakan bukti kandidat, bukan otomatis seluruh bukaan hutan. Tidak ada skor dari data yang belum tervalidasi.</p></details>
     </section>
   </main>
   <script src="js/auth.js?v=20261006-api-domain1"></script>
   <script src="js/staff-data-access.js?v=20261006-api-domain1"></script>
-  <script src="js/restoration-scoring.js?v=20261103-regions1"></script>
+  <script src="js/restoration-scoring.js?v=20261104-pressures1"></script>
   <script src="js/restoration-catalog.js?v=20261104-bpbd1"></script>
   <script src="js/restoration-inventory.js?v=20261104-database1"></script>
-  <script src="js/restoration-priority.js?v=20261104-db-bpbd1"></script>
+  <script src="js/restoration-priority.js?v=20261104-pressures1"></script>
 </body>
 </html>
