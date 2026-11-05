@@ -38,7 +38,11 @@ export async function verifyEvidenceFile(directory,evidence,remainingBytes){
  if(!textPresent(evidence.path)||path.isAbsolute(evidence.path)||/[\u0000:]/.test(evidence.path)||evidence.path.split(/[\\/]/).some(s=>s==='..'||s==='')||!/^[a-f0-9]{64}$/.test(evidence.sha256||'')||!Number.isSafeInteger(remainingBytes)||remainingBytes<0)throw Error('Invalid evidence reference');
  const dir=await fs.realpath(directory),file=await fs.realpath(path.join(dir,evidence.path)),stat=await fs.stat(file);
  if(!file.startsWith(dir+path.sep)||!stat.isFile()||!stat.size||stat.size>Math.min(16*1024*1024,remainingBytes))throw Error('Evidence missing, outside package, empty or exceeds bound');
- const bytes=await fs.readFile(file);if(bytes.length!==stat.size||sha(bytes)!==evidence.sha256)throw Error('Evidence checksum mismatch');return bytes.length;
+ const handle=await fs.open(file,'r'),bytes=Buffer.alloc(stat.size);let bytesRead=0;
+ try{
+  while(bytesRead<bytes.length){const result=await handle.read(bytes,bytesRead,bytes.length-bytesRead,bytesRead);if(!result.bytesRead)break;bytesRead+=result.bytesRead;}
+  return {bytesRead,valid:bytesRead===stat.size&&(await handle.stat()).size===stat.size&&sha(bytes.subarray(0,bytesRead))===evidence.sha256};
+ }catch(error){error.bytesRead=bytesRead;throw error;}finally{await handle.close();}
 }
 export async function inspectFieldPackage(directory,asOf){
  const privateRoot=await fs.realpath(path.join(root,'private-data')),dir=await fs.realpath(path.resolve(root,directory));if(privateRoot!==path.join(await fs.realpath(root),'private-data')||!dir.startsWith(privateRoot+path.sep))throw Error('Private field package required');
@@ -51,8 +55,8 @@ export async function inspectFieldPackage(directory,asOf){
  for(const row of result.rows)for(const observation of row.observations){
   if(observation.issues.length)continue;
   for(const evidence of observation.evidenceFiles){
-   try{totalBytes+=await verifyEvidenceFile(dir,evidence,64*1024*1024-totalBytes);}
-   catch{observation.issues.push('Berkas tidak tersedia, di luar paket atau melebihi batas');}
+   try{const checked=await verifyEvidenceFile(dir,evidence,64*1024*1024-totalBytes);totalBytes+=checked.bytesRead;if(!checked.valid)observation.issues.push('Berkas berubah atau checksum tidak cocok');}
+   catch(error){totalBytes+=error.bytesRead||0;observation.issues.push('Berkas tidak tersedia, di luar paket atau melebihi batas');}
   }
   observation.intakeReady=observation.issues.length===0;
  }

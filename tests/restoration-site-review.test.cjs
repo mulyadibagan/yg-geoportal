@@ -45,9 +45,10 @@ test('Evidence files require original bytes inside the package and a bounded tot
  const {verifyEvidenceFile}=await modulePromise,fsp=require('node:fs/promises'),os=require('node:os'),crypto=require('node:crypto'),dir=await fsp.mkdtemp(path.join(os.tmpdir(),'restoration-evidence-test-'));
  try{
   const bytes=Buffer.from('test-only integrity fixture, not a field observation'),file=path.join(dir,'evidence.txt'),ref={path:'evidence.txt',sha256:crypto.createHash('sha256').update(bytes).digest('hex')};await fsp.writeFile(file,bytes);
-  assert.equal(await verifyEvidenceFile(dir,ref,1024),bytes.length);
+  assert.deepEqual(await verifyEvidenceFile(dir,ref,1024),{bytesRead:bytes.length,valid:true});
   await assert.rejects(()=>verifyEvidenceFile(dir,{...ref,path:'../outside.txt'},1024));await assert.rejects(()=>verifyEvidenceFile(dir,ref,1));
-  await fsp.writeFile(file,'changed');await assert.rejects(()=>verifyEvidenceFile(dir,ref,1024));
+  await fsp.writeFile(file,'changed');const mismatch=await verifyEvidenceFile(dir,ref,1024);assert.equal(mismatch.valid,false);assert.equal(mismatch.bytesRead,7);
+  await assert.rejects(()=>verifyEvidenceFile(dir,ref,7-mismatch.bytesRead));
   await fsp.writeFile(file,'');await assert.rejects(()=>verifyEvidenceFile(dir,ref,1024));
  }finally{await fsp.unlink(path.join(dir,'evidence.txt'));await fsp.rmdir(dir);}
 });
