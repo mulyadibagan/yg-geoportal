@@ -15,9 +15,13 @@
 
   function linkedPhotoMarkup(p){
     var photos=(window.YG_ARAMCO_PHOTO_TIMELINE||[]).filter(function(x){return x.objectId===p.Object_ID;}).sort(function(a,b){return a.date.localeCompare(b.date);});
-    var latest=photos[photos.length-1];if(!latest||!latest.imageUrl)return '';
-    var date=new Date(latest.date+'T00:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
-    return '<figure style="margin:12px 0"><a href="'+esc(latest.imageUrl)+'" target="_blank" rel="noopener"><img src="'+esc(latest.imageUrl)+'" alt="'+esc(latest.caption)+'" style="display:block;width:100%;height:180px;object-fit:contain;background:#edf3ef" loading="lazy"></a><figcaption>'+esc(date)+' · '+esc(latest.stage)+'</figcaption></figure><a href="aramco-photo-timeline.html?objectId='+encodeURIComponent(p.Object_ID)+'" target="_blank" rel="noopener">Lihat linimasa foto objek →</a><br>';
+    if(!photos.length)return '';
+    return '<section aria-label="Galeri foto objek"><h4>Dokumentasi lokasi · '+photos.length+' foto</h4>'+photos.slice().reverse().map(function(photo){
+      var source=photo.imageUrl||'https://drive.google.com/file/d/'+encodeURIComponent(photo.fileId)+'/view';
+      var thumb=photo.imageUrl||'https://drive.google.com/thumbnail?id='+encodeURIComponent(photo.fileId)+'&sz=w900';
+      var date=new Date(photo.date+'T00:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+      return '<figure style="margin:12px 0"><a href="'+esc(source)+'" target="_blank" rel="noopener"><img src="'+esc(thumb)+'" alt="'+esc(photo.caption)+'" style="display:block;width:100%;height:180px;object-fit:contain;background:#edf3ef" loading="lazy"></a><figcaption>'+esc(date)+' · '+esc(photo.stage)+'</figcaption></figure>';
+    }).join('')+'</section><a href="aramco-photo-timeline.html?objectId='+encodeURIComponent(p.Object_ID)+'" target="_blank" rel="noopener">Lihat linimasa foto objek →</a><br>';
   }
 
   document.title='Polygon '+village+' · Aramco Fase 3 | YG GeoPortal';
