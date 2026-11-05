@@ -84,3 +84,28 @@ Peta jaringan hidrologi Pematang Duku berhasil ditemukan dan mencantumkan kanal/
 Catatan penapisan sumber disimpan privat, dan paket lima target dilengkapi `PETUNJUK-VERIFIKASI.txt`. Petunjuk meminta targetId, tanggal dan posisi pengamatan aktual, pembedaan kanal/jalan/sungai, kondisi serta fungsi yang benar-benar diamati, dan foto/dokumen asli. GPS/jam tidak valid, objek tidak pasti dan kunjungan yang tidak dapat dilakukan harus dicatat sebagai keterbatasan; tidak diganti nol atau koordinat perkiraan. Tidak meminta TMAT. Posisi BPBD tidak dipindahkan ke kanal, pengamatan titik tidak digeneralisasi ke seluruh poligon dan formulir tidak mengesahkan tekanan/prioritas otomatis.
 
 Hasil penelusuran tambahan tetap 0 pengamatan kanal baru yang dapat dicocokkan. Kelima target masih Belum diperiksa; konflik tahun tetap terbuka. Kemajuan penetapan selanjutnya memerlukan bukti lapangan atau dataset pengamatan asli baru yang sesuai target. Penelusuran yang sudah selesai tidak perlu diulang tanpa petunjuk sumber baru. Paket tidak mengirim penugasan atau pesan kepada siapa pun. Perubahan repository tahap ini hanya dokumentasi; tidak ada perubahan kode, database, menu, akses staf atau produksi.
+
+## Pemeriksaan berkas hasil lapangan
+
+Paket target versi 2 menambahkan `targetsSha256` dan `formTemplateSha256`. Checksum daftar target dan identitas koordinat diperiksa sebelum menerima formulir. Template formulir dapat diisi dengan observasi asli; daftar target, unit, indeks sumber dan rujukan BPBD dipertahankan. Paket lama yang belum menyimpan checksum target harus disiapkan ulang dari sumber sebelum digunakan untuk penerimaan; jangan mengubah hash secara manual untuk meloloskan perubahan koordinat. Paket baru dibuat terpisah dan tidak menimpa formulir lama.
+
+```powershell
+node scripts/prepare-restoration-site-review.mjs --check-form <paket-target-v2> 2026-11-05
+```
+
+Tanggal terakhir pada perintah adalah tanggal pemeriksaan yang eksplisit. Pemeriksaan tidak mengambil tanggal foto dari nama berkas atau tanggal unggah. Setiap elemen `observations` memakai data yang benar-benar tersedia:
+
+| Field | Isi yang diperlukan |
+| --- | --- |
+| `observedAt` | Tanggal pengamatan asli YYYY-MM-DD, sah dan tidak sesudah tanggal pemeriksaan |
+| `geometry` | Point WGS84 posisi pengamatan aktual, bukan koordinat target yang disalin agar cocok |
+| `objectType` | kanal, jalan, sungai, atau belum teridentifikasi |
+| `condition` | Untuk kanal: terbuka, tersumbat atau bersekat; ketidakpastian tetap dicatat dan belum siap ditelaah |
+| `drainageObservation` | Catatan fungsi kanal yang benar-benar diamati, tanpa estimasi kondisi |
+| `evidenceFiles` | Berkas asli dalam paket dengan path relatif, SHA-256, sourceReference, version dan observationYear |
+
+Tahun pengamatan bukti harus sesuai dengan tanggal pengamatan, terpisah dari versi sumber. Posisi di luar unit sumber ditandai untuk pemeriksaan. Keanggotaan unit tidak membuktikan keterhubungan drainase dengan target BPBD; hubungan lokasi tetap harus ditelaah. Objek yang belum teridentifikasi dan kondisi kanal yang belum pasti tidak otomatis menjadi nilai tekanan nol.
+
+Berkas dibatasi 16 MiB per berkas dan 64 MiB total pembacaan. Path absolut, traversal, file kosong, file hilang, berkas yang keluar direktori melalui symlink serta checksum tidak cocok ditolak. File hanya dibaca/di-hash, tidak dijalankan. Formulir yang mengubah identitas sumber, mengisi skor atau mengklaim verifikasi kondisi kanal lebih dahulu ditolak. Keluaran baru hanya berupa `intake-review.json` dan manifes privat; formulir dan sumber tidak ditimpa. `Bukti siap ditelaah` menyatakan kelengkapan/integritas untuk telaah, bukan validasi GPS, waktu kamera, objek, fungsi hidrologis, tekanan atau prioritas.
+
+Paket nyata diperiksa dengan 5 target dan 0 observasi; hasil tetap 0 siap telaah, 0 kondisi kanal terverifikasi dan 0 prioritas final. Salinan daftar target yang diubah ditolak oleh checksum tanpa mengubah sumber asli. Tiga tes tambahan memeriksa formulir kosong, tanggal tidak sah/future, koordinat/rujukan, sumber yang sudah diberi skor, path keluar paket, batas berkas dan perubahan byte. Total 128 tes lokal lulus. Tidak ada data lapangan contoh dimasukkan ke paket nyata, endpoint baru, perubahan akses staf, UI atau produksi; browser tidak diuji ulang untuk alat offline ini.
