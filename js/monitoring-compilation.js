@@ -20,6 +20,7 @@
   var clusterMap=null,clusterMapLayer=null,clusterMapReady=false;
   var masterMangroveGroups=[];
   var activeData=null;
+  var publishedReportIndex={};
   var SNAPSHOT_URL='https://yg-webgis-public-data-staging.yg-webgis-public-data-worker.workers.dev/snapshots/current/dashboard.json';
   var OBJECT_ALIASES={
     'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-001',
@@ -166,6 +167,27 @@
     if(/^MANGROVE-TANJUNG-KURAS-(?:2026-001|PHASE-III-2026-001)$/.test(id))return'Aramco Asia Singapore';
     return'';
   }
+  function indexPublishedReports(features){
+    publishedReportIndex={};
+    features.forEach(function(feature){
+      var p=feature&&feature.properties||feature||{};
+      var id=String(p.reportId||p.Source_Report_ID||p.monitoringId||'').trim();
+      if(id){publishedReportIndex[id]=feature;publishedReportIndex[id.indexOf('MONITORING-')===0?id:'MONITORING-'+id]=feature;}
+    });
+  }
+  function resolvedReportTarget(feature){
+    var seen={},current=feature,override='';
+    for(var i=0;i<12;i+=1){
+      var p=current&&current.properties||current||{},target=parseJSON(p.targetFeatureProperties);
+      var id=String(target.Object_ID||target.OBJECT_ID||target.objectId||p.Object_ID||p.targetObjectId||'').trim();
+      var reportId=String(p.reportId||p.Source_Report_ID||'').trim();
+      override=override||REPORT_PHASE_OVERRIDES[reportId]||'';
+      if(!/^MONITORING-/.test(id)||!publishedReportIndex[id]||seen[id])return{target:target,objectId:id,phaseOverride:override};
+      seen[id]=true;current=publishedReportIndex[id];
+    }
+    return{target:{},objectId:'',phaseOverride:override};
+  }
+
   function normalizePublished(feature,index){
     var p=feature&&feature.properties||feature||{};
     if(!isMonitoringRecord(p))return null;
@@ -177,7 +199,8 @@
       monitoredAreaHa:p.Luas_Terpantau_Ha,averageHeightCm:p.Tinggi_Rata_Rata_Cm,
       sedimentationCm:p.Sedimentasi_Cm,waterTableCm:p.Water_Table_Cm
     };
-    var target=parseJSON(p.targetFeatureProperties);
+    var resolved=resolvedReportTarget(feature);
+    var target=resolved.target;
     var targetArea=publishedAreaNumber(target.Luas_Ha||target.Luas||target.areaHa||target.luas_ha);
     var plantedCount=publishedNumber(target.Jumlah_Bib||target.Jumlah_Tanam||target.plantedCount||target.jumlahBibit||target.jumlah_bibit);
     if(targetArea!==null&&targetArea>0)m.monitoredAreaHa=targetArea;
@@ -193,10 +216,10 @@
     var reporter=firstText(p,['name','namaPelapor','nama_pelapor','pelapor','reporter','reporterName','createdBy','authorName','submittedBy','submitterName','fullName','namaLengkap','organization'])||firstText(m,['reporter','name','namaPelapor','pelapor','createdBy','authorName','nama','petugas']);
     var donor=firstText(p,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor'])||firstText(target,['Donor','Donor_Cluster','Nama_Donor','Funding_Source','donor']);
     var phase=phaseOf(p)||phaseOf(target);
-    phase=REPORT_PHASE_OVERRIDES[String(p.reportId||p.Source_Report_ID||'').trim()]||phase;
+    phase=REPORT_PHASE_OVERRIDES[String(p.reportId||p.Source_Report_ID||'').trim()]||resolved.phaseOverride||phase;
     var condition=String(m.condition||p.condition||p.description||'').toLowerCase();
     var status=/rusak berat|hilang|kritis|tindak lanjut|kering parah|gagal/.test(condition)?{key:'masalah',label:'Perlu tindak lanjut'}:/sedang|rusak ringan|pantau|waspada|abrasi|hama/.test(condition)?{key:'waspada',label:'Perlu dipantau'}:{key:'baik',label:m.condition||p.condition||'Baik/normal'};
-    var sourceObjectId=String(target.Object_ID||target.OBJECT_ID||target.objectId||p.Object_ID||p.targetObjectId||'').trim();
+    var sourceObjectId=resolved.objectId;
     var objectCode=sourceObjectId;
     objectCode=OBJECT_ALIASES[objectCode]||objectCode;
     if(!donor)donor=legacyMangroveDonor(objectCode);
@@ -254,7 +277,9 @@
     else if(payload&&Array.isArray(payload.items))features=payload.items;
     else if(Array.isArray(payload))features=payload;
     if(!features.length)throw new Error('public_reports_empty');
+    indexPublishedReports(features);
     var data=compilePublished(features.map(normalizePublished).filter(Boolean),type);
+    data.identityVersion=2;
     try{sessionStorage.setItem(storageKey,JSON.stringify(data));}catch(e){}
     try{localStorage.setItem('monitoring-detail-public-data-v1',JSON.stringify({savedAt:Date.now(),data:payload,officialData:null}));}catch(e){}
     render(data);refreshClusterValues();
@@ -469,7 +494,7 @@
   function spatialReportGroups(records){
     var map={};records.forEach(function(record){var key=geometryFingerprint(record.geometry);if(!key)return;if(!map[key])map[key]={geometry:record.geometry,records:[]};map[key].records.push(record);});return Object.keys(map).map(function(key){return map[key];});
   }
-  function reportObjectIds(records){var ids={};records.forEach(function(record){ids[record.sourceObjectId||record.masterObjectId||record.objectId||record.id]=1;});return Object.keys(ids);}
+  function reportObjectIds(records){var ids={};records.forEach(function(record){ids[record.masterObjectId||record.objectId||record.sourceObjectId||record.id]=1;});return Object.keys(ids);}
   function selectedReportRecords(data){
     var reporter=clusterMapReporter&&clusterMapReporter.value||'',submitted=clusterMapSubmitted&&clusterMapSubmitted.value||'',donor=clusterMapDonor&&clusterMapDonor.value||'',village=clusterMapVillage&&clusterMapVillage.value||'',phase=clusterMapPhase&&clusterMapPhase.value||'',records=[];
     (data&&data.groups||[]).forEach(function(group){(group.history||[]).forEach(function(record){if((!reporter||record.reporterKey===reporter)&&(!submitted||submitDateKey(record.submittedAt)===submitted)&&(!donor||record.donorKey===donor)&&(!village||record.villageKey===village)&&(!phase||record.phaseKey===phase))records.push(record);});});
@@ -654,7 +679,7 @@
     var heading=document.querySelector('.compilation-hero h1');
     if(heading)heading.textContent='Monitoring '+requestedType;
   }
-  if(saved&&saved.groups){
+  if(saved&&saved.groups&&saved.identityVersion===2){
     render(saved);
     refreshClusterValues();
   }else{
