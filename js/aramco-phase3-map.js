@@ -12,6 +12,14 @@
   function fmt(value,digits){return new Intl.NumberFormat('id-ID',{minimumFractionDigits:digits||0,maximumFractionDigits:digits||0}).format(value);}
   function fmtArea(value){var number=num(value);return fmt(number,Number.isInteger(number)?0:3);}
   function esc(value){return String(value==null?'':value).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c];});}
+
+  function linkedPhotoMarkup(p){
+    var photos=(window.YG_ARAMCO_PHOTO_TIMELINE||[]).filter(function(x){return x.objectId===p.Object_ID;}).sort(function(a,b){return a.date.localeCompare(b.date);});
+    var latest=photos[photos.length-1];if(!latest||!latest.imageUrl)return '';
+    var date=new Date(latest.date+'T00:00:00').toLocaleDateString('id-ID',{day:'numeric',month:'long',year:'numeric'});
+    return '<figure style="margin:12px 0"><a href="'+esc(latest.imageUrl)+'" target="_blank" rel="noopener"><img src="'+esc(latest.imageUrl)+'" alt="'+esc(latest.caption)+'" style="display:block;width:100%;height:180px;object-fit:contain;background:#edf3ef" loading="lazy"></a><figcaption>'+esc(date)+' · '+esc(latest.stage)+'</figcaption></figure><a href="aramco-photo-timeline.html?objectId='+encodeURIComponent(p.Object_ID)+'" target="_blank" rel="noopener">Lihat linimasa foto objek →</a><br>';
+  }
+
   document.title='Polygon '+village+' · Aramco Fase 3 | YG GeoPortal';
   document.getElementById('phase-map-title').textContent='Area rehabilitasi '+village;
   document.getElementById('phase-map-location').textContent=village+(village==='Tanjung Kuras'?', Kabupaten Siak':', Kabupaten Bengkalis')+' · Juli 2025–Desember 2026';
@@ -21,7 +29,7 @@
   fetch('data/area_mangrove.geojson?v=20260825-phase3-village-maps1',{cache:'no-store'}).then(function(response){if(!response.ok)throw new Error('HTTP '+response.status);return response.json();}).then(function(data){
     var features=(data.features||[]).filter(function(feature){var p=feature.properties||{};return /^phase\s*iii$/i.test(String(p.Ket||'').trim())&&String(p.Desa||'').trim().toLowerCase()===village.toLowerCase();});
     var colors={'Buruk Bakul':'#55d49b','Kelapa Pati':'#00b8de','Sepahat':'#ffbf3f','Tanjung Kuras':'#a97be8'},color=colors[village];
-    var layer=L.geoJSON({type:'FeatureCollection',features:features},{style:{color:color,weight:3,fillColor:color,fillOpacity:.3},onEachFeature:function(feature,polygon){var p=feature.properties||{};polygon.bindPopup('<div class="phase-map-popup"><h3>'+esc(p.Nama_Objek||('Polygon '+village))+'</h3><dl><dt>Desa</dt><dd>'+esc(p.Desa||village)+'</dd><dt>Fase</dt><dd>'+esc(p.Ket||'Phase III')+'</dd><dt>Tahun</dt><dd>'+esc(p.Tahun||'—')+'</dd><dt>Luas</dt><dd>'+fmtArea(p.Luas_Ha)+' ha</dd><dt>Penanaman</dt><dd>'+fmt(num(p.Jumlah_Bib))+' mangrove</dd><dt>ID objek</dt><dd>'+esc(p.Object_ID||'—')+'</dd></dl><a href="'+report+'" target="_blank" rel="noopener noreferrer">Buka evidence laporan ↗</a></div>',{maxWidth:340});}}).addTo(map);
+    var layer=L.geoJSON({type:'FeatureCollection',features:features},{style:{color:color,weight:3,fillColor:color,fillOpacity:.3},onEachFeature:function(feature,polygon){var p=feature.properties||{};polygon.bindPopup('<div class="phase-map-popup"><h3>'+esc(p.Nama_Objek||('Polygon '+village))+'</h3><dl><dt>Desa</dt><dd>'+esc(p.Desa||village)+'</dd><dt>Fase</dt><dd>'+esc(p.Ket||'Phase III')+'</dd><dt>Tahun</dt><dd>'+esc(p.Tahun||'—')+'</dd><dt>Luas</dt><dd>'+fmtArea(p.Luas_Ha)+' ha</dd><dt>Penanaman</dt><dd>'+fmt(num(p.Jumlah_Bib))+' mangrove</dd><dt>ID objek</dt><dd>'+esc(p.Object_ID||'—')+'</dd></dl>'+linkedPhotoMarkup(p)+'<a href="'+report+'" target="_blank" rel="noopener noreferrer">Buka evidence laporan ↗</a></div>',{maxWidth:340,maxHeight:420});}}).addTo(map);
     var area=features.reduce(function(sum,f){return sum+num((f.properties||{}).Luas_Ha);},0),trees=features.reduce(function(sum,f){return sum+num((f.properties||{}).Jumlah_Bib);},0);
     document.getElementById('phase-map-polygons').textContent=fmt(features.length);
     document.getElementById('phase-map-area').textContent=fmtArea(area)+' ha';

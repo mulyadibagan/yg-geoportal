@@ -4965,7 +4965,7 @@ L.control.scale({
 
   async function mergeProgramPhotoIndex(data) {
     const response = await fetch(
-      "data/program-photo-index.json?v=20260825-tanjung-kuras-nursery1",
+      "data/program-photo-index.json?v=20261105-sepahat-object1",
       { cache: "force-cache" }
     );
     if (!response.ok) throw new Error("HTTP " + response.status);
