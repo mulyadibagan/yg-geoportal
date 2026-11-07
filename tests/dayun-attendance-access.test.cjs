@@ -36,14 +36,14 @@ test('login request retains the selected activity through OAuth',async()=>{
 });
 async function callback(scope='kups-finance',target='dayun-kegiatan.html?event=dayun-panen-20261030'){
  const localStorage=storage(),sessionStorage=storage({ygGoogleRequest:JSON.stringify({verifier:'test-verifier',state:'test-state',created:Date.now(),target})}),nodes={},replaced=[];
- const get=id=>nodes[id]||(nodes[id]={addEventListener(){},textContent:'',disabled:false});
- const context={document:{getElementById:get},location:{href:'https://webgisyg.id/staff-login.html#googleCode=test-code&state=test-state',origin:'https://webgisyg.id',pathname:'/staff-login.html',search:'',hash:'#googleCode=test-code&state=test-state',replace:url=>replaced.push(url)},history:{replaceState(){}},URL,URLSearchParams,Date,localStorage,sessionStorage,fetch:async()=>({ok:true,json:async()=>({ok:true,sessionToken:valid.token,username:'fixture',name:'Fixture',scope,expiresAt:valid.expiresAt})})};
+ const get=id=>nodes[id]||(nodes[id]={addEventListener(){},after(element){this.status=element;},textContent:'',disabled:false});
+ const context={document:{getElementById:get,createElement:()=>({setAttribute(name,value){this[name]=value;},textContent:''})},location:{href:'https://webgisyg.id/staff-login.html#googleCode=test-code&state=test-state',origin:'https://webgisyg.id',pathname:'/staff-login.html',search:'',hash:'#googleCode=test-code&state=test-state',replace:url=>replaced.push(url)},history:{replaceState(){}},URL,URLSearchParams,Date,AbortSignal,localStorage,sessionStorage,fetch:async()=>({ok:true,json:async()=>({ok:true,sessionToken:valid.token,username:'fixture',name:'Fixture',scope,expiresAt:valid.expiresAt})})};
  vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../js/google-staff-login.js'),'utf8'),context);await new Promise(setImmediate);
- return {localStorage,sessionStorage,replaced};
+ return {localStorage,sessionStorage,replaced,status:get('staff-google-login').status};
 }
 test('Google callback saves isolated attendance session and preserves the linked event',async()=>{
  for(const scope of ['kups-finance','webgis-staff']){
-  const a=await callback(scope);assert.equal(a.replaced[0],'/dayun-kegiatan.html?event=dayun-panen-20261030');
+  const a=await callback(scope);assert.equal(a.status.id,'google-login-status');assert.equal(a.status.role,'status');assert.equal(a.status['aria-live'],'polite');assert.equal(a.replaced[0],'/dayun-kegiatan.html?event=dayun-panen-20261030');
   assert.equal(JSON.parse(a.localStorage.getItem('ygDayunAttendanceSession')).token,valid.token);
   assert.equal(JSON.parse(a.sessionStorage.getItem('ygDayunAttendanceSession')).token,valid.token);
   assert.equal(a.localStorage.getItem('ygEditorSessionV1'),null);
