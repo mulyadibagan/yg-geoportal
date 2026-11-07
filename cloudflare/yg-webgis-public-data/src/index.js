@@ -321,7 +321,7 @@ async function resolveRiauGeoportalObject(env, route) {
 async function validDayunMemberToken(token) {
   if (!token.startsWith('yg-google-')) return false;
   try {
-    const response = await fetch('https://staff.yayasangambut.org/api/kups/activities?group=dayun-rimba-sejahtera', { headers: { Authorization: 'Bearer '+token }, signal: AbortSignal.timeout(8000) });
+    const response = await fetch('https://staff.yayasangambut.org/api/kups/activities?group=dayun-rimba-sejahtera', { headers: { Authorization: 'Bearer '+token, Origin: 'https://webgisyg.id' }, signal: AbortSignal.timeout(8000) });
     if (!response.ok) return false;
     const data = await response.json();
     return data.public !== true && Boolean(data.user?.email) && Array.isArray(data.events);
