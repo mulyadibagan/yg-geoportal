@@ -310,5 +310,19 @@ window.YG_ARAMCO_PHOTO_TIMELINE = [
     "curated": true,
     "dateSource": "Tanggal dokumentasi diberikan oleh pengguna",
     "objectId": "MANGROVE-SEPAHAT-PHASE-III-2025-001"
+  },
+  {
+    "id": "kp-p3-current-2026-11-07",
+    "village": "Kelapa Pati",
+    "phase": "Fase 3",
+    "series": "Area Penanaman Fase 3",
+    "date": "2026-11-07",
+    "dateLabel": "Diterima 7 Nov 2026",
+    "stage": "Kondisi terkini",
+    "imageUrl": "assets/aramco/kelapa-pati-fase3-kondisi-2026-11-07.jpg",
+    "caption": "Kondisi terkini area Kelapa Pati Fase 3 saat surut, dengan deretan tiang pelindung pantai terlihat di depan area.",
+    "verified": true,
+    "curated": true,
+    "dateNote": "Tanggal penerimaan dokumentasi; tanggal pengambilan belum dikonfirmasi."
   }
 ];
