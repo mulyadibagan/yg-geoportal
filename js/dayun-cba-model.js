@@ -23,5 +23,24 @@
   for(const e of events){if(e.activityType!=='Panen')continue;const d=e.activityDetails||{},count=Number(d.harvestCount??e.quantity);if(!Number.isFinite(count)||count<=0||covered.has([e.objectId,e.date,e.crop].join('|')))continue;const id=[e.objectId,e.date,e.crop,d.harvestCycle||'Panen utama',count].join('|');if(seen.has(id))continue;seen.add(id);out.push({id,date:e.date,crop:e.crop,objectId:e.objectId,count,unit:d.unit||e.unit||'buah',source:'Monitoring terpublikasi'});}
   return out.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
  }
- return {periods,annual,publishedEvents,harvestRows};
+
+ function activityRows(details,events=[]){
+  const out=events.filter(e=>e.activityType!=='Panen').map(e=>({...e,source:'Monitoring terpublikasi'}));
+  for(const o of details?.objects||[])for(const c of o.crops||[]){
+   const groups=[{record:c,cohort:''},...(c.plantingCohorts||[]).map(record=>({record,cohort:record.period}))];
+   for(const {record,cohort} of groups)for(const h of record.ethrel||[]){
+    if(!/^\d{4}-\d{2}-\d{2}$/.test(h.period||'')||!(Number(h.count)>0))continue;
+    const duplicate=out.find(e=>e.activityType==='Ethrel'&&e.objectId===o.objectId&&e.crop===c.crop&&e.date===h.period&&(e.cohortPeriod||'')===cohort&&Number(e.activityDetails?.treatedPlantCount??e.quantity)===Number(h.count));
+    if(duplicate){duplicate.historyRefs=[...(duplicate.historyRefs||[]),h.id,h.activity_ref,h.source_ref].filter(Boolean);continue;}
+    out.push({id:h.id||[o.objectId,h.period,'Ethrel',c.crop,cohort].join('|'),historyRefs:[h.activity_ref,h.source_ref].filter(Boolean),date:h.period,activityType:'Ethrel',objectId:o.objectId,crop:c.crop,cohortPeriod:cohort,activityDetails:{treatedPlantCount:Number(h.count)},notes:h.notes||'',source:'Riwayat gawangan'});
+   }
+  }
+  return out.sort((a,b)=>String(b.date).localeCompare(String(a.date)));
+ }
+ function activityCosts(event,transactions=[],npmCosts=[]){
+  const refs=new Set([event.id,event.reportId,event.recordKey,...(event.historyRefs||[])].filter(Boolean));
+  const matches=t=>!t.deleted_at&&Number.isFinite(t.amount)&&[t.activity_ref,t.source_ref].some(ref=>ref&&refs.has(ref));
+  return {kups:transactions.filter(t=>t.kind==='expense'&&matches(t)),npm:npmCosts.filter(matches)};
+ }
+ return {periods,annual,publishedEvents,harvestRows,activityRows,activityCosts};
 });
