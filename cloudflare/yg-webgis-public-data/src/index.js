@@ -199,6 +199,7 @@ async function rspoGroupsApi(request, env) {
   }
 }
 const PRIVATE_DATA_ROUTES = {
+  "/api/staff/dayun-member-roster": ["internal/dayun/kwt-mandiri-sejahtera-roster.json", "application/json; charset=utf-8"],
   "/api/staff/rtrw-riau-2018-2038": ["internal/spatial-planning/rtrw-riau-2018-2038.geojson", "application/geo+json; charset=utf-8"],
   "/api/staff/feg-sk130-riau": ["internal/peat/feg-sk130-riau.geojson", "application/geo+json; charset=utf-8"],
   "/api/staff/pptpkh-riau-2023": ["internal/land-reform/pptpkh-riau-2023.geojson", "application/geo+json; charset=utf-8"],
@@ -317,9 +318,19 @@ async function resolveRiauGeoportalObject(env, route) {
     compression
   };
 }
+async function validDayunMemberToken(token) {
+  if (!token.startsWith('yg-google-')) return false;
+  try {
+    const response = await fetch('https://staff.yayasangambut.org/api/kups/activities?group=dayun-rimba-sejahtera', { headers: { Authorization: 'Bearer '+token }, signal: AbortSignal.timeout(8000) });
+    if (!response.ok) return false;
+    const data = await response.json();
+    return data.public !== true && Boolean(data.user?.email) && Array.isArray(data.events);
+  } catch { return false; }
+}
 async function privateDataApi(request, env, url) {
   const token = request.headers.get("authorization")?.replace(/^Bearer\s+/i, "").trim() || "";
-  if (!await validStaffToken(token, env)) return staffJson({ ok: false, error: "unauthorized" }, 401);
+  const allowed = url.pathname === '/api/staff/dayun-member-roster' ? await validDayunMemberToken(token) : await validStaffToken(token, env);
+  if (!allowed) return staffJson({ ok: false, error: "unauthorized" }, 401);
   let route = PRIVATE_DATA_ROUTES[url.pathname];
   if (!route && isRiauGeoportalApiPath(url.pathname)) {
     const requested = riauGeoportalRoute(url);
@@ -368,7 +379,7 @@ async function privateDataApi(request, env, url) {
     const headers = new Headers();
     Object.entries(STAFF_API_HEADERS).forEach(([k, v]) => headers.set(k, v));
     headers.set("content-type", route[1]);
-    headers.set("cache-control", "private, max-age=300");
+    headers.set("cache-control", url.pathname === '/api/staff/dayun-member-roster' ? "private, no-store" : "private, max-age=300");
     headers.set("vary", "Authorization");
     headers.set("etag", object.httpEtag);
     headers.set("x-yg-data-source", "r2-private-route");
@@ -446,4 +457,5 @@ var index_default = { async fetch(request, env) {
 export {
   index_default as default
 };
+
 
