@@ -2,10 +2,31 @@
 'use strict';
 let current=null,version=0,serial=0,loadedGroup='',config=null;
 const $=id=>document.getElementById(id);
-function reset(){++serial;current=null;version=0;loadedGroup='';config=null;$('source-review-content').replaceChildren();$('source-review-notice').hidden=true;$('source-review-import').hidden=true;$('source-review-json').value='';$('source-review-status').textContent='';}
+function clearOverview(){
+ $('source-review-notice').hidden=true;
+ for(const id of ['source-overview-summary','source-overview-count','source-overview-chart','source-overview-table'])$(id).replaceChildren();
+ $('source-overview-month').innerHTML='<option value="all">Januari–September 2026</option>';
+}
+function renderOverview(){
+ if(!current)return clearOverview();
+ const {fmt,esc}=config,period=$('source-overview-month').value||'all';
+ const months=current.months.filter(m=>period==='all'||m.month===period).slice().sort((a,b)=>a.month.localeCompare(b.month));
+ if(!months.length)return clearOverview();
+ $('source-review-notice').hidden=false;
+ const income=months.reduce((n,m)=>n+m.income,0),expense=months.reduce((n,m)=>n+m.expense,0);
+ $('source-overview-summary').innerHTML=[['Saldo awal sumber',months[0].opening],['Pemasukan sumber',income],['Pengeluaran sumber',expense],['Saldo akhir sumber',months[months.length-1].closing]].map(([label,n])=>'<div class="kpi"><span>'+label+'</span><strong>'+fmt(n)+'</strong></div>').join('');
+ const rows=current.rows.filter(r=>period==='all'||r[1]===period),notes=current.notes.filter(n=>period==='all'||!n[1]||n[1]===period);
+ $('source-overview-count').textContent=rows.length+' transaksi sumber · '+notes.length+' catatan pemeriksaan · saldo akhir sumber belum menjadi saldo kas terverifikasi.';
+ const max=Math.max(1,...months.flatMap(m=>[m.income,m.expense]));
+ $('source-overview-chart').innerHTML=months.map(m=>'<div class="chart-row"><span>'+esc(m.month)+'</span><div class="bar-pair"><div class="bar" style="width:'+m.income/max*100+'%"></div><div class="bar expense" style="width:'+m.expense/max*100+'%"></div></div><span>'+fmt(m.income)+' / '+fmt(m.expense)+'</span></div>').join('');
+ const ordered=current.months.slice().sort((a,b)=>a.month.localeCompare(b.month));
+ $('source-overview-table').innerHTML='<div class="table-wrap"><table><thead><tr><th>Bulan</th><th>Saldo awal sumber</th><th>Pemasukan</th><th>Pengeluaran</th><th>Saldo akhir sumber</th><th>Selisih dari akhir bulan lalu</th></tr></thead><tbody>'+months.map(m=>{const i=ordered.findIndex(x=>x.month===m.month),gap=i?m.opening-ordered[i-1].closing:null;return '<tr><td>'+esc(m.month)+'</td>'+[m.opening,m.income,m.expense,m.closing].map(n=>'<td class="number">'+fmt(n)+'</td>').join('')+'<td class="number">'+(gap===null?'Awal periode':Math.abs(gap)<0.005?'Sesuai':fmt(gap)+' · perlu dicocokkan')+'</td></tr>';}).join('')+'</tbody></table></div>';
+}
+$('source-overview-month').addEventListener('change',renderOverview);
+function reset(){++serial;current=null;version=0;loadedGroup='';config=null;$('source-review-content').replaceChildren();clearOverview();$('source-review-import').hidden=true;$('source-review-json').value='';$('source-review-status').textContent='';}
 async function load(options){
  config=options;if(loadedGroup===options.group)return;
- const seq=++serial;current=null;$('source-review-content').textContent='Memuat laporan sumber…';$('source-review-notice').hidden=true;$('source-review-import').hidden=!options.admin;
+ const seq=++serial;current=null;clearOverview();$('source-review-content').textContent='Memuat laporan sumber…';$('source-review-import').hidden=!options.admin;
  try{const result=await options.api('/source-review?'+new URLSearchParams({group:options.group}));if(seq!==serial)return;current=result.review;version=result.version;loadedGroup=options.group;render();}
  catch(e){if(seq===serial){$('source-review-content').textContent='Laporan sumber belum tersedia: '+e.message;loadedGroup='';}}
 }
@@ -13,7 +34,7 @@ function render(){
  const {fmt,esc}=config;
  if(!current){$('source-review-content').innerHTML='<p>Belum ada laporan sumber yang disimpan untuk kelompok ini.</p>';return;}
  const selected=$('source-review-month')?.value||'all';
- $('source-review-notice').hidden=false;
+ $('source-overview-month').innerHTML='<option value="all">Januari–September 2026</option>'+current.months.map(m=>'<option value="'+esc(m.month)+'">'+esc(m.month)+'</option>').join('');renderOverview();
  $('source-review-content').innerHTML='<p class="badge">Sementara · belum terverifikasi</p><h2>'+esc(current.title)+'</h2><p>Ditinjau '+esc(current.reviewed_at)+'. Angka di bawah mengikuti buku kas sumber. Saldo belum dicocokkan dengan rekening dan kas fisik. Catatan yang belum cocok tidak menambah transaksi atau mengubah saldo aplikasi.</p><div class="filters"><label>Periode sumber<select id="source-review-month"><option value="all">Januari–September 2026</option>'+current.months.map(m=>'<option value="'+esc(m.month)+'">'+esc(m.month)+'</option>').join('')+'</select></label><button id="source-review-export">Unduh CSV laporan sumber</button></div><div id="source-review-monthly"></div><div id="source-review-notes"></div><details><summary id="source-review-row-count">Transaksi buku kas sumber</summary><div id="source-review-rows"></div></details>';
  const select=$('source-review-month');select.value=current.months.some(m=>m.month===selected)?selected:'all';select.addEventListener('change',renderPeriod);$('source-review-export').addEventListener('click',download);renderPeriod();
 }
