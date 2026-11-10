@@ -10,3 +10,5 @@
 .balance-preview{background:#edf6f2;border:1px solid #cbded5;border-radius:12px;padding:12px}.balance-preview .two-col{gap:12px}.balance-preview p{margin:4px 0}.balance-preview strong{display:block}.report-scope{display:block;max-width:260px;margin:16px 0}@media print{.report-scope{display:none}}
 
 button.category-chart-row{display:block;width:100%;border:1px solid transparent;border-radius:10px;padding:10px;text-align:left;background:transparent;color:inherit;font-weight:400}button.category-chart-row:hover{background:#edf6f1;border-color:#c7dbcf}.category-chart-track{display:block}#category-dialog{width:min(1100px,calc(100vw - 24px))}#category-dialog .section-heading{position:sticky;top:-26px;background:white;padding:12px 0;z-index:1}@media print{button.category-chart-row{border:0;padding:0}}
+
+#source-overview-summary .kpi strong{font-size:clamp(14px,1.45vw,20px);overflow-wrap:normal}
