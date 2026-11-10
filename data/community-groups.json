@@ -1,5 +1,5 @@
 {
-  "updatedAt": "2026-09-19",
+  "updatedAt": "2026-11-10",
   "groups": [
     {
       "id": "sekat-bakau-buruk-bakul",
@@ -46,6 +46,41 @@
         {"label":"peta areal KTH","category":"Peta","url":"https://drive.google.com/file/d/1lrqe44FlUKE4R5dkwt4c0Sb3GMtR2WdZ/view?usp=drivesdk"},
         {"label":"SK/legalitas","category":"Legalitas","url":"https://drive.google.com/file/d/1jIy8ejFf87hLu5VlulftTwb-51umy37L/view?usp=drivesdk"}
       ]
+    },
+    {
+      "id": "kwt-mahkota-dewa-tanjung-kuras",
+      "name": "Kelompok Wanita Tani (KWT) Mahkota Dewa",
+      "shortName": "KWT Mahkota Dewa",
+      "village": "Tanjung Kuras",
+      "district": "Sungai Apit",
+      "regency": "Siak",
+      "province": "Riau",
+      "summary": "Kelompok Wanita Tani (KWT) Mahkota Dewa merupakan kelompok pertanian di Kampung Tanjung Kuras. Kegiatannya meliputi demplot kopi di antara tanaman kelapa sawit dan hortikultura, pemanfaatan pekarangan sebagai sumber pangan keluarga, pelatihan pengolahan pangan lokal, serta pertemuan bersama penyuluh pertanian. Berita acara revisi kepengurusan tanggal 3 November 2025 mencatat Zaimah sebagai ketua, Doharta Sandra sebagai sekretaris, dan Hartati sebagai bendahara. Kedudukan Zaimah sebagai ketua ditegaskan kembali melalui Surat Keterangan Penghulu Kampung Tanjung Kuras tanggal 10 November 2026.",
+      "membership": {
+        "basis": "Jumlah dan komposisi anggota belum tercantum dalam berkas revisi yang diterima; daftar anggota yang disebut sebagai lampiran tidak disertakan."
+      },
+      "leadership": {
+        "chair": "Zaimah",
+        "secretary": "Doharta Sandra",
+        "treasurer": "Hartati"
+      },
+      "legal": {
+        "document": "Surat Keterangan Penghulu Kampung Tanjung Kuras",
+        "date": "10 November 2026",
+        "issuer": "Penghulu Kampung Tanjung Kuras",
+        "title": "Keterangan Ketua Kelompok Wanita Tani Mahkota Dewa"
+      },
+      "source": {
+        "file": "revisi kelompok tani mahkota dewa.pdf",
+        "reviewedAt": "2026-11-10",
+        "pages": [
+          1,
+          2,
+          5,
+          6
+        ],
+        "note": "Identitas dan kepengurusan mengacu pada surat keterangan dan berita acara revisi. Tahun pendirian tidak ditampilkan karena surat keterangan dan berita acara menyebut tahun berbeda."
+      }
     }
   ]
 }
