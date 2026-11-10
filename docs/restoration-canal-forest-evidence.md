@@ -74,3 +74,98 @@ Sumber pembanding yang diperiksa: [MapBiomas Indonesia Koleksi 3](https://landy.
 ### Pembanding tutupan hutan pada empat unit
 
 Lihat [verifikasi empat unit](restoration-four-unit-verification.md). JRC TMF v1.2025 melalui mirror COG beratribusi berhasil dibaca pada koordinat BPBD asli. Empat unit memiliki kelas lahan terdeforestasi pada sampel 2025: satu perubahan hutan 2024 ke lahan terdeforestasi 2025, satu ketidaksesuaian kelas waktu yang dipertahankan, dan dua bukaan historis. Bukaan lama tidak dikeluarkan hanya karena bukan bukaan baru 2025. Kondisi kanal terkini belum terverifikasi; semua prioritas tetap belum dinilai. Raster JRC asli lengkap gagal ditransfer karena timeout dan tidak dipakai; hanya rentang mirror yang lengkap/berhash digunakan sebagai pembanding, dengan keterbatasannya dinyatakan.
+
+### QA dan overlay arsip BRG lokal, 6 November 2026
+
+Dua arsip yang diberikan pengguna diperiksa hanya dalam `private-data`, diabaikan Git. Tidak ada unggahan, perubahan database, endpoint, menu atau deployment. SHP/SHX/DBF diikat melalui jumlah record, offset, panjang record dan SHA-256 terhadap inventaris ekstraksi. Z sumber disimpan dalam SHP; analisis topologi menggunakan XY. Ring ESRI dipisahkan menurut orientasi, hole harus seluruhnya tercakup shell terkecil, lalu diperiksa JSTS IsValidOp 2.7.1. Tidak ada perbaikan ring, snapping, buffer(0) atau pengesahan batas secara otomatis.
+
+| Dataset | Cakupan yang diperiksa topologinya | Lolos | Tidak lolos |
+| --- | --- | ---: | ---: |
+| Prioritas_Indikatif_Restorasi_2 | 30.102 record beratribut RIAU | 30.065 | 37 |
+| Prioritas_Indikatif_Restorasi_2,6 | 6.920 record beratribut RIAU | 6.915 | 5 |
+| DRAFT_PIR_2_7PROV_04122017 | 17.683 record beratribut RIAU | 17.656 | 27 |
+| Prioritas_Restorasi | 4 record multipart lintas provinsi | 0 | 4 |
+| TARGET_RESTORASI_BRG_2_4 | 4 record multipart lintas provinsi | 1 | 3 |
+
+Kasus yang tidak lolos memiliki ring self-intersection dan tidak dimasukkan ke overlay. Ini bukan audit seluruh poligon di luar Riau pada tiga dataset yang memiliki field provinsi. Dua dataset nasional yang hanya empat record diperiksa sebagai geometri utuh, bukan dianggap empat lokasi. Pemeriksaan indeks juga mencakup 59 record kanal; XY finite, tiap bagian memiliki minimal dua vertex dan tidak ditemukan segmen sepanjang nol. Simplicity/keterhubungan jaringan serta kondisi aktual belum disahkan.
+
+Pada geometri yang lolos, normalisasi XY tidak menemukan grup geometri identik dalam masing-masing dataset. Seluruh 6.915 record valid versi `2,6` cocok dengan versi lengkap baik geometri XY/atribut maupun hash record SHP mentah/atribut. Lima record target tidak valid tidak disahkan melalui hasil kecocokan record valid. Versi target dan lengkap tidak dijumlahkan. Pemeriksaan pasangan dalam layer utama membandingkan 486.819 pasangan bbox kandidat: 116.186 kontak hanya batas, 0 irisan berluas positif, dan 0 error overlay. Hasil ini tidak mencakup 37 record yang dikeluarkan. Segmen kanal dibandingkan tanpa arah pada koordinat XY sumber: 564 kemunculan berulang; ini bukan jumlah kanal unik dan tidak dipakai sebagai intensitas atau skor.
+
+Overlay memakai 30.065 fragmen valid dari versi lengkap, tanpa menambahkan versi target/draft. Dari 736 baris BBSDLP asli, tiga baris sumber identik dihilangkan hanya dalam turunan sehingga ada 733 unit referensi; delapan unit dengan isu geometri tetap dikeluarkan. JSTS menghitung 32.076 irisan berluas positif antara fragmen BRG dan unit yang lolos, tanpa error. Luas planar dalam derajat tidak dilaporkan sebagai hektare dan tidak dijumlahkan menjadi luas intervensi. Kanal diproyeksikan langsung dari Web Mercator Auxiliary Sphere type 0 ke WGS84 setelah PRJ dan checksum diperiksa.
+
+| Sinyal historis pada unit referensi | Jumlah unit |
+| --- | ---: |
+| Beririsan fragmen BRG valid | 650 |
+| Memuat label Terbakar 2015/2016/2017 | 200 |
+| Memuat kelas Non-Hutan | 608 |
+| Memuat kelas Tanah Terbuka | 274 |
+| Beririsan garis kanal arsip | 427 |
+| Memuat kebakaran historis, Non-Hutan dan irisan kanal | 182 |
+
+**182 adalah antrean pemeriksaan sinyal historis, bukan prioritas tinggi.** Sinyal dapat berada pada bagian berbeda dari satu unit; hasil tidak membuktikan perimpitan tiga tekanan pada petak yang sama. Non-Hutan/Tanah Terbuka pada satu waktu belum membuktikan perubahan dari hutan. Tidak adanya irisan bukan tekanan nol karena cakupan, fragmen invalid dan periode pengamatan belum lengkap. Kondisi/umur jaringan kanal tidak diturunkan dari tanggal pemrosesan metadata 2017. Konflik/overlap pada unit BBSDLP dan batas antarsumber tidak dihapus.
+
+`prepare-restoration-brg-inputs.mjs` memasukkan bukti aktual tersebut ke `assessPressures` yang sudah ada. Fire/canal hanya memiliki indikasi positif bila geometri lolos dan tidak ada error; status validasi tetap false, tahun kanal tetap null dan forestOpening tetap null. Seluruh 733 hasil tetap Belum dinilai, pressureCount/score null; kesiapan pelaksanaan disimpan terpisah dan belum dinilai. Belum ada penetapan prioritas final atau luas restorasi.
+
+Reproduksi lokal dengan runtime GIS yang sudah tersedia, tanpa dependency baru:
+
+```powershell
+node --max-old-space-size=4096 scripts/validate-restoration-brg.mjs <paket-inventaris-BRG-privat>
+node --max-old-space-size=4096 scripts/review-restoration-brg-overlaps.mjs <paket-overlay-privat>
+node scripts/prepare-restoration-brg-inputs.mjs <paket-overlay-privat>
+```
+
+Keluaran menyimpan hash komponen, indeks sumber untuk kasus invalid/irisan, duplikasi, hasil overlay dan input mesin secara privat. Delapan tes baru memeriksa SHP/SHX/DBF rusak, XY tidak sah, record terhapus, orientasi shell/hole/island, hole yatim, klasifikasi kosong dan pencegahan promosi Non-Hutan menjadi forestOpening. **136 tes lokal lulus, tanpa skip**, termasuk regresi akses staf/privasi. Uji browser tidak diulang karena tidak ada perubahan UI/endpoint; hasil ini hanya analisis offline. Langkah berikutnya adalah menghubungkan baseline hutan BRG dengan perubahan hutan bertanggal yang sudah tersedia, menelaah asal/tanggal garis kanal, dan menyelesaikan fragmen invalid sebelum menetapkan cakupan negatif atau prioritas.
+
+### Kehilangan tutupan pohon pada irisan hutan rawa BRG, 7 November 2026
+
+Pemeriksaan dilanjutkan pada **182 kandidat sinyal historis sebelumnya**, bukan penilaian seluruh 733 unit atau bukti tidak adanya tekanan pada unit lain. Dari fragmen Riau yang sudah lolos QA, 3.432 berlabel `Hutan Rawa Primer` atau `Hutan Rawa Sekunder`; seluruhnya konsisten dengan atribut `Hutan`. Kelas hutan tanaman/perkebunan, mangrove dan hutan lahan kering tidak dimasukkan. Tahun pengamatan kelas hutan tetap null: nama field `PL17_ID` dan nama folder bukan konfirmasi independen tanggal pengamatan. Pencarian teks metadata XML yang tersedia tidak menghasilkan rujukan penutupan lahan 2017 yang mengesahkan tahun itu.
+
+`review-restoration-brg-forest-loss.mjs` menghitung irisan persis fragmen hutan rawa valid dengan geometri unit BBSDLP asli, lalu membaca sel GFC-2025-v1.13 yang pusatnya berada dalam irisan tersebut. Lubang poligon dikeluarkan. Empat raster lokal lossyear/datamask pada tile 00N_100E dan 10N_100E diverifikasi SHA-256, ukuran, EPSG:4326, sampel, origin/resolution, extent serta kesesuaian grid antarlayer. Tidak ada unduhan baru, koordinat yang dikirim ke server, resampling, buffer, piksel acak atau luas dalam hektare yang diturunkan dari jumlah piksel.
+
+| Hasil pembacaan nyata | Jumlah |
+| --- | ---: |
+| Kandidat yang diperiksa | 182 unit |
+| Unit dengan irisan kelas hutan rawa BRG | 109 |
+| Unit dengan piksel loss 2001–2025 dalam irisan hutan rawa BRG | 108 |
+| Unit dengan piksel loss 2018–2025 dalam irisan hutan rawa BRG | 104 |
+| Pasangan fragmen hutan rawa–unit yang dibaca | 3.454 |
+| Pasangan tanpa pusat piksel native | 319 |
+| Pasangan dengan NoData, kode invalid atau di luar cakupan tile | 0 |
+| Error overlay/pembacaan raster | 0 |
+| Penetapan prioritas final | 0 |
+
+**104 unit merupakan bukti piksel kehilangan tutupan pohon pada area yang dipetakan sebagai hutan rawa dalam arsip BRG; belum pengesahan bukaan hutan setelah baseline.** Rentang 2018–2025 dinyatakan sebagai interval pencarian eksplisit, bukan klaim tahun baseline 2017 sudah tervalidasi. GFC mencatat kehilangan tutupan pohon, bukan sebab kebakaran atau otomatis deforestasi permanen. Fragmen dan unit dapat saling berbagi posisi; jumlah piksel per pasangan tidak dijumlahkan sebagai kehilangan unik. Sinyal kebakaran/kanal pada tingkat unit juga belum membuktikan perimpitan ketiga tekanan pada petak yang sama.
+
+319 irisan tanpa pusat piksel native tetap tanpa bukti raster pada resolusi tersebut, bukan kehilangan nol. Unit tanpa irisan kelas hutan rawa juga tidak dinyatakan tidak pernah berhutan. Nilai skor seluruh unit hasil tetap null, `forestOpeningValidated` false dan status Belum dinilai. Tahun observasi kanal, waktu baseline BRG, ketidakpastian sumber serta konflik yang sudah tercatat tidak diisi dari perkiraan. Kesiapan pelaksanaan tidak disamakan dengan kebutuhan ekologis.
+
+```powershell
+node --max-old-space-size=4096 scripts/review-restoration-brg-forest-loss.mjs <paket-overlay-BRG-privat> <paket-GFC-lokal>
+```
+
+`forest-loss-review.json` menyimpan hitungan tahunan native, kelas sumber dan indeks pasangan unit/fragmen; `manifest.json` mengikat checksum hasil, overlay, unit gambut dan keempat raster. Semua keluaran diabaikan Git dan tidak dimuat ke endpoint/UI. Dua tes tambahan memeriksa pembatasan kelas hutan, pemisahan kode tahun 2017/2018, data kosong dan pencegahan pengesahan otomatis. **138 tes lokal lulus tanpa skip**; tidak ada uji browser baru karena autentikasi, menu dan produksi tidak berubah. Berikutnya adalah konfirmasi tahun/metode kelas hutan BRG dan asal/tanggal jaringan kanal agar bukti dapat ditelaah untuk validasi indikator, bukan sekadar mengubah label menjadi prioritas.
+
+### Penelusuran metadata dan paket kandidat, 10 November 2026
+
+Pembacaan lebih dalam menemukan deskripsi `idAbs` yang disimpan sebagai HTML dalam XML ArcGIS. Keterangan ini perlu dibedakan dari pencarian frasa tahun 2017 sebelumnya: **metadata sumber menyebut Penutup Lahan Tahun 2016 IPSDH-KLHK**, sedangkan schema DBF versi lengkap/target memuat `PL17_ID`. Riwayat proses Union bertanggal 20 September 2017 juga mencantumkan input `PL_2016_Gambut`. Riwayat selanjutnya memuat perubahan sampai 4 Februari 2019, tetapi tidak memberi rantai input yang cukup untuk memastikan field `PL17_ID` mewakili observasi 2016, 2017 atau pembaruan lain. Ini ambiguitas tahun sumber, bukan alasan mengganti tahun null dengan tahun yang dipilih. Ringkasan lama tetap merupakan catatan tahap pemeriksaan saat itu; temuan metadata ini melengkapinya.
+
+Deskripsi yang sama menerangkan **Peta Areal Berkanal dengan jangkauan 1 km dari pemutakhiran kanal 2017 oleh BRG**. Klaim jangkauan itu berlaku pada konteks `AREA_KANAL` produk poligon, bukan bukti bahwa garis kanal memotong setiap fragmen. Tidak dibuat buffer baru. Paket kandidat tetap memakai hasil irisan garis `Kanal_Riau` langsung, bukan label areal jangkauan. XML garis kanal sendiri hanya menjelaskan judul turunan Sumatera dan proses atribut pada 2017; belum membuktikan kesetaraan dengan input area berkanal atau tanggal survei/citra tiap garis. Tidak ada pembacaan tautan UNC, eksekusi perintah Process atau pengiriman pesan keluar. XML dan checksum diikat ke inventaris asli; ringkasan dibatasi ke klaim sumber tanpa menyalin jalur personel.
+
+Filter pemeriksaan hutan diperbaiki agar tidak mensyaratkan label Non-Hutan. Syaratnya adalah geometri lolos, tanpa error overlay, memiliki bukti label kebakaran historis dan irisan garis kanal. Audit terhadap overlay nyata menghasilkan **182 unit eligible, seluruhnya sudah termasuk hasil pembacaan GFC sebelumnya; 0 unit tambahan terlewat**. Karena himpunan kandidat sama dan checksum bukti cocok, raster/topologi tidak dibaca ulang. Angka 104 tetap hasil observasi sebelumnya, bukan penilaian baru atau perluasan cakupan seluruh 733 unit.
+
+`prepare-restoration-brg-review-queue.mjs` menyiapkan `review-candidates.geojson` berisi 104 poligon unit sumber asli tanpa pemindahan vertex, pemotongan atau perbaikan batas. Identitas dan atribut BBSDLP, rujukan fragmen kebakaran/loss, jumlah bagian kanal yang beririsan serta batas interpretasi dipertahankan. `reviewCandidate` true menyatakan antrean telaah; `priority` Belum dinilai, `ecologicalScore` null, `scoringValidated` false dan kesiapan pelaksanaan belum dinilai. Geometri/atribut sumber yang konflik tidak disembunyikan dan unit tidak dijumlahkan menjadi luas intervensi unik. Semua hasil lokal privat diabaikan Git; paket belum dimuat ke modul produksi.
+
+```powershell
+node scripts/prepare-restoration-brg-review-queue.mjs <paket-overlay-privat> <paket-hutan-GFC-privat> <paket-telaah-metadata-privat> 2026-11-10
+```
+
+Paket menghasilkan manifest hash sumber/hasil dan audit seleksi. Dua tes tambahan memeriksa seleksi tanpa Non-Hutan serta pelestarian geometri/holes/atribut dan penolakan kandidat yang sudah diberi skor/pengesahan. **140 tes lokal lulus tanpa skip**. Tidak ada uji browser, deployment, perubahan endpoint, database atau menu; Tools staf tetap menggunakan rilis sebelumnya. Langkah berikutnya yang masih diperlukan untuk pengesahan indikator adalah keterangan sumber primer yang menghubungkan field tutupan lahan final ke tahun observasi serta tanggal/metode jaringan kanal, bukan mengubah tahun pemrosesan menjadi tahun survei.
+
+### Membuka paket pada halaman staf
+
+Halaman Prioritas Restorasi menambahkan bagian **Kandidat telaah dari paket privat**. Setelah sesi diverifikasi backend dan peta/sumber gambut dimuat, staf memilih `review-candidates.geojson` dan `manifest.json` dari paket lokal yang sama, kemudian menekan **Muat paket telaah**. Berkas dibaca dalam memori browser, tanpa unggahan, localStorage atau endpoint baru. Backend staf diperiksa kembali sebelum membaca berkas; perubahan sesi menolak proses dan menyembunyikan workspace. Tombol hapus mengeluarkan layer/paket dari tampilan dan memori referensi halaman.
+
+Import dibatasi 12 MiB GeoJSON/64 KiB manifest. SHA-256 berkas dan sumber gambut diperiksa, diikuti identitas/index unit, hash feature sumber, kesamaan geometri persis, keunikan unit serta status belum dinilai/tidak disahkan. Manifest membuktikan integritas terhadap berkas dan sumber yang dipilih, bukan tanda tangan/pengesahan ilmiah. Bahkan manifest yang dihitung ulang tidak meloloskan geometri berbeda atau klaim prioritas final. Hanya properti tampilan yang diizinkan diteruskan ke layer; tekanan tervalidasi dari berkas tidak diimpor.
+
+Outline ungu membedakan kandidat telaah dari hasil prioritas. Filter kabupaten dan popup bekerja pada layer kandidat, sedangkan ringkasan prioritas tetap berasal dari sumber analisis, tanpa penambahan skor/luas restorasi. Kontrol ini berada dalam workspace staf yang sudah ada; tidak menambah pintu masuk atau menu publik. Duplikasi ID tombol pemilih FEG pada markup juga dihapus agar satu kontrol memiliki satu identitas.
+
+Validator berhasil membaca paket nyata 104 kandidat secara lokal. **145 tes lokal lulus**, mencakup import/clear/filter/popup wiring melalui DOM/Leaflet doubles, sesi berakhir, checksum, geometri berubah, duplikasi dan penolakan skor. Pengujian ini bukan uji browser desktop/tablet atau login staf nyata terhadap kode baru; pengujian visual rilis baru masih harus dilakukan setelah rilis diizinkan. Data sumber/keluaran tidak disertakan dalam PR dan mekanisme autentikasi tidak dilemahkan untuk preview localhost. Perbaikan test sementara Windows hanya menyamakan normalisasi realpath dengan API async yang diuji, tanpa mengubah guard produksi.

@@ -22,9 +22,10 @@
   const esc = value => String(value ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
   const number = n => n === null ? 'Data belum tersedia' : n.toLocaleString('id-ID', { maximumFractionDigits: 2 });
   function status(message) { $('access-status').textContent = message; }
-  async function fetchJSON(path, privateData = false) {
+  async function fetchJSON(path, privateData = false, captureSource = false) {
     const response = privateData ? await window.YG_STAFF_DATA.privateFetch(path) : await fetch(path, { cache: 'no-store', signal: AbortSignal.timeout(45000) });
     if (!response.ok) throw new Error('Data belum tersedia (HTTP ' + response.status + ')');
+    if(captureSource){const bytes=await response.arrayBuffer();state.peatSourceHash=Array.from(new Uint8Array(await crypto.subtle.digest('SHA-256',bytes)),v=>v.toString(16).padStart(2,'0')).join('');return JSON.parse(new TextDecoder().decode(bytes));}
     return response.json();
   }
   function collection(data) {
@@ -150,7 +151,34 @@
       $('regions').appendChild(row);
     });
     definitions.filter(def => def.path && state.cache.has(def.id)).forEach(draw);
+    drawReview();
     fit();
+  }
+  function clearReview(){
+    if(state.reviewLayer)state.map.removeLayer(state.reviewLayer);state.reviewLayer=null;state.reviewData=null;
+    $('review-data').value='';$('review-manifest').value='';$('review-clear').disabled=true;$('review-status').textContent='Belum ada paket kandidat dimuat.';
+  }
+  function drawReview(){
+    if(state.reviewLayer)state.map.removeLayer(state.reviewLayer);state.reviewLayer=null;if(!state.reviewData)return;
+    const features=A.select(state.reviewData.features,$('regency').value,'');
+    state.reviewLayer=L.geoJSON({type:'FeatureCollection',features},{style:{color:'#7043a4',weight:3,fillColor:'#adb7b3',fillOpacity:.15},onEachFeature:(f,l)=>l.bindPopup(()=>{
+      const box=popup(f,'Kandidat telaah · bukan prioritas final');const note=document.createElement('p');note.textContent='Bukti GFC 2018–2025 dalam irisan hutan rawa arsip BRG. Tahun baseline/kanal belum pasti; jumlah bagian kanal bukan jumlah kanal unik. Prioritas: Belum dinilai.';box.appendChild(note);return box;
+    })}).addTo(state.map);
+    $('review-status').textContent=features.length+' dari '+state.reviewData.features.length+' kandidat telaah ditampilkan menurut kabupaten · semua Belum dinilai · hanya tersimpan dalam memori halaman.';
+  }
+  async function loadReview(){
+    $('review-load').disabled=true;
+    try{
+      const session=window.YG_AUTH?.readStoredSession();if(!session||session.token!==state.session?.token){$('workspace').hidden=true;throw Error('Sesi staf berubah; login ulang diperlukan');}
+      const response=await fetch(BASE+'/api/staff/riau-geoportal/catalog',{headers:{authorization:'Bearer '+session.token},cache:'no-store',signal:AbortSignal.timeout(15000)});
+      if(!response.ok||(await response.json()).access!=='staff_only'){$('workspace').hidden=true;clearReview();throw Error('Akses staf ditolak');}
+      const data=$('review-data').files?.[0],manifest=$('review-manifest').files?.[0];
+      if(!data||!manifest||data.size>window.YG_RESTORATION_REVIEW.MAX_BYTES||manifest.size>65536)throw Error('Pilih GeoJSON maksimal 12 MiB dan manifest maksimal 64 KiB');
+      const decoded=await window.YG_RESTORATION_REVIEW.decode(new Uint8Array(await data.arrayBuffer()),new Uint8Array(await manifest.arrayBuffer()),state.originalPeat,state.peatSourceHash,crypto);
+      if(window.YG_AUTH?.readStoredSession()?.token!==session.token){$('workspace').hidden=true;throw Error('Sesi staf berubah saat membaca paket');}
+      state.reviewData=decoded;drawReview();$('review-clear').disabled=false;
+    }catch(e){clearReview();$('review-status').textContent='Paket tidak dimuat: '+e.message;}
+    finally{$('review-load').disabled=false;}
   }
   function renderControls() {
     definitions.forEach(def => {
@@ -282,7 +310,8 @@
       window.addEventListener('resize', () => state.map.invalidateSize());
       const boundary = await fetchJSON('data/batas_provinsi_riau_dissolve.geojson'); state.boundary = collection(boundary);
       L.geoJSON(boundary, { style: { color: '#235a46', weight: 2, fill: false }, interactive: false }).addTo(state.map); fit();
-      const peat = collection(await fetchJSON(definitions[0].path));
+      const peat = collection(await fetchJSON(definitions[0].path,false,true));
+      state.originalPeat=structuredClone(peat.features);
       state.peat = peat.features;
       state.peat.forEach(f => {
         const bounds = L.geoJSON(f).getBounds(); f._restorationBounds = [bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()];
@@ -292,6 +321,8 @@
       [...districts].sort(([a], [b]) => a.localeCompare(b)).forEach(([key, name]) => { const o = document.createElement('option'); o.value = name; o.textContent = key === 'SIAK' ? 'Siak' : name; $('regency').appendChild(o); });
       $('regency').disabled = false; $('layers').disabled = false; $('fit').disabled = false; $('use-feg-khg').disabled = false; $('layer-peat').checked = true; filter();
       catalogKHG(catalog);
+      ['review-data','review-manifest','review-load'].forEach(id=>$(id).disabled=false);
+      $('review-load').addEventListener('click',loadReview);$('review-clear').addEventListener('click',clearReview);
       $('layer-status').textContent = 'Data asli dimuat. Poligon abu-abu belum dinilai; pilih layer tambahan sesuai kebutuhan.';
     } catch (error) {
       status('Modul belum siap: ' + error.message + '. Tidak ada skor yang dihitung.');
