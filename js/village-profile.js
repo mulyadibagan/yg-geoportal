@@ -613,7 +613,7 @@
     el("map-layout-link").href="map-layout.html?source="+encodeURIComponent(source)+"&key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
-      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),optionalJson(SNAPSHOT_URL,"kegiatan terbaru",{features:[]}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20261110-mahkota-dewa1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};})]);
+      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),optionalJson(SNAPSHOT_URL,"kegiatan terbaru",{features:[]}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20261110-mahkota-document1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};})]);
       var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=mergeFeatureCollections(snapshot,[pair[5]]),candidateKeys=feature?analyticsKeyCandidates(feature):[key],analyticsKey=candidateKeys.find(function(candidate){return manifest.index&&Object.prototype.hasOwnProperty.call(manifest.index,candidate);})||candidateKeys[0],shard=manifest.index&&manifest.index[analyticsKey];
       if(shard==null){
         el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
