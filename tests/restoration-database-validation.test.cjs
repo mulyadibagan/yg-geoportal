@@ -27,7 +27,9 @@ test('BPBD packages reject unknown provenance before opening source files',async
  const os=require('node:os');const directory=fs.mkdtempSync(path.join(os.tmpdir(),'restoration-test-'));
  const privateDir=path.join(directory,'private');fs.mkdirSync(privateDir);
  fs.writeFileSync(path.join(privateDir,'manifest.json'),JSON.stringify({access:'staff_only',records:[{uuid:'unknown'},{uuid:'unknown2'}]}));
- try{await assert.rejects(loadPackage(privateDir,fs.realpathSync(directory)),/Unknown BPBD source/);}finally{fs.rmSync(directory,{recursive:true,force:true});}
+ const resolved=await fs.promises.realpath(directory),tempRoot=await fs.promises.realpath(os.tmpdir());
+ assert.equal(path.dirname(resolved),tempRoot);assert.ok(path.basename(resolved).startsWith('restoration-test-'));
+ try{await assert.rejects(loadPackage(privateDir,resolved),/Unknown BPBD source/);}finally{fs.rmSync(resolved,{recursive:true,force:true});}
 });
 test('BPBD geometry review queue names excluded candidates without assigning containment',async()=>{
  const {inspect}=await import('../scripts/audit-restoration-bpbd.mjs');

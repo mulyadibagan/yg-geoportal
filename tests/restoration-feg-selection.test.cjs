@@ -32,18 +32,18 @@ async function app({feg=fc([feature(),feature()]),privateFetch,catalog={access:'
     return layer;
   }};
   let session={token:'test-only'};
-  const window={YG_RESTORATION:A,YG_RESTORATION_CATALOG:C,YG_AUTH:{readStoredSession:()=>session},addEventListener(){},YG_STAFF_DATA:{privateFetch:async input=>{privateCalls.push(input);if(privateFetch)return privateFetch(input);return {ok:true,json:async()=>feg};}}};window.top=window;window.self=window;
-  const context={window,document,L,location:{hostname:'webgisyg.id',protocol:'https:'},AbortSignal,setTimeout,clearTimeout,crypto:webcrypto,
+  const window={YG_RESTORATION:A,YG_RESTORATION_CATALOG:C,YG_RESTORATION_REVIEW:require('../js/restoration-review.js'),YG_AUTH:{readStoredSession:()=>session},addEventListener(){},YG_STAFF_DATA:{privateFetch:async input=>{privateCalls.push(input);if(privateFetch)return privateFetch(input);return {ok:true,json:async()=>feg};}}};window.top=window;window.self=window;
+  const context={window,document,L,location:{hostname:'webgisyg.id',protocol:'https:'},AbortSignal,setTimeout,clearTimeout,crypto:webcrypto,TextDecoder,TextEncoder,Uint8Array,structuredClone,
     fetch:async (url,options)=>{
       if(url.endsWith('/catalog'))return {ok:true,json:async()=>catalog};
       if(url.endsWith('/display')){displayRequests.push({url,options});return displayFetch?displayFetch():new Response(JSON.stringify(display));}
       if(url==='data/restoration-priority-sources.json')return {ok:true,json:async()=>({sources:[]})};
       if(url.includes('batas_provinsi'))return {ok:true,json:async()=>fc([feature()])};
-      if(url.includes('Gambut_BBSDLP')){const peat=feature();peat.properties={KABKOT:'Siak',Luas_Ha:10};return {ok:true,json:async()=>fc([peat])};}
+      if(url.includes('Gambut_BBSDLP')){const peat=feature();peat.properties={KABKOT:'Siak',Luas_Ha:10};return new Response(JSON.stringify(fc([peat])));}
       throw Error('Unexpected request: '+url);
     }};
   vm.runInNewContext(fs.readFileSync(path.join(__dirname,'../js/restoration-priority.js'),'utf8'),context);
-  await new Promise(resolve=>setImmediate(resolve));
+  for(let i=0;i<30&&!nodes.get('region-status')?.textContent;i++)await new Promise(resolve=>setImmediate(resolve));
   assert.equal(nodes.get('workspace').hidden,false);
   const click=id=>nodes.get(id).listeners.click();
   const change=id=>nodes.get(id).listeners.change();
@@ -132,4 +132,17 @@ test('county filter updates source region table without inventing priority count
   assert.match(ui.nodes.get('region-status').textContent,/belum dapat ditetapkan/);
   ui.nodes.get('regency').value='Bengkalis'; await ui.change('regency');
   assert.equal(ui.nodes.get('regions').children.length,0);
+});
+test('staff local review import draws candidates, filters by county and clears without changing scoring totals',async()=>{
+ const ui=await app(),peat=feature();peat.properties={KABKOT:'Siak',Luas_Ha:10};const hash=b=>createHash('sha256').update(b).digest('hex'),sourceHash=hash(JSON.stringify(fc([peat])));
+ const g=fc([{type:'Feature',id:`bbsdlp-${sourceHash.slice(0,16)}-0001`,geometry:peat.geometry,properties:{sourceFeatureIndex:0,sourceFeatureSha256:hash(JSON.stringify(peat)),reviewCandidate:true,priority:'Belum dinilai',ecologicalScore:null,scoringValidated:false,sourceUnitApproved:false,forestObservationYear:null,canalObservationYear:null,implementationReadiness:{assessed:false,score:null},lossFragmentRefs:[1],canalPartsIntersecting:1}}]);g.metadata={access:'staff_only',sourceSha256:sourceHash};
+ const data=Buffer.from(JSON.stringify(g)),manifest=Buffer.from(JSON.stringify({access:'staff_only',sourceGeometryModified:false,priorityAssessed:false,originalPeatSha256:sourceHash,reviewCandidatesSha256:hash(data)}));
+ for(const [id,b]of [['review-data',data],['review-manifest',manifest]])ui.nodes.get(id).files=[{size:b.length,arrayBuffer:async()=>Uint8Array.from(b).buffer}];
+ const before=ui.nodes.get('priority-count').textContent;await ui.click('review-load');
+ assert.match(ui.nodes.get('review-status').textContent,/1 dari 1 kandidat/);assert.equal(ui.nodes.get('priority-count').textContent,before);assert.equal(ui.nodes.get('review-clear').disabled,false);
+ ui.nodes.get('regency').value='Bengkalis';await ui.change('regency');assert.match(ui.nodes.get('review-status').textContent,/0 dari 1 kandidat/);
+ await ui.click('review-clear');assert.match(ui.nodes.get('review-status').textContent,/Belum ada/);assert.equal(ui.nodes.get('review-clear').disabled,true);
+});
+test('expired staff session prevents opening local review files and hides workspace',async()=>{
+ const ui=await app();let opened=0;ui.nodes.get('review-data').files=[{size:1,arrayBuffer:async()=>{opened++;return new ArrayBuffer(1);}}];ui.endSession();await ui.click('review-load');assert.equal(opened,0);assert.equal(ui.nodes.get('workspace').hidden,true);assert.match(ui.nodes.get('review-status').textContent,/Sesi staf berubah/);
 });

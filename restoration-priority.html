@@ -32,7 +32,6 @@
           <label>Dataset KHG katalog staf<select id="khg-dataset" disabled><option value="">Data belum tersedia</option></select></label>
           <button id="load-khg" type="button" disabled>Muat referensi KHG</button>
           <p id="khg-status" role="status">Katalog KHG belum diperiksa.</p>
-          <button id="use-feg-khg" type="button" disabled>Gunakan kode KHG dari FEG</button>
           <p id="feg-khg-status" role="status">Kode/nama KHG dapat dikelompokkan dari atribut FEG asli setelah dimuat. Bagian FEG bukan batas KHG mandiri.</p>
           </details>
           <label>KHG (fokus peta)<select id="khg" disabled><option value="">Data belum tersedia</option></select></label>
@@ -48,6 +47,7 @@
         </aside>
         <section class="panel map-panel"><h2>Peta referensi Provinsi Riau</h2><div id="map" aria-label="Peta interaktif Riau"></div><p class="muted">Filter kabupaten berlaku pada poligon gambut, inventaris FDRS/sekat kanal, titik BPBD/hotspot dalam gambut tersaring, dan estimasi terbakar berdasarkan atribut kabupaten. FEG merupakan konteks seluruh Riau. Inventaris alat dan sekat menunjukkan infrastruktur yang tercatat, bukan pengukuran atau penilaian kebutuhan ekologis. Titik BPBD bukan luas terbakar atau jumlah kejadian unik. Estimasi terbakar tidak dipotong ulang; luasnya tidak masuk ringkasan gambut.</p></section>
       </div>
+      <details class="panel analysis"><summary>Kandidat telaah dari paket privat</summary><p>Paket hanya dibaca di browser staf, tanpa diunggah. Kandidat bukan prioritas final; warna ungu menunjukkan antrean telaah. Ringkasan penilaian tidak berubah.</p><label for="review-data">Berkas review-candidates.geojson</label><input id="review-data" type="file" accept=".geojson,application/geo+json" disabled><label for="review-manifest">Berkas manifest.json dari paket yang sama</label><input id="review-manifest" type="file" accept=".json,application/json" disabled><p><button id="review-load" type="button" disabled>Muat paket telaah</button> <button id="review-clear" type="button" disabled>Hapus paket dari tampilan</button></p><p id="review-status" role="status">Belum ada paket kandidat dimuat.</p><p class="muted">Tahun tutupan hutan BRG dan pengamatan kanal belum terkonfirmasi. Metadata menyebut tutupan lahan 2016, sedangkan field akhir bernama PL17_ID. AREA_KANAL merupakan konteks jangkauan 1 km menurut sumber, bukan bukti irisan langsung garis kanal.</p></details>
       <section class="panel analysis" aria-labelledby="regions-title"><h2 id="regions-title">Wilayah kajian & status prioritas</h2><p id="region-status" role="status"></p><div class="table-wrap"><table><thead><tr><th>Kabupaten/kota</th><th>Luas sumber (ha)</th><th>Poligon gambut</th><th>Prioritas tinggi (poligon)</th><th>Belum dinilai (poligon)</th></tr></thead><tbody id="regions"></tbody></table></div><p class="muted">Luas mengikuti atribut sumber BBSDLP 2019, bukan luas restorasi atau irisan KHG. Tidak ada peringkat ekologis untuk wilayah yang belum dinilai. Gunakan filter kabupaten untuk memfokuskan peta.</p></section>
       <details class="panel analysis"><summary>Indikator & metode penilaian</summary><h2>Prioritas dari tiga tekanan</h2><p>Penapisan awal berdasarkan tumpang tindih kebakaran, bukaan hutan di lahan gambut, dan kanal/drainase: tiga tekanan = tinggi, dua = sedang, satu = rendah. Ini aturan penapisan, tanpa skor 0–100 atau bobot perkiraan. Ketiga status perlu diketahui dari sumber dan overlay yang terverifikasi. Data kosong tidak dianggap tidak ada tekanan. TMAT bukan prasyarat.</p><div class="table-wrap"><table><thead><tr><th>Indikator</th><th>Peran</th><th>Status</th></tr></thead><tbody id="indicators"></tbody></table></div><p>Kesiapan pelaksanaan: <strong>Belum dinilai</strong>. Tidak digabung ke skor ekologis.</p></details>
       <details class="panel analysis"><summary>Sumber & keterbatasan data</summary><div id="sources"></div><p>Kebutuhan utama: bukti kebakaran sesuai periode, bukaan hutan gambut, dan jaringan kanal yang bisa dioverlay pada unit yang sama. Titik sekat bukan jaringan kanal. Kehilangan tutupan pohon merupakan bukti kandidat, bukan otomatis seluruh bukaan hutan. Tidak ada skor dari data yang belum tervalidasi.</p></details>
@@ -58,6 +58,7 @@
   <script src="js/restoration-scoring.js?v=20261104-pressures1"></script>
   <script src="js/restoration-catalog.js?v=20261104-bpbd1"></script>
   <script src="js/restoration-inventory.js?v=20261104-database1"></script>
-  <script src="js/restoration-priority.js?v=20261104-pressures1"></script>
+  <script src="js/restoration-review.js?v=20261110-review1"></script>
+  <script src="js/restoration-priority.js?v=20261110-review1"></script>
 </body>
 </html>

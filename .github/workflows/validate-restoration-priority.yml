@@ -35,6 +35,7 @@ on:
       - scripts/acquire-restoration-jrc-forest.mjs
       - scripts/review-restoration-four-unit-forest.mjs
       - scripts/prepare-restoration-site-review.mjs
+      - scripts/*restoration-brg*.mjs
       - .github/workflows/validate-restoration-priority.yml
 
 permissions:
@@ -51,6 +52,7 @@ jobs:
       - name: Check scripts
         run: |
           node --check js/restoration-priority.js
+          for script in scripts/*restoration-brg*.mjs js/restoration-review.js; do node --check "$script"; done
           node --check js/restoration-scoring.js
           node --check js/restoration-catalog.js
           node --check js/restoration-inventory.js
