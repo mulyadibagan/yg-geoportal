@@ -545,7 +545,7 @@
     ].map(function(item){return '<div class="vp-program-stat"><span>'+esc(item[0])+'</span><strong>'+esc(item[1])+'</strong><small>'+esc(item[2])+'</small></div>';}).join("");
     el("program-list").innerHTML=expandableList(groups,function(group){return programItem(group,name);},4,"program");
     el("activity-list").innerHTML=expandableList(activities,activityItem,4,"kegiatan");
-    if(normalized(name)==="temiang"&&normalized(regency)==="bengkalis"&&window.VillageActivityTimeline){window.VillageActivityTimeline.mount(reports,trainings);}
+    if(window.VillageActivityTimeline){window.VillageActivityTimeline.mount(reports,trainings);}
     el("program-note").textContent="Kegiatan dan monitoring yang memiliki titik, garis, atau polygon dicocokkan melalui posisi dan irisannya dengan batas desa pada peta. Atribut nama desa digunakan untuk catatan nonspasial, seperti data pelatihan yang belum memiliki koordinat.";
   }
 
