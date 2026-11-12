@@ -93,6 +93,8 @@
           <div class="vp-program-summary" id="program-summary" aria-label="Ringkasan program"></div>
           <section class="vt-section" id="village-timeline" aria-labelledby="timeline-title" hidden>
             <div class="vp-section-head"><div><span class="vp-kicker">DOKUMENTASI LINTAS DONOR</span><h2 id="timeline-title">Timeline foto dan kegiatan</h2></div><span class="vp-badge" id="timeline-count" aria-live="polite"></span></div>
+            <p class="vp-caption" id="timeline-context" hidden></p>
+            <p class="vp-caption" id="timeline-sync-status" role="status">Memuat publikasi terbaru…</p>
             <div class="vt-filters"><label>Tahun<select id="timeline-year" aria-controls="timeline-list"></select></label><label>Donor<select id="timeline-donor" aria-controls="timeline-list"></select></label></div>
             <div id="timeline-list"></div>
             <button class="vp-button vt-more" id="timeline-more" type="button" hidden>Lihat catatan berikutnya</button>
@@ -207,7 +209,8 @@
   <dialog class="vt-dialog" id="timeline-photo-dialog" aria-labelledby="timeline-photo-caption"><button type="button" id="timeline-photo-close" aria-label="Tutup foto">×</button><img id="timeline-photo-image" alt="Foto dokumentasi kegiatan"><p id="timeline-photo-caption"></p><a id="timeline-photo-source" target="_blank" rel="noopener">Buka foto sumber ↗</a></dialog>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/final-monthly-hotspots.js?v=20260901-annual1"></script>
-  <script src="js/village-activity-timeline.js?v=20261112-1"></script>
-  <script src="js/village-profile.js?v=20261112-all-village-timelines1"></script>
+  <script src="js/village-timeline-sync.js?v=20261112-1"></script>
+  <script src="js/village-activity-timeline.js?v=20261112-sync1"></script>
+  <script src="js/village-profile.js?v=20261112-sync1"></script>
 </body>
 </html>
