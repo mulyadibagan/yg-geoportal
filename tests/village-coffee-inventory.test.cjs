@@ -47,3 +47,34 @@ test('Imbo Putui report polygons share one reviewed 1200 total without merging e
  assert.equal(rows.length,2);assert.equal(rows.reduce((n,r)=>n+r.photos.length,0),4);
  assert.ok(rows.every(r=>r.donor==='Aliansi Kolibri'&&r.copy.includes('dihitung sekali')));
 });
+
+
+test('legacy IDs, report assets and monitoring chains resolve once while independent planting stays additive',()=>{
+ const plot=feature('PLOT',100,{Layer_ID:'area_mangrove'});
+ const report=(id,count,target,extra={})=>feature('MONITORING-'+id,999,{Layer_ID:'monitoring_reports',Kategori:'Penanaman Mangrove',Source_Type:'monitoring_report',Source_Report_ID:id,Jumlah_Bib:count,Target_Object_ID:target,...extra});
+ const one=report('YG-ONE',110,'legacy',{targetFeatureProperties:{Object_ID:'PLOT',Layer_ID:'area_mangrove',Jumlah_Bib:100}});
+ const two=report('YG-TWO',110,'MONITORING-YG-ONE');
+ const three=report('YG-THREE',110,'legacy');
+ const planting=feature('COMMUNITY-YG-NEW',20,{Layer_ID:'titik_penanaman',Source_Type:'community_report',Source_Report_ID:'YG-NEW',Target_Object_ID:'PLOT'});
+ const baselineReport=feature('COMMUNITY-YG-BASELINE',100,{Layer_ID:'area_mangrove',Source_Type:'community_report',Source_Report_ID:'YG-BASELINE',Target_Object_ID:'PLOT'});
+ const asset=feature('ASSET',20,{Layer_ID:'area_mangrove',Source_Type:'verified_report_asset',Source_Report_ID:'YG-NEW'});
+ assert.equal(context.plantInventory([plot,asset],[one,two,three,planting,baselineReport]).mangrove,120);
+ assert.equal(context.plantInventory([plot,asset],[three,two,planting,one,two]).mangrove,120);
+ assert.equal(context.plantInventory([{...plot,properties:{...plot.properties,Jumlah_Tanam:0}}],[one,two]).mangrove,0);
+ assert.equal(context.plantInventory([],[report('YG-ONLY',100,'PLOT'),report('YG-ONLY-2',100,'PLOT')]).mangrove,100);
+ assert.equal(context.plantInventory([],[report('YG-SAMPLE',undefined,'PLOT',{Jumlah_Hidup:50,Jumlah_Mati_Rusak:2})]).mangrove,0);
+});
+
+test('actual village sources preserve unique plantings and ignore additional monitoring copies',()=>{
+ const snapshot=JSON.parse(fs.readFileSync(path.join(root,'data/master-database-snapshot.json'))),official=JSON.parse(fs.readFileSync(path.join(root,'data/area_mangrove.geojson')));
+ const all=context.mergeFeatureCollections(snapshot,[official]);
+ const byVillage=name=>all.filter(f=>(f.properties.Desa||'').replace(/ /g,'').toLowerCase()===name.replace(/ /g,'').toLowerCase());
+ for(const [name,total] of [['Buruk Bakul',24820],['Kelapa Pati',11995],['Tanjung Kuras',4210],['Sepahat',5200]]){
+  const selected=byVillage(name);if(name==='Kelapa Pati')selected.push(all.find(f=>f.properties.Source_Report_ID==='YG-20260725-160711-904'));const monitoring=selected.filter(f=>f.properties.Source_Type==='monitoring_report');
+  assert.equal(context.plantInventory(selected,[]).mangrove,total,name);
+  assert.equal(context.plantInventory(selected,monitoring.concat(monitoring)).mangrove,total,name+' repeated monitoring');
+  assert.equal(context.plantInventory(selected.slice().reverse(),monitoring.slice().reverse()).mangrove,total,name+' input order');
+ }
+ const coffee=JSON.parse(fs.readFileSync(path.join(root,'data/area_kopi.geojson'))).features.find(f=>f.properties.Object_ID==='KOPI-GHIMBO-POMUAN-MA-EARTH-2026-001');
+ assert.equal(context.vegetationClass(coffee),'coffee');
+});
