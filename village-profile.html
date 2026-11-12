@@ -9,6 +9,7 @@
   <link rel="preconnect" href="https://unpkg.com">
   <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
   <link rel="stylesheet" href="css/village-profile.css?v=20260825-community-groups1">
+  <link rel="stylesheet" href="css/village-activity-timeline.css?v=20261112-1">
   <link rel="stylesheet" href="css/final-monthly-hotspots.css?v=20260901-annual1">
   <style>[hidden]{display:none!important}</style>
 </head>
@@ -90,6 +91,12 @@
             <span class="vp-badge" id="program-badge">Memuat…</span>
           </div>
           <div class="vp-program-summary" id="program-summary" aria-label="Ringkasan program"></div>
+          <section class="vt-section" id="village-timeline" aria-labelledby="timeline-title" hidden>
+            <div class="vp-section-head"><div><span class="vp-kicker">DOKUMENTASI LINTAS DONOR</span><h2 id="timeline-title">Timeline foto dan kegiatan</h2></div><span class="vp-badge" id="timeline-count" aria-live="polite"></span></div>
+            <div class="vt-filters"><label>Tahun<select id="timeline-year" aria-controls="timeline-list"></select></label><label>Donor<select id="timeline-donor" aria-controls="timeline-list"></select></label></div>
+            <div id="timeline-list"></div>
+            <button class="vp-button vt-more" id="timeline-more" type="button" hidden>Lihat catatan berikutnya</button>
+          </section>
           <div class="vp-program-grid">
             <section class="vp-program-panel" aria-labelledby="program-list-title">
               <div class="vp-program-panel__head">
@@ -197,8 +204,10 @@
   </main>
 
   <div class="vp-toast" id="toast" role="status" aria-live="polite"></div>
+  <dialog class="vt-dialog" id="timeline-photo-dialog" aria-labelledby="timeline-photo-caption"><button type="button" id="timeline-photo-close" aria-label="Tutup foto">×</button><img id="timeline-photo-image" alt="Foto dokumentasi kegiatan"><p id="timeline-photo-caption"></p><a id="timeline-photo-source" target="_blank" rel="noopener">Buka foto sumber ↗</a></dialog>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
   <script src="js/final-monthly-hotspots.js?v=20260901-annual1"></script>
-  <script src="js/village-profile.js?v=20261112-profile-coffee1"></script>
+  <script src="js/village-activity-timeline.js?v=20261112-1"></script>
+  <script src="js/village-profile.js?v=20261112-timeline1"></script>
 </body>
 </html>
