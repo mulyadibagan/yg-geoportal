@@ -1,0 +1,510 @@
+{
+  "reviewedAt": "2026-11-12",
+  "sourcePolicy": "Exact verified evidence IDs only; no new activities; unspecified phases remain empty.",
+  "attributions": [
+    {
+      "evidenceId": "CB-2026-007",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-27T06:57:19.703Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785135439703"
+    },
+    {
+      "evidenceId": "CB-2026-009",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-27T07:08:37.377Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785136117377"
+    },
+    {
+      "evidenceId": "YG-20260712-152652-633",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-27T09:43:22.220Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785145402220"
+    },
+    {
+      "evidenceId": "CB-2026-008",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-27T09:44:31.948Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785145471948"
+    },
+    {
+      "evidenceId": "CB-2026-006",
+      "donor": "Pertamina Foundation",
+      "phase": "",
+      "programmeId": "PRG-PF-SIARANG-ARANG-2025",
+      "verifiedAt": "2026-07-27T09:45:26.191Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785145526191"
+    },
+    {
+      "evidenceId": "CB-2026-005",
+      "donor": "Pertamina Foundation",
+      "phase": "",
+      "programmeId": "PRG-PF-SIARANG-ARANG-2025",
+      "verifiedAt": "2026-07-27T15:39:21.950Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785166761950"
+    },
+    {
+      "evidenceId": "CB-2026-004",
+      "donor": "Pertamina Foundation",
+      "phase": "",
+      "programmeId": "PRG-PF-SIARANG-ARANG-2025",
+      "verifiedAt": "2026-07-27T15:39:47.428Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785166787428"
+    },
+    {
+      "evidenceId": "CB-2026-003",
+      "donor": "Pertamina Foundation",
+      "phase": "",
+      "programmeId": "PRG-PF-SIARANG-ARANG-2025",
+      "verifiedAt": "2026-07-27T15:40:14.286Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785166814286"
+    },
+    {
+      "evidenceId": "CB-2026-002",
+      "donor": "Pertamina Foundation",
+      "phase": "",
+      "programmeId": "PRG-PF-SIARANG-ARANG-2025",
+      "verifiedAt": "2026-07-27T15:40:38.159Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785166838159"
+    },
+    {
+      "evidenceId": "CB-2026-001",
+      "donor": "Pertamina Foundation",
+      "phase": "",
+      "programmeId": "PRG-PF-SIARANG-ARANG-2025",
+      "verifiedAt": "2026-07-27T15:41:14.972Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785166874972"
+    },
+    {
+      "evidenceId": "LAYER-apo-APO-KELAPA-PATI-NA-001",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-27T15:53:51.399Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785167631399"
+    },
+    {
+      "evidenceId": "LAYER-area_mangrove-MANGROVE-SEPAHAT-PHASE-III-2025-001",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-27T15:55:27.516Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785167727516"
+    },
+    {
+      "evidenceId": "YG-20260722-162739-462",
+      "donor": "Global Environment Centre",
+      "phase": "",
+      "programmeId": "PRG-GEC-2026-2027",
+      "verifiedAt": "2026-07-28T00:26:36.255Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785198396255"
+    },
+    {
+      "evidenceId": "YG-20260727-230913-873",
+      "donor": "Global Environment Centre",
+      "phase": "",
+      "programmeId": "PRG-GEC-2026-2027",
+      "verifiedAt": "2026-07-28T00:27:05.114Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785198425114"
+    },
+    {
+      "evidenceId": "LAYER-nursery_mangrove-NURSERY-TANJUNG-KURAS-NA-001",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-28T00:28:32.278Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785198512278"
+    },
+    {
+      "evidenceId": "YG-20260713-230541-911",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-28T00:30:47.755Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785198647755"
+    },
+    {
+      "evidenceId": "LAYER-area_mangrove-MANGROVE-TANJUNG-KURAS-PHASE-III-2026-001",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-28T00:32:14.655Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785198734655"
+    },
+    {
+      "evidenceId": "LAYER-area_mangrove-MANGROVE-KELAPA-PATI-PHASE-III-2025-001",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-28T03:49:48.228Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785210588228"
+    },
+    {
+      "evidenceId": "LAYER-area_mangrove-MANGROVE-KELAPA-PATI-PHASE-III-2026-003",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-28T03:50:09.875Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785210609875"
+    },
+    {
+      "evidenceId": "LAYER-area_mangrove-MANGROVE-KELAPA-PATI-PHASE-III-2026-002",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-28T03:50:57.702Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785210657702"
+    },
+    {
+      "evidenceId": "LAYER-area_mangrove-MANGROVE-KELAPA-PATI-PHASE-III-2026-001",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-28T03:51:30.107Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785210690107"
+    },
+    {
+      "evidenceId": "LAYER-area_mangrove-MANGROVE-BURUK-BAKUL-PHASE-III-2025-001",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-28T03:52:10.301Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785210730301"
+    },
+    {
+      "evidenceId": "LAYER-area_mangrove-MANGROVE-BURUK-BAKUL-PHASE-III-2025-003",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-28T03:52:27.499Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785210747499"
+    },
+    {
+      "evidenceId": "LAYER-area_mangrove-MANGROVE-BURUK-BAKUL-PHASE-III-2025-002",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-28T03:52:59.581Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785210779581"
+    },
+    {
+      "evidenceId": "EV-NS-1785230005548",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-28T09:18:02.434Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785230282434"
+    },
+    {
+      "evidenceId": "EV-NS-1785236976836",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-07-28T11:10:36.662Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1785237036662"
+    },
+    {
+      "evidenceId": "EV-NS-1787299493147",
+      "donor": "Global Environment Centre",
+      "phase": "",
+      "programmeId": "PRG-GEC-2026-2027",
+      "verifiedAt": "2026-08-21T08:14:57.328Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1787300097328"
+    },
+    {
+      "evidenceId": "EV-NS-1787393453361",
+      "donor": "Yayasan Penabulu",
+      "phase": "",
+      "programmeId": "PRG-PENABULU-2026-2027",
+      "verifiedAt": "2026-08-22T10:16:25.007Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1787393785007"
+    },
+    {
+      "evidenceId": "YG-20260818-145801-438",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:10.521Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260818-145801-438"
+    },
+    {
+      "evidenceId": "YG-20260818-160751-261",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:10.643Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260818-160751-261"
+    },
+    {
+      "evidenceId": "YG-20260818-184550-653",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:10.761Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260818-184550-653"
+    },
+    {
+      "evidenceId": "YG-20260818-190056-890",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:10.881Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260818-190056-890"
+    },
+    {
+      "evidenceId": "YG-20260818-192245-123",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:10.977Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260818-192245-123"
+    },
+    {
+      "evidenceId": "YG-20260818-193340-777",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:11.151Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260818-193340-777"
+    },
+    {
+      "evidenceId": "YG-20260819-181708-273",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:11.280Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260819-181708-273"
+    },
+    {
+      "evidenceId": "YG-20260819-183017-562",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:11.389Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260819-183017-562"
+    },
+    {
+      "evidenceId": "YG-20260819-184338-506",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:11.485Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260819-184338-506"
+    },
+    {
+      "evidenceId": "YG-20260819-185519-411",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:11.591Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260819-185519-411"
+    },
+    {
+      "evidenceId": "YG-20260819-191049-223",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:11.711Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260819-191049-223"
+    },
+    {
+      "evidenceId": "YG-20260819-192001-579",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:11.855Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260819-192001-579"
+    },
+    {
+      "evidenceId": "YG-20260819-193007-936",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "programmeId": "PRG-ARAMCO-PHASE-03",
+      "verifiedAt": "2026-08-23T13:38:11.959Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-RIO-PATROL-YG-20260819-193007-936"
+    },
+    {
+      "evidenceId": "EV-NS-1787830249986",
+      "donor": "Yayasan Penabulu",
+      "phase": "",
+      "programmeId": "PRG-PENABULU-2026-2027",
+      "verifiedAt": "2026-08-27T11:44:15.628Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1787831054730"
+    },
+    {
+      "evidenceId": "YG-20260823-001222-487",
+      "donor": "Yayasan Penabulu",
+      "phase": "",
+      "programmeId": "PRG-PENABULU-2026-2027",
+      "verifiedAt": "2026-08-27T12:09:13.572Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1787832552628"
+    },
+    {
+      "evidenceId": "YG-20260823-002945-756",
+      "donor": "Yayasan Penabulu",
+      "phase": "",
+      "programmeId": "PRG-PENABULU-2026-2027",
+      "verifiedAt": "2026-08-27T12:10:00.127Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1787832599424"
+    },
+    {
+      "evidenceId": "YG-20260831-174942-209",
+      "donor": "Global Environment Centre",
+      "phase": "",
+      "programmeId": "PRG-GEC-2026-2027",
+      "verifiedAt": "2026-09-01T13:02:04.554Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1788267722224"
+    },
+    {
+      "evidenceId": "EV-NS-1788272315308",
+      "donor": "Yayasan Penabulu",
+      "phase": "",
+      "programmeId": "PRG-PENABULU-2026-2027",
+      "verifiedAt": "2026-09-01T14:22:02.812Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1788272522147"
+    },
+    {
+      "evidenceId": "YG-20260901-201544-276",
+      "donor": "Yayasan Penabulu",
+      "phase": "",
+      "programmeId": "PRG-PENABULU-2026-2027",
+      "verifiedAt": "2026-09-01T14:24:43.344Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1788272682753"
+    },
+    {
+      "evidenceId": "YG-20260901-202530-896",
+      "donor": "Yayasan Penabulu",
+      "phase": "",
+      "programmeId": "PRG-PENABULU-2026-2027",
+      "verifiedAt": "2026-09-01T14:25:44.155Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1788272743335"
+    },
+    {
+      "evidenceId": "YG-20260923-211401-364",
+      "donor": "Global Environment Centre",
+      "phase": "",
+      "programmeId": "PRG-GEC-2026-2027",
+      "verifiedAt": "2026-09-24T13:30:49.355Z",
+      "source": "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/api/donor/programmes",
+      "basis": "Penetapan donor dan program terverifikasi: ASN-LOCAL-1790256648470"
+    },
+    {
+      "evidenceId": "CB-2024-001",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 1",
+      "source": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view",
+      "basis": "Laporan akhir Phase I; kegiatan dan ID dicocokkan melalui capacity-building-evidence.json."
+    },
+    {
+      "evidenceId": "CB-2024-003",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 1",
+      "source": "https://drive.google.com/file/d/1urwXsg64a4ttgihusCFZzTiKmGYyyqWB/view",
+      "basis": "Laporan akhir Phase I; kegiatan dan ID dicocokkan melalui capacity-building-evidence.json."
+    },
+    {
+      "evidenceId": "CB-2024-002",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 2",
+      "source": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view",
+      "basis": "Laporan akhir Phase II; kegiatan dan ID dicocokkan melalui capacity-building-evidence.json."
+    },
+    {
+      "evidenceId": "CB-2025-001",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 2",
+      "source": "https://drive.google.com/file/d/1FG5iQCiJjQW8A8-uVGKht0WlBaYYt0hK/view",
+      "basis": "Laporan akhir Phase II; kegiatan dan ID dicocokkan melalui capacity-building-evidence.json."
+    },
+    {
+      "evidenceId": "CB-2025-002",
+      "donor": "Pan Pacific Conservation Foundation (PPCF)",
+      "phase": "",
+      "source": "https://drive.google.com/file/d/1tOuaOdxpf6wAHAkJccgTzSlF-NlSNQm9/view",
+      "basis": "Laporan akhir PPCF, pelatihan tanpa bakar 7 Agustus 2025 halaman 12; tidak ada fase bernomor."
+    },
+    {
+      "evidenceId": "YG-20260720-210303-574",
+      "donor": "Yayasan Penabulu",
+      "phase": "",
+      "source": "https://drive.google.com/file/d/10TEaYi4fq6qYXRqAA30Uo-tOcrs9V9mY/view",
+      "basis": "Laporan interim Juni–Agustus 2026: rumah pengering dan penyediaan air nursery; CO-EVOLVE 2 adalah nama program, bukan fase kegiatan."
+    },
+    {
+      "evidenceId": "YG-20260713-172228-657",
+      "donor": "Yayasan Penabulu",
+      "phase": "",
+      "source": "https://drive.google.com/file/d/10TEaYi4fq6qYXRqAA30Uo-tOcrs9V9mY/view",
+      "basis": "Laporan interim Juni–Agustus 2026: rumah pengering dan penyediaan air nursery; CO-EVOLVE 2 adalah nama program, bukan fase kegiatan."
+    },
+    {
+      "evidenceId": "YG-20260717-210140-375",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "source": "https://webgisyg.id/webgis.html?layer=monitoring_reports&object=MONITORING-YG-20260717-210140-375",
+      "basis": "Judul laporan monitoring terverifikasi secara eksplisit menyebut Aramco Fase 3; tidak disimpulkan dari lokasi atau tanggal."
+    },
+    {
+      "evidenceId": "YG-20260717-211305-543",
+      "donor": "Aramco Asia Singapore",
+      "phase": "Fase 3",
+      "source": "https://webgisyg.id/webgis.html?layer=monitoring_reports&object=MONITORING-YG-20260717-211305-543",
+      "basis": "Judul laporan monitoring terverifikasi secara eksplisit menyebut Aramco Fase 3; tidak disimpulkan dari lokasi atau tanggal."
+    }
+  ]
+}

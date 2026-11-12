@@ -24,8 +24,8 @@ test('live sync fetches only changed revisions and retries after failures while 
  visible=false;await controller.check(true);assert.equal(updates,2);
  controller.stop();visible=true;await controller.check(true);assert.equal(updates,2);
 });
-test('Sepahat Aramco activities during its documented phase III period retain phase labels',()=>{
- const row=buildRecords([f({reportId:'SP',activityDate:'2026-07-09',Donor:'Aramco',photos:['https://drive.google.com/file/d/PHOTO/view?usp=one','https://drive.google.com/file/d/PHOTO/view?usp=two']})],[],{name:'Sepahat'})[0];
+test('Sepahat phases require an exact verified attribution rather than a date inference',()=>{
+ const row=buildRecords([f({reportId:'SP',activityDate:'2026-07-09',Donor:'Aramco',photos:['https://drive.google.com/file/d/PHOTO/view?usp=one','https://drive.google.com/file/d/PHOTO/view?usp=two']})],[],{name:'Sepahat',attributions:[{evidenceId:'SP',donor:'Aramco',phase:'Fase 3',source:'https://example.org/verified'}]})[0];
  assert.equal(row.phase,'Fase 3');assert.equal(row.photos.length,1);
  const later=buildRecords([f({reportId:'LATER',activityDate:'2028-01-01',Donor:'Aramco'})],[],{name:'Sepahat'})[0];assert.equal(later.phase,'');
 });
