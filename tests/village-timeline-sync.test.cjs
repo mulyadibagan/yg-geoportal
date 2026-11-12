@@ -2,6 +2,10 @@ const test=require('node:test'),assert=require('node:assert/strict');
 const {freshest,create}=require('../js/village-timeline-sync.js');
 const {buildRecords}=require('../js/village-activity-timeline.js');
 const f=p=>({properties:p});
+test('verified nursery asset keeps the same capacity caveat as the village activity list',()=>{
+ const row=buildRecords([f({reportId:'NURSERY',Source_Type:'verified_report_asset',title:'Nursery Sepahat',description:'Nursery Sepahat (Stok Bibit 40 Ribu Api2 dan Prepat)'})],[])[0];
+ assert.match(row.copy,/menunggu verifikasi/);assert.doesNotMatch(row.copy,/40 Ribu/);
+});
 test('newer public snapshot wins without resurrecting removed records from stale R2',()=>{
  const old={generatedAt:'2026-11-04T00:00:00Z',features:[f({Object_ID:'removed'})]};
  const latest={generatedAt:'2026-11-12T00:00:00Z',features:[f({Object_ID:'new'})]};
