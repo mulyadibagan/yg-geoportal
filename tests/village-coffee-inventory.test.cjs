@@ -29,3 +29,21 @@ test('explicit current values including zero override the official fallback; nur
  }
  assert.equal(context.plantInventory([feature('NURSERY',10000,{Layer_ID:'nursery_kopi'})],[]).coffee,0);
 });
+
+
+test('Imbo Putui report polygons share one reviewed 1200 total without merging evidence or unrelated plantings',()=>{
+ const snapshot=JSON.parse(fs.readFileSync(path.join(root,'data/master-database-snapshot.json')));
+ const attributions=JSON.parse(fs.readFileSync(path.join(root,'data/village-activity-attributions.json'))).attributions;
+ const ids=['YG-20260713-162454-182','YG-20260713-165007-843'];
+ const reports=ids.map(id=>snapshot.features.find(f=>f.properties.Source_Report_ID===id));
+ assert.equal(reports.filter(Boolean).length,2);assert.notDeepEqual(reports[0].geometry,reports[1].geometry);
+ assert.equal(context.plantInventory([],reports,attributions).forest,1200);
+ assert.equal(context.plantInventory([],reports.slice(0,1),attributions).forest,1200);
+ const explicit=reports.map(f=>({...f,properties:{...f.properties,Jumlah_Tanam:1200}}));
+ assert.equal(context.plantInventory(explicit,explicit,attributions).forest,1200);
+ const separate=feature('SEPARATE',1200,{Layer_ID:'mineral_land_restoration_area',Nama_Objek:'Restorasi Hutan lain'});
+ assert.equal(context.plantInventory([separate],explicit,attributions).forest,2400);
+ const timeline=require('../js/village-activity-timeline.js');const rows=timeline.buildRecords(reports,[],{attributions});
+ assert.equal(rows.length,2);assert.equal(rows.reduce((n,r)=>n+r.photos.length,0),4);
+ assert.ok(rows.every(r=>r.donor==='Aliansi Kolibri'&&r.copy.includes('dihitung sekali')));
+});

@@ -531,10 +531,14 @@
     if(id==="monitoring_reports"||type==="monitoring_report"){return number(props.Jumlah_Bib||target.Jumlah_Bib)||0;}
     return number(props.Jumlah_Tanam||props.Jumlah_Bib||target.Jumlah_Tanam||target.Jumlah_Bib)||0;
   }
-  function plantInventory(programs,reports){
-    var records={mangrove:{},coffee:{},peat:{},forest:{}};
+  function plantInventory(programs,reports,attributions){
+    var records={mangrove:{},coffee:{},peat:{},forest:{}},reviewed={};
+    (attributions||[]).forEach(function(a){if(a.plantingInventory)reviewed[String(a.evidenceId||'').toLowerCase()]=a.plantingInventory;});
     programs.concat(reports).forEach(function(feature){
       var category=vegetationClass(feature),count=plantedCount(feature),props=feature.properties||{},target=props.targetFeatureProperties||{};
+      var reportId=String(props.Source_Report_ID||props.reportId||props.Object_ID||'').replace(/^(?:COMMUNITY-|MONITORING-)(YG-)/i,'$1').toLowerCase(),inventory=reviewed[reportId];
+      // An explicitly reviewed programme total spans these report polygons; never sum it per polygon.
+      if(inventory&&records[inventory.category]&&number(inventory.total)>0){records[inventory.category]['reviewed:'+inventory.id]=number(inventory.total);return;}
       if(!category||count<=0){return;}
       var recordKey=target.Object_ID||props.Target_Object_ID||props.Object_ID||[layerId(feature),props.Nama_Objek,props.activityDate].join("|");
       records[category][recordKey]=Math.max(records[category][recordKey]||0,count);
@@ -558,7 +562,7 @@
     var groups=groupPrograms(programs,boundary),activities=reconcileMonitoring(trainings.map(activityFromTraining).concat(reports.map(function(feature){return activityFromFeature(feature,name);}))).sort(function(a,b){return dateValue(b.date)-dateValue(a.date);});
     var participantTotal=trainings.reduce(function(total,row){return total+(number(row.male)||0)+(number(row.female)||0);},0)+reports.reduce(function(total,feature){var props=feature.properties||{},target=props.targetFeatureProperties||{};return total+(number(props.Jumlah_Peserta||target.Jumlah_Peserta)||0);},0);
     var plantingArea=programs.filter(function(feature){return ["area_mangrove","area_kopi","mineral_land_restoration_area"].indexOf(layerId(feature))!==-1;}).reduce(function(total,feature){var props=feature.properties||{},area=number(props.Luas_Ha);if(area==null&&feature.geometry&&/Polygon/.test(feature.geometry.type)){area=geometryAreaHa(feature.geometry);}return total+(area||0);},0);
-    var plants=plantInventory(programs,reports);
+    var plants=plantInventory(programs,reports,timelineAttributions);
     var canalUnits=programs.filter(function(feature){return layerId(feature)==="sekat_kanal";}).length,fdrsUnits=programs.filter(function(feature){return layerId(feature)==="fdrs";}).length;
     el("program-badge").textContent=(programs.length||activities.length)?format(programs.length,0)+" objek · "+format(activities.length,0)+" kegiatan":"Belum ada catatan";
     el("program-summary").innerHTML=[
@@ -654,7 +658,7 @@
     el("map-layout-link").href="map-layout.html?source="+encodeURIComponent(source)+"&key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
-      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadPublishedSnapshot().catch(function(){unavailableData.push("kegiatan terbaru");return {features:[]};}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20261110-mahkota-document1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};}),optionalJson("data/kopi.geojson?v=20261112-profile-coffee1","rekap kopi",{features:[]}),optionalJson("data/area_kopi.geojson?v=20261112-profile-coffee1","area kopi",{features:[]}),loadJson("data/donors.json?v=20261112-timeline-sync1").catch(function(){return [];}),loadJson("data/village-activity-attributions.json?v=20261112-donors2").catch(function(){return {attributions:[]};})]);
+      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadPublishedSnapshot().catch(function(){unavailableData.push("kegiatan terbaru");return {features:[]};}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20261110-mahkota-document1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};}),optionalJson("data/kopi.geojson?v=20261112-profile-coffee1","rekap kopi",{features:[]}),optionalJson("data/area_kopi.geojson?v=20261112-profile-coffee1","area kopi",{features:[]}),loadJson("data/donors.json?v=20261112-timeline-sync1").catch(function(){return [];}),loadJson("data/village-activity-attributions.json?v=20261112-imbo1").catch(function(){return {attributions:[]};})]);
       timelineDonors=pair[8];timelineAttributions=(pair[9]&&pair[9].attributions)||[];
       var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=mergeFeatureCollections(snapshot,[pair[5],pair[6],pair[7]]),candidateKeys=feature?analyticsKeyCandidates(feature):[key],analyticsKey=candidateKeys.find(function(candidate){return manifest.index&&Object.prototype.hasOwnProperty.call(manifest.index,candidate);})||candidateKeys[0],shard=manifest.index&&manifest.index[analyticsKey];
       startTimelineSync(feature,capacityRows,[pair[5],pair[6],pair[7]],snapshot);
