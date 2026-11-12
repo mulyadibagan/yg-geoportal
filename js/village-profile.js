@@ -519,31 +519,86 @@
   }
   function vegetationClass(feature){
     var props=feature.properties||{},target=props.targetFeatureProperties||{},id=layerId(feature),text=normalized([id,props.Program,props.Kategori,props.Kategori_Ekosistem,props.Jenis_Ekosistem,props.Komoditas,props.Jenis_Tanaman,props.Nama_Objek,target.Program,target.Kategori_Ekosistem,target.Komoditas,target.Jenis_Tanaman].join(" "));
-    if(id==="area_mangrove"||id==="titik_penanaman"||/mangrove/.test(text)){return "mangrove";}
-    if(id==="kopi"||id==="area_kopi"||/kopi|liberika|liberica/.test(text)){return "coffee";}
+    var targetLayer=String(target.Layer_ID||target.Source_Layer||props.Target_Layer_ID||props.targetLayerId||"").toLowerCase();
+    if(id==="kopi"||id==="area_kopi"||(id==="monitoring_reports"&&(targetLayer==="kopi"||targetLayer==="area_kopi"))){return "coffee";}
+    if(id==="area_mangrove"||id==="titik_penanaman"){return "mangrove";}
+    if(id==="mineral_land_restoration_area"){return "forest";}
+    if(/kopi|liberika|liberica/.test(text)){return "coffee";}
+    if(/mangrove/.test(text)){return "mangrove";}
     if(/lahan mineral|restorasi hutan|hutan adat/.test(text)){return "forest";}
     if(/gambut|peat|geronggang|jelutung/.test(text)){return "peat";}
     return "";
   }
+  function firstPlantCount(props){
+    var fields=['Jumlah_Tanam','Jumlah_Bib'];
+    for(var i=0;i<fields.length;i++){var n=number(props[fields[i]]);if(n!=null&&n>=0)return n;}
+    return null;
+  }
   function plantedCount(feature){
-    var props=feature.properties||{},target=props.targetFeatureProperties||{},id=layerId(feature),type=sourceType(feature);
-    if(id==="nursery_mangrove"||id==="nursery_kopi"){return 0;}
-    if(id==="monitoring_reports"||type==="monitoring_report"){return number(props.Jumlah_Bib||target.Jumlah_Bib)||0;}
-    return number(props.Jumlah_Tanam||props.Jumlah_Bib||target.Jumlah_Tanam||target.Jumlah_Bib)||0;
+    var p=feature.properties||{},target=p.targetFeatureProperties||{},id=layerId(feature),type=sourceType(feature);
+    if(id==='nursery_mangrove'||id==='nursery_kopi'||p.Count_In_Establishment_Total===false)return 0;
+    // Monitoring is not new planting. Read the planting baseline, never alive/dead/sample counts.
+    var count=(id==='monitoring_reports'||type==='monitoring_report')?number(p.Jumlah_Bib):firstPlantCount(p);
+    if(count==null)count=firstPlantCount(target);
+    return count!=null&&count>=0?count:0;
+  }
+  function plantInventoryLedger(programs,reports,attributions){
+    var records={mangrove:{},coffee:{},peat:{},forest:{}},reviewed={},parent={},all=programs.concat(reports),entries=[];
+    function key(id){return String(id||'').trim().replace(/^(?:COMMUNITY-|MONITORING-)(YG-)/i,'$1').toLowerCase();}
+    function find(id){id=key(id);if(!id)return '';if(!parent[id])parent[id]=id;return parent[id]===id?id:(parent[id]=find(parent[id]));}
+    function join(a,b){a=find(a);b=find(b);if(a&&b&&a!==b)parent[a]=b;}
+    // Reviewed location aliases already used by monitoring-compilation.js and monitoring-live-sync-v2.js.
+    var aliases={
+      'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-001',
+      'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-001',
+      'MANGROVE-KELAPA-PATI-PHASE-III-2026-001':'MANGROVE-KELAPA-PATI-PHASE-III-001',
+      'area_mangrove:auto:1732351650':'MANGROVE-SEPAHAT-2025-001',
+      'area_mangrove:auto:1601647125':'MANGROVE-SEPAHAT-2025-001',
+      'MANGROVE-SEPAHAT-PHASE-III-2025-001':'MANGROVE-SEPAHAT-2025-001',
+      'area_mangrove:auto:613256434':'MANGROVE-BURUK-BAKUL-PHASE-II-001',
+      'MANGROVE-BURUK-BAKUL-PHASE-II-2024-001':'MANGROVE-BURUK-BAKUL-PHASE-II-001',
+      'area_mangrove:auto:374024597':'MANGROVE-BURUK-BAKUL-2025-001',
+      'MANGROVE-BURUK-BAKUL-PHASE-III-2025-001':'MANGROVE-BURUK-BAKUL-2025-001',
+      'area_mangrove:auto:56906758':'MANGROVE-BURUK-BAKUL-2025-002',
+      'MANGROVE-BURUK-BAKUL-PHASE-III-2025-002':'MANGROVE-BURUK-BAKUL-2025-002',
+      'MANGROVE-BURUK-BAKUL-PHASE-III-2025-003':'MANGROVE-BURUK-BAKUL-2025-003',
+      'MANGROVE-KELAPA-PATI-PHASE-II-2025-003':'MANGROVE-KELAPA-PATI-PHASE-II-003',
+      'MANGROVE-TANJUNG-KURAS-PHASE-III-2026-001':'MANGROVE-TANJUNG-KURAS-2026-001'
+    };
+    Object.keys(aliases).forEach(function(id){join(id,aliases[id]);});
+    (attributions||[]).forEach(function(a){if(a.plantingInventory)reviewed[key(a.evidenceId)]=a.plantingInventory;});
+    function connect(p,depth){
+      if(depth>20||!p)return;
+      var id=p.Object_ID||p.Source_Report_ID||p.reportId,type=String(p.Source_Type||'').toLowerCase(),target=p.targetFeatureProperties||{};
+      if(type==='community_report'||type==='monitoring_report'||type==='verified_report_asset'){join(id,p.Source_Report_ID||p.reportId);}
+      var linkedPlantingReport=type==='community_report'&&String(p.Layer_ID||'').toLowerCase()!=='titik_penanaman'&&!p.Planting_Cohort_ID&&p.Count_In_Establishment_Total!==true;
+      if(type==='monitoring_report'||String(p.Layer_ID||'').toLowerCase()==='monitoring_reports'||linkedPlantingReport){
+        join(id,p.Target_Object_ID||p.targetObjectId);join(id,target.Object_ID);
+        connect(target,depth+1);
+      }
+    }
+    all.forEach(function(f,index){
+      var p=f.properties||{},id=p.Object_ID||p.Source_Report_ID||p.reportId||'unlinked:'+index;connect(p,0);
+      var inventory=reviewed[key(p.Source_Report_ID||p.reportId||id)];
+      if(inventory){join(id,'reviewed:'+inventory.id);entries.push({id:id,category:inventory.category,count:number(inventory.total),rank:100,source:p.Object_ID||id});return;}
+      var category=vegetationClass(f),count=plantedCount(f),type=sourceType(f),monitoring=type==='monitoring_report'||layerId(f)==='monitoring_reports';
+      if(!category||p.Count_In_Establishment_Total===false||layerId(f)==='nursery_mangrove'||layerId(f)==='nursery_kopi')return;
+      var own=monitoring?number(p.Jumlah_Bib):firstPlantCount(p),rank=monitoring?1:(type==='community_report'?2:3);
+      // Preserve an explicit zero from the planting object, rather than reviving an old baseline.
+      if(own==null&&count===0)return;
+      entries.push({id:id,category:category,count:count,rank:rank,source:p.Object_ID||id});
+    });
+    entries.forEach(function(e){
+      if(!records[e.category]||e.count==null||e.count<0)return;
+      var id=find(e.id),previous=records[e.category][id];
+      if(!previous)records[e.category][id]={count:e.count,rank:e.rank,sources:[e.source]};
+      else{if(e.rank>previous.rank||(e.rank===previous.rank&&e.count>previous.count)){previous.count=e.count;previous.rank=e.rank;}if(previous.sources.indexOf(e.source)<0)previous.sources.push(e.source);}
+    });
+    return records;
   }
   function plantInventory(programs,reports,attributions){
-    var records={mangrove:{},coffee:{},peat:{},forest:{}},reviewed={};
-    (attributions||[]).forEach(function(a){if(a.plantingInventory)reviewed[String(a.evidenceId||'').toLowerCase()]=a.plantingInventory;});
-    programs.concat(reports).forEach(function(feature){
-      var category=vegetationClass(feature),count=plantedCount(feature),props=feature.properties||{},target=props.targetFeatureProperties||{};
-      var reportId=String(props.Source_Report_ID||props.reportId||props.Object_ID||'').replace(/^(?:COMMUNITY-|MONITORING-)(YG-)/i,'$1').toLowerCase(),inventory=reviewed[reportId];
-      // An explicitly reviewed programme total spans these report polygons; never sum it per polygon.
-      if(inventory&&records[inventory.category]&&number(inventory.total)>0){records[inventory.category]['reviewed:'+inventory.id]=number(inventory.total);return;}
-      if(!category||count<=0){return;}
-      var recordKey=target.Object_ID||props.Target_Object_ID||props.Object_ID||[layerId(feature),props.Nama_Objek,props.activityDate].join("|");
-      records[category][recordKey]=Math.max(records[category][recordKey]||0,count);
-    });
-    var totals={};Object.keys(records).forEach(function(category){totals[category]=Object.keys(records[category]).reduce(function(total,recordKey){return total+records[category][recordKey];},0);});
+    var records=plantInventoryLedger(programs,reports,attributions),totals={};
+    Object.keys(records).forEach(function(category){totals[category]=Object.keys(records[category]).reduce(function(total,id){return total+records[category][id].count;},0);});
     return totals;
   }
   function renderPrograms(features,capacityRows,boundary,name,district,regency){
@@ -658,7 +713,7 @@
     el("map-layout-link").href="map-layout.html?source="+encodeURIComponent(source)+"&key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
-      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadPublishedSnapshot().catch(function(){unavailableData.push("kegiatan terbaru");return {features:[]};}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20261110-mahkota-document1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};}),optionalJson("data/kopi.geojson?v=20261112-profile-coffee1","rekap kopi",{features:[]}),optionalJson("data/area_kopi.geojson?v=20261112-profile-coffee1","area kopi",{features:[]}),loadJson("data/donors.json?v=20261112-timeline-sync1").catch(function(){return [];}),loadJson("data/village-activity-attributions.json?v=20261112-imbo1").catch(function(){return {attributions:[]};})]);
+      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadPublishedSnapshot().catch(function(){unavailableData.push("kegiatan terbaru");return {features:[]};}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20261110-mahkota-document1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};}),optionalJson("data/kopi.geojson?v=20261112-profile-coffee1","rekap kopi",{features:[]}),optionalJson("data/area_kopi.geojson?v=20261112-profile-coffee1","area kopi",{features:[]}),loadJson("data/donors.json?v=20261112-timeline-sync1").catch(function(){return [];}),loadJson("data/village-activity-attributions.json?v=20261112-inventory1").catch(function(){return {attributions:[]};})]);
       timelineDonors=pair[8];timelineAttributions=(pair[9]&&pair[9].attributions)||[];
       var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=mergeFeatureCollections(snapshot,[pair[5],pair[6],pair[7]]),candidateKeys=feature?analyticsKeyCandidates(feature):[key],analyticsKey=candidateKeys.find(function(candidate){return manifest.index&&Object.prototype.hasOwnProperty.call(manifest.index,candidate);})||candidateKeys[0],shard=manifest.index&&manifest.index[analyticsKey];
       startTimelineSync(feature,capacityRows,[pair[5],pair[6],pair[7]],snapshot);
