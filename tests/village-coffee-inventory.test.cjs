@@ -5,7 +5,7 @@ const vm=require('node:vm');
 const path=require('node:path');
 const root=path.resolve(__dirname,'..');
 const source=fs.readFileSync(path.join(root,'js/village-profile.js'),'utf8');
-const context={number:v=>v==null||String(v).trim()===''?null:Number(v),normalized:v=>String(v).toLowerCase()};
+const context={window:{YG_PLANTING_INVENTORY:require('../js/planting-inventory.js')},number:v=>v==null||String(v).trim()===''?null:Number(v),normalized:v=>String(v).toLowerCase()};
 vm.createContext(context);
 vm.runInContext(source.slice(source.indexOf('  function mergeFeatureCollections('),source.indexOf('  function isActivityFeature('))+source.slice(source.indexOf('  function vegetationClass('),source.indexOf('  function renderPrograms(')),context);
 const feature=(id,count,extra={})=>({type:'Feature',geometry:null,properties:{Object_ID:id,Layer_ID:'kopi',Jumlah_Tanam:count,...extra}});

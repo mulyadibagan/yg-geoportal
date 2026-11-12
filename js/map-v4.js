@@ -695,7 +695,7 @@ L.control.scale({
   const monitoringHistoryIdsByTarget = new Map();
   const searchItems = [];
   let allBounds = L.latLngBounds([]);
-  let rawFeatures = [];
+  let rawFeatures = [],plantingInventoryData=null;
   let lastGeneratedAt = null;
   let observedSnapshotVersion = "";
   let snapshotRefreshTimer = null;
@@ -1148,6 +1148,7 @@ L.control.scale({
     }
 
     let rows = "";
+    if(plantingInventoryData){const inventoryApi=window.YG_PLANTING_INVENTORY,identity=inventoryApi.canonical(props.Source_Report_ID||props.reportId||props.Object_ID),plantingRow=plantingInventoryData.rows.find(item=>item.sources.some(id=>inventoryApi.canonical(id)===identity));if(plantingRow){rows+=row('Tanaman tertanam · lokasi unik',plantingRow.count.toLocaleString('id-ID'));rows+=row('Perhitungan','Satu lokasi dihitung sekali dalam rekap. Laporan monitoring bukan penanaman tambahan.');}}
 
     if (isMonitoring) {
       rows += row(
@@ -5066,7 +5067,9 @@ L.control.scale({
       if (!snapshotResponse.ok) {
         throw new Error("HTTP " + snapshotResponse.status);
       }
-      const snapshotData = await snapshotResponse.json();
+      let snapshotData = await snapshotResponse.json();
+      const plantingData = await window.YG_PLANTING_INVENTORY.load();plantingInventoryData=plantingData;
+      if(Date.parse(plantingData.generatedAt)>Date.parse(snapshotData.snapshotGeneratedAt||snapshotData.generatedAt||0))snapshotData={type:'FeatureCollection',features:plantingData.objects,generatedAt:plantingData.generatedAt,snapshotGeneratedAt:plantingData.generatedAt};
       if (!snapshotData || !Array.isArray(snapshotData.features)) {
         throw new Error("Snapshot Master Database tidak valid");
       }

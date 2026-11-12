@@ -367,27 +367,8 @@
       });
     });
   }
-  function featureMatchesPlace(feature,name,district,regency,boundary){
-    var props=feature&&feature.properties||{},target=props.targetFeatureProperties||{},aliases=placeAliases(boundary,name);
-    var villageValues=[props.Desa,props.village,props.Village,props.Nama_Desa,target.Desa,target.village].filter(Boolean);
-    var regencyValue=props.Kabupaten||props.regency||target.Kabupaten||"";
-    var regencyOk=!regencyValue||!regency||normalized(regencyValue)===normalized(regency);
-    var textValues=[props.Nama_Objek,props.title,props.locationName,props.location,props.Lokasi,props.description].filter(Boolean);
-    if(villageValues.length){
-      if(regencyOk&&villageValues.some(function(value){return aliases.indexOf(normalized(value))!==-1;})){return true;}
-      return regencyOk&&textValues.some(function(value){return containsPlace(value,aliases);});
-    }
-    if(regencyOk&&textValues.some(function(value){return containsPlace(value,aliases);})){return true;}
-    var point=representativePoint(feature&&feature.geometry);
-    return !!(point&&boundary&&pointInGeometry(point,boundary.geometry));
-  }
-  function activityMatchesPlace(feature,name,district,regency,boundary){
-    if(featureMatchesPlace(feature,name,district,regency,boundary)){return true;}
-    if(feature&&feature.geometry&&representativePoint(feature.geometry)&&boundary&&boundary.geometry){
-      return geometryIntersectsBoundary(feature.geometry,boundary.geometry);
-    }
-    return false;
-  }
+  function featureMatchesPlace(feature,name,district,regency,boundary){return window.YG_PLANTING_INVENTORY.featureMatchesPlace(feature,name,district,regency,boundary);}
+  function activityMatchesPlace(feature,name,district,regency,boundary){return window.YG_PLANTING_INVENTORY.activityMatchesPlace(feature,name,district,regency,boundary);}
   function outsideReference(feature,boundary){
     return !!(feature&&feature.geometry&&feature.geometry.type==="Point"&&boundary&&boundary.geometry&&!pointInGeometry(feature.geometry.coordinates,boundary.geometry));
   }
@@ -517,90 +498,10 @@
     var visible=items.slice(0,limit).map(renderer).join(""),remaining=items.slice(limit);
     return visible+(remaining.length?'<details class="vp-program-more"><summary>Lihat '+format(remaining.length,0)+' '+esc(label)+' lainnya</summary><div class="vp-program-more__content">'+remaining.map(renderer).join("")+'</div></details>':"");
   }
-  function vegetationClass(feature){
-    var props=feature.properties||{},target=props.targetFeatureProperties||{},id=layerId(feature),text=normalized([id,props.Program,props.Kategori,props.Kategori_Ekosistem,props.Jenis_Ekosistem,props.Komoditas,props.Jenis_Tanaman,props.Nama_Objek,target.Program,target.Kategori_Ekosistem,target.Komoditas,target.Jenis_Tanaman].join(" "));
-    var targetLayer=String(target.Layer_ID||target.Source_Layer||props.Target_Layer_ID||props.targetLayerId||"").toLowerCase();
-    if(id==="kopi"||id==="area_kopi"||(id==="monitoring_reports"&&(targetLayer==="kopi"||targetLayer==="area_kopi"))){return "coffee";}
-    if(id==="area_mangrove"||id==="titik_penanaman"){return "mangrove";}
-    if(id==="mineral_land_restoration_area"){return "forest";}
-    if(/kopi|liberika|liberica/.test(text)){return "coffee";}
-    if(/mangrove/.test(text)){return "mangrove";}
-    if(/lahan mineral|restorasi hutan|hutan adat/.test(text)){return "forest";}
-    if(/gambut|peat|geronggang|jelutung/.test(text)){return "peat";}
-    return "";
-  }
-  function firstPlantCount(props){
-    var fields=['Jumlah_Tanam','Jumlah_Bib'];
-    for(var i=0;i<fields.length;i++){var n=number(props[fields[i]]);if(n!=null&&n>=0)return n;}
-    return null;
-  }
-  function plantedCount(feature){
-    var p=feature.properties||{},target=p.targetFeatureProperties||{},id=layerId(feature),type=sourceType(feature);
-    if(id==='nursery_mangrove'||id==='nursery_kopi'||p.Count_In_Establishment_Total===false)return 0;
-    // Monitoring is not new planting. Read the planting baseline, never alive/dead/sample counts.
-    var count=(id==='monitoring_reports'||type==='monitoring_report')?number(p.Jumlah_Bib):firstPlantCount(p);
-    if(count==null)count=firstPlantCount(target);
-    return count!=null&&count>=0?count:0;
-  }
-  function plantInventoryLedger(programs,reports,attributions){
-    var records={mangrove:{},coffee:{},peat:{},forest:{}},reviewed={},parent={},all=programs.concat(reports),entries=[];
-    function key(id){return String(id||'').trim().replace(/^(?:COMMUNITY-|MONITORING-)(YG-)/i,'$1').toLowerCase();}
-    function find(id){id=key(id);if(!id)return '';if(!parent[id])parent[id]=id;return parent[id]===id?id:(parent[id]=find(parent[id]));}
-    function join(a,b){a=find(a);b=find(b);if(a&&b&&a!==b)parent[a]=b;}
-    // Reviewed location aliases already used by monitoring-compilation.js and monitoring-live-sync-v2.js.
-    var aliases={
-      'area_mangrove:auto:1281388060':'MANGROVE-KELAPA-PATI-PHASE-III-001',
-      'area_mangrove:auto:1674337344':'MANGROVE-KELAPA-PATI-PHASE-III-001',
-      'MANGROVE-KELAPA-PATI-PHASE-III-2026-001':'MANGROVE-KELAPA-PATI-PHASE-III-001',
-      'area_mangrove:auto:1732351650':'MANGROVE-SEPAHAT-2025-001',
-      'area_mangrove:auto:1601647125':'MANGROVE-SEPAHAT-2025-001',
-      'MANGROVE-SEPAHAT-PHASE-III-2025-001':'MANGROVE-SEPAHAT-2025-001',
-      'area_mangrove:auto:613256434':'MANGROVE-BURUK-BAKUL-PHASE-II-001',
-      'MANGROVE-BURUK-BAKUL-PHASE-II-2024-001':'MANGROVE-BURUK-BAKUL-PHASE-II-001',
-      'area_mangrove:auto:374024597':'MANGROVE-BURUK-BAKUL-2025-001',
-      'MANGROVE-BURUK-BAKUL-PHASE-III-2025-001':'MANGROVE-BURUK-BAKUL-2025-001',
-      'area_mangrove:auto:56906758':'MANGROVE-BURUK-BAKUL-2025-002',
-      'MANGROVE-BURUK-BAKUL-PHASE-III-2025-002':'MANGROVE-BURUK-BAKUL-2025-002',
-      'MANGROVE-BURUK-BAKUL-PHASE-III-2025-003':'MANGROVE-BURUK-BAKUL-2025-003',
-      'MANGROVE-KELAPA-PATI-PHASE-II-2025-003':'MANGROVE-KELAPA-PATI-PHASE-II-003',
-      'MANGROVE-TANJUNG-KURAS-PHASE-III-2026-001':'MANGROVE-TANJUNG-KURAS-2026-001'
-    };
-    Object.keys(aliases).forEach(function(id){join(id,aliases[id]);});
-    (attributions||[]).forEach(function(a){if(a.plantingInventory)reviewed[key(a.evidenceId)]=a.plantingInventory;});
-    function connect(p,depth){
-      if(depth>20||!p)return;
-      var id=p.Object_ID||p.Source_Report_ID||p.reportId,type=String(p.Source_Type||'').toLowerCase(),target=p.targetFeatureProperties||{};
-      if(type==='community_report'||type==='monitoring_report'||type==='verified_report_asset'){join(id,p.Source_Report_ID||p.reportId);}
-      var linkedPlantingReport=type==='community_report'&&String(p.Layer_ID||'').toLowerCase()!=='titik_penanaman'&&!p.Planting_Cohort_ID&&p.Count_In_Establishment_Total!==true;
-      if(type==='monitoring_report'||String(p.Layer_ID||'').toLowerCase()==='monitoring_reports'||linkedPlantingReport){
-        join(id,p.Target_Object_ID||p.targetObjectId);join(id,target.Object_ID);
-        connect(target,depth+1);
-      }
-    }
-    all.forEach(function(f,index){
-      var p=f.properties||{},id=p.Object_ID||p.Source_Report_ID||p.reportId||'unlinked:'+index;connect(p,0);
-      var inventory=reviewed[key(p.Source_Report_ID||p.reportId||id)];
-      if(inventory){join(id,'reviewed:'+inventory.id);entries.push({id:id,category:inventory.category,count:number(inventory.total),rank:100,source:p.Object_ID||id});return;}
-      var category=vegetationClass(f),count=plantedCount(f),type=sourceType(f),monitoring=type==='monitoring_report'||layerId(f)==='monitoring_reports';
-      if(!category||p.Count_In_Establishment_Total===false||layerId(f)==='nursery_mangrove'||layerId(f)==='nursery_kopi')return;
-      var own=monitoring?number(p.Jumlah_Bib):firstPlantCount(p),rank=monitoring?1:(type==='community_report'?2:3);
-      // Preserve an explicit zero from the planting object, rather than reviving an old baseline.
-      if(own==null&&count===0)return;
-      entries.push({id:id,category:category,count:count,rank:rank,source:p.Object_ID||id});
-    });
-    entries.forEach(function(e){
-      if(!records[e.category]||e.count==null||e.count<0)return;
-      var id=find(e.id),previous=records[e.category][id];
-      if(!previous)records[e.category][id]={count:e.count,rank:e.rank,sources:[e.source]};
-      else{if(e.rank>previous.rank||(e.rank===previous.rank&&e.count>previous.count)){previous.count=e.count;previous.rank=e.rank;}if(previous.sources.indexOf(e.source)<0)previous.sources.push(e.source);}
-    });
-    return records;
-  }
-  function plantInventory(programs,reports,attributions){
-    var records=plantInventoryLedger(programs,reports,attributions),totals={};
-    Object.keys(records).forEach(function(category){totals[category]=Object.keys(records[category]).reduce(function(total,id){return total+records[category][id].count;},0);});
-    return totals;
-  }
+  function vegetationClass(feature){return window.YG_PLANTING_INVENTORY.vegetationClass(feature);}
+  function plantedCount(feature){return window.YG_PLANTING_INVENTORY.plantedCount(feature);}
+  function plantInventoryLedger(programs,reports,attributions){return window.YG_PLANTING_INVENTORY.plantInventoryLedger(programs,reports,attributions);}
+  function plantInventory(programs,reports,attributions){return window.YG_PLANTING_INVENTORY.plantInventory(programs,reports,attributions);}
   function renderPrograms(features,capacityRows,boundary,name,district,regency){
     var allFeatures=Array.isArray(features)?features:[];
     var programs=allFeatures.filter(function(feature){return isProgramFeature(feature)&&featureMatchesPlace(feature,name,district,regency,boundary);});
