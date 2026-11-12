@@ -1,6 +1,7 @@
 (function(){
   "use strict";
   var SNAPSHOT_URL="https://webgis-api.yayasangambut.org/snapshots/current/objects.json";
+  var LOCAL_SNAPSHOT_URL="data/master-database-snapshot.json",timelineDonors=[],timelineSyncStarted=false;
   var MANIFEST_URL="data/administrative-village-analytics/manifest.json";
   var params=new URLSearchParams(window.location.search);
   var key=String(params.get("key")||"").trim().toLowerCase();
@@ -85,6 +86,33 @@
     var controller=new AbortController(),timer=window.setTimeout(function(){controller.abort();},15000);
     try{var response=await fetch(url,{cache:"no-store",signal:controller.signal});if(!response.ok){throw new Error("HTTP "+response.status);}return await response.json();}
     finally{window.clearTimeout(timer);}
+  }
+  async function loadPublishedSnapshot(){
+    var sources=await Promise.allSettled([loadJson(SNAPSHOT_URL),loadJson(LOCAL_SNAPSHOT_URL)]);
+    return window.VillageTimelineSync.freshest(sources.filter(function(r){return r.status==="fulfilled";}).map(function(r){return r.value;}));
+  }
+  async function publicSnapshotRevision(){
+    var sources=await Promise.allSettled([
+      loadJson("https://webgis-api.yayasangambut.org/manifests/current.json"),
+      (async function(){var controller=new AbortController(),timer=window.setTimeout(function(){controller.abort();},15000);try{var response=await fetch(LOCAL_SNAPSHOT_URL,{method:"HEAD",cache:"no-store",signal:controller.signal});if(!response.ok)throw new Error("snapshot_head_failed");return response.headers.get("etag")||response.headers.get("last-modified")||response.headers.get("content-length")||String(Date.now());}finally{window.clearTimeout(timer);}})()
+    ]);
+    if(sources.every(function(r){return r.status==="rejected";}))throw new Error("snapshot_revision_unavailable");
+    return sources.map(function(r){return r.status==="fulfilled"?(typeof r.value==="string"?r.value:r.value.version||r.value.publishedAt):"unavailable";}).join("|");
+  }
+  function setTimelineSyncStatus(snapshot){
+    var node=el("timeline-sync-status");if(!node)return;
+    var date=new Date(snapshot&&(snapshot.snapshotGeneratedAt||snapshot.generatedAt)||Date.now());
+    node.textContent="Mengikuti laporan terverifikasi · data "+date.toLocaleString("id-ID",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})+" · pembaruan otomatis";
+  }
+  function startTimelineSync(boundary,capacityRows,collections,snapshot){
+    if(timelineSyncStarted||!window.VillageTimelineSync)return;timelineSyncStarted=true;setTimelineSyncStatus(snapshot);
+    var props=boundary&&boundary.properties||{},parts=key.split("|"),name=props.WADMKD||props.Desa||props.NAMOBJ||titleCase(parts[0]),district=props.WADMKC||props.Kecamatan||titleCase(parts[1]),regency=props.WADMKK||props.Kabupaten||titleCase(parts[2]);
+    var lastSnapshot=snapshot,controller=window.VillageTimelineSync.create({visible:function(){return document.visibilityState!=="hidden";},revision:publicSnapshotRevision,load:loadPublishedSnapshot,apply:function(next){
+      var features=mergeFeatureCollections(next,collections);renderPrograms(features,capacityRows,boundary,name,district,regency);lastSnapshot=next;setTimelineSyncStatus(next);
+    },onSuccess:function(){setTimelineSyncStatus(lastSnapshot);},onError:function(){var node=el("timeline-sync-status");if(node)node.textContent="Pembaruan tertunda. Catatan terakhir tetap ditampilkan; akan dicoba kembali otomatis.";}});
+    var timer=window.setInterval(function(){controller.check();},60000);
+    window.addEventListener("focus",function(){controller.check();});window.addEventListener("pageshow",function(){controller.check();});document.addEventListener("visibilitychange",function(){controller.check();});
+    window.addEventListener("pagehide",function(event){if(!event.persisted){controller.stop();window.clearInterval(timer);}});
   }
   var unavailableData=[];
   function optionalJson(url,label,fallback){
@@ -545,7 +573,10 @@
     ].map(function(item){return '<div class="vp-program-stat"><span>'+esc(item[0])+'</span><strong>'+esc(item[1])+'</strong><small>'+esc(item[2])+'</small></div>';}).join("");
     el("program-list").innerHTML=expandableList(groups,function(group){return programItem(group,name);},4,"program");
     el("activity-list").innerHTML=expandableList(activities,activityItem,4,"kegiatan");
-    if(window.VillageActivityTimeline){window.VillageActivityTimeline.mount(reports,trainings);}
+    if(window.VillageActivityTimeline){
+      var timelineFeatures=allFeatures.filter(function(f){var p=f.properties||{};return (isActivityFeature(f)||(p.Source_Type==="verified_report_asset"&&p.Source_Report_ID))&&activityMatchesPlace(f,name,district,regency,boundary);});
+      window.VillageActivityTimeline.mount(timelineFeatures,trainings,{name:name,regency:regency,donors:timelineDonors,objects:allFeatures,localObjectIds:allFeatures.filter(function(f){return featureMatchesPlace(f,name,district,regency,boundary);}).map(function(f){return String((f.properties||{}).Object_ID||'').toLowerCase();})});
+    }
     el("program-note").textContent="Kegiatan dan monitoring yang memiliki titik, garis, atau polygon dicocokkan melalui posisi dan irisannya dengan batas desa pada peta. Atribut nama desa digunakan untuk catatan nonspasial, seperti data pelatihan yang belum memiliki koordinat.";
   }
 
@@ -623,8 +654,10 @@
     el("map-layout-link").href="map-layout.html?source="+encodeURIComponent(source)+"&key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
-      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),optionalJson(SNAPSHOT_URL,"kegiatan terbaru",{features:[]}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20261110-mahkota-document1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};}),optionalJson("data/kopi.geojson?v=20261112-profile-coffee1","rekap kopi",{features:[]}),optionalJson("data/area_kopi.geojson?v=20261112-profile-coffee1","area kopi",{features:[]})]);
+      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadPublishedSnapshot().catch(function(){unavailableData.push("kegiatan terbaru");return {features:[]};}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20261110-mahkota-document1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};}),optionalJson("data/kopi.geojson?v=20261112-profile-coffee1","rekap kopi",{features:[]}),optionalJson("data/area_kopi.geojson?v=20261112-profile-coffee1","area kopi",{features:[]}),loadJson("data/donors.json?v=20261112-timeline-sync1").catch(function(){return [];})]);
+      timelineDonors=pair[8];
       var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=mergeFeatureCollections(snapshot,[pair[5],pair[6],pair[7]]),candidateKeys=feature?analyticsKeyCandidates(feature):[key],analyticsKey=candidateKeys.find(function(candidate){return manifest.index&&Object.prototype.hasOwnProperty.call(manifest.index,candidate);})||candidateKeys[0],shard=manifest.index&&manifest.index[analyticsKey];
+      startTimelineSync(feature,capacityRows,[pair[5],pair[6],pair[7]],snapshot);
       if(shard==null){
         el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
         render({},manifest,feature,snapshotFeatures,capacityRows,communityGroups);
