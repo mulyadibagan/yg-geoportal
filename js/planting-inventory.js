@@ -214,7 +214,8 @@ function summarize(objects,attributions,boundaries){
  if(!names.length&&features.some(function(f){return layerId(f)==='area_mangrove'&&/^MANGROVE-/.test((f.properties||{}).Object_ID||'');}))names=['Aramco Asia Singapore'];
  var donor=names.length===1?names[0]:(names.length?'Donor perlu verifikasi':'Donor belum tercatat');
  var matches=(boundaries||[]).filter(function(b){var p=b.properties;return features.some(function(f){return activityMatchesPlace(f,p.WADMKD||p.Desa||p.NAMOBJ,p.WADMKC||p.Kecamatan,p.WADMKK||p.Kabupaten,b);});}).map(function(b){var p=b.properties;return {name:p.WADMKD||p.Desa||p.NAMOBJ,key:[p.WADMKD||p.Desa||p.NAMOBJ,p.WADMKC||p.Kecamatan,p.WADMKK||p.Kabupaten].join('|').toLowerCase()};});
- rows.push({id:id,category:category,count:item.count,donor:donor,villages:matches,sources:item.sources});
+ var reviewNote=features.map(function(f){var p=f.properties||{},a=attrs[canonical(p.Source_Report_ID||p.reportId||p.Object_ID)];return a&&a.plantingInventory&&a.plantingInventory.note;}).filter(Boolean)[0]||'';
+ rows.push({id:id,category:category,count:item.count,donor:donor,villages:matches,sources:item.sources,reviewNote:reviewNote});
  });});return rows;
 }
 function aggregate(rows,filter){var out={mangrove:0,coffee:0,peat:0,forest:0};rows.filter(filter||function(){return true;}).forEach(function(r){out[r.category]+=r.count;});return out;}

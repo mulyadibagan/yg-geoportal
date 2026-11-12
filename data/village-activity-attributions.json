@@ -662,7 +662,15 @@
       "phase": "",
       "source": "https://webgisyg.id/webgis.html?layer=kopi&object=KOPI-TEMIANG-2021-001",
       "confirmedAt": "2026-11-12",
-      "basis": "Konfirmasi langsung pemilik data untuk daftar 10.500 kopi: Merempan 100 tanaman didukung YG; lima lokasi lainnya, total 10.400, didukung GEC. Jumlah, riwayat penanaman, dan geometri tidak diubah."
+      "basis": "Konfirmasi langsung pemilik data untuk daftar 10.500 kopi: Merempan 100 tanaman didukung YG; lima lokasi lainnya, total 10.400, didukung GEC. Jumlah, riwayat penanaman, dan geometri tidak diubah.",
+      "plantingInventory": {
+        "id": "TEMIANG-COFFEE-2021-2025-SOURCE-RECONCILED",
+        "category": "coffee",
+        "total": 2300,
+        "note": "Temiang: baseline 2021–2022 dihitung 400 bibit sekali. Entri 400 bibit kedua belum terbukti sebagai penanaman terpisah.",
+        "basis": "Laporan tahunan 2022 mencatat 400 kopi Temiang kumulatif 2021–2022. Baris Tree Planting 7 dan 10 serta Coffee Planting 4–5 tidak memiliki pembeda kegiatan. Tahan 400 yang belum terbukti; pertahankan 200 (2023), 500 (2024), 1.200 (Nov 2025).",
+        "reviewedAt": "2026-11-12"
+      }
     },
     {
       "evidenceId": "KOPI-TANJUNG-KURAS-2025-001",

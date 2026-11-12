@@ -23,15 +23,33 @@
         "Nama_Objek": "Penanaman Kopi – Temiang",
         "Kategori": "Agroforestri/Kopi",
         "Jenis_Pohon": "Kopi Liberika",
-        "Jumlah_Tanam": 2700,
-        "Riwayat_Penanaman": "2022: 400 bibit; 2022: 400 bibit; 2023: 200 bibit; 2024: 500 bibit; Nov 2025: 1.200 bibit",
+        "Jumlah_Tanam": 2300,
+        "Riwayat_Penanaman": "2021–2022: 400 bibit (dihitung sekali berdasarkan laporan tahunan 2022); 2023: 200 bibit; 2024: 500 bibit; Nov 2025: 1.200 bibit",
         "Source_Layer": "kopi",
-        "Sumber_Data": "Rekap penanaman Yayasan Gambut",
+        "Sumber_Data": "Rekap penanaman Yayasan Gambut; rekonsiliasi baseline 2021–2022 dengan Annual Report Yayasan Gambut 2022",
         "Status_Objek": "Aktif",
         "Donor": "Global Environment Centre",
         "Donor_Cluster": "Global Environment Centre",
         "Donor_Attribution_Source": "Konfirmasi langsung pemilik data: Merempan YG, lima lokasi lainnya GEC",
-        "Donor_Confirmed_At": "2026-11-12"
+        "Donor_Confirmed_At": "2026-11-12",
+        "Planting_Review_Note": "Temiang: baseline 2021–2022 dihitung 400 bibit sekali. Entri 400 bibit kedua belum terbukti sebagai penanaman terpisah.",
+        "Planting_Reconciliation": {
+          "reviewedAt": "2026-11-12",
+          "sourceReportedTotal": 2700,
+          "countedTotal": 2300,
+          "pendingQuantity": 400,
+          "pendingStatus": "Potensi duplikasi, tidak dihitung sampai ada bukti kegiatan terpisah",
+          "originalHistory": "2022: 400 bibit; 2022: 400 bibit; 2023: 200 bibit; 2024: 500 bibit; Nov 2025: 1.200 bibit",
+          "primarySourceTitle": "Annual Report Yayasan Gambut 2022 / Compilation Capaian Program Tahun 2019–2022",
+          "primarySourceFinding": "Total kumulatif kopi Temiang 2021–2022 adalah 400; rincian seluruh pohon berjumlah 5.416 dan sesuai dengan satu kali 400 kopi.",
+          "registerUrl": "https://docs.google.com/spreadsheets/d/1BrSdJfqHASej0mHfa_qIAhtISQNqMaBB-6IR_2qO3Hg/edit",
+          "registerRanges": [
+            "'Tree Planting'!A7:M7",
+            "'Tree Planting'!A10:M10",
+            "'Coffee Planting'!A4:I5"
+          ],
+          "registerFinding": "Dua entri memiliki desa, jenis, jumlah, dan tahun sama; bulan, tanggal, lokasi plot serta bukti serah-terima pembeda tidak tercantum. Pengulangan pada tab kedua bukan bukti independen."
+        }
       },
       "geometry": {
         "type": "Point",

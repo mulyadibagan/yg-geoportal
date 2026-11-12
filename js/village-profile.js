@@ -519,6 +519,8 @@
     var participantTotal=trainings.reduce(function(total,row){return total+(number(row.male)||0)+(number(row.female)||0);},0)+reports.reduce(function(total,feature){var props=feature.properties||{},target=props.targetFeatureProperties||{};return total+(number(props.Jumlah_Peserta||target.Jumlah_Peserta)||0);},0);
     var plantingArea=programs.filter(function(feature){return ["area_mangrove","area_kopi","mineral_land_restoration_area"].indexOf(layerId(feature))!==-1;}).reduce(function(total,feature){var props=feature.properties||{},area=number(props.Luas_Ha);if(area==null&&feature.geometry&&/Polygon/.test(feature.geometry.type)){area=geometryAreaHa(feature.geometry);}return total+(area||0);},0);
     var plants=plantInventory(programs,reports,timelineAttributions);
+    var reviewNotes=timelineAttributions.filter(function(a){return a.plantingInventory&&programs.concat(reports).some(function(f){var p=f.properties||{};return [p.Object_ID,p.Source_Report_ID,p.reportId].indexOf(a.evidenceId)!==-1;});}).map(function(a){return a.plantingInventory.note;}).filter(Boolean);
+    var note=el('planting-count-review-note');if(!note){note=document.createElement('p');note.id='planting-count-review-note';el('program-summary').insertAdjacentElement('afterend',note);}note.textContent=Array.from(new Set(reviewNotes)).join(' ');note.hidden=!reviewNotes.length;
     var canalUnits=programs.filter(function(feature){return layerId(feature)==="sekat_kanal";}).length,fdrsUnits=programs.filter(function(feature){return layerId(feature)==="fdrs";}).length;
     el("program-badge").textContent=(programs.length||activities.length)?format(programs.length,0)+" objek · "+format(activities.length,0)+" kegiatan":"Belum ada catatan";
     el("program-summary").innerHTML=[

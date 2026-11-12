@@ -3,8 +3,8 @@ const read=p=>JSON.parse(fs.readFileSync(require('path').join(__dirname,'..',p))
 test('shared map, donor and village counts reconcile every intervention village',()=>{
  for(const boundary of boundaries){const p=boundary.properties,n=p.WADMKD||p.Desa||p.NAMOBJ,d=p.WADMKC||p.Kecamatan,r=p.WADMKK||p.Kabupaten,selected=objects.filter(f=>api.activityMatchesPlace(f,n,d,r,boundary));const direct=api.plantInventory(selected,[],attrs),summary=api.aggregate(rows,row=>row.villages.some(v=>v.name===n));assert.deepEqual(summary,direct,n);}
  const donorTotals=[...new Set(rows.map(r=>r.donor))].map(d=>api.aggregate(rows,r=>r.donor===d));for(const category of ['mangrove','coffee','peat','forest'])assert.equal(donorTotals.reduce((n,t)=>n+t[category],0),api.aggregate(rows)[category]);
- assert.deepEqual(api.aggregate(rows),{mangrove:47225,coffee:14230,peat:0,forest:1200});
- assert.equal(api.aggregate(rows,r=>r.donor==='Aramco Asia Singapore').mangrove,45225);assert.equal(api.aggregate(rows,r=>r.donor==='Aliansi Kolibri').forest,1200);assert.equal(api.aggregate(rows,r=>r.donor==='Donor belum tercatat').coffee,0);assert.equal(api.aggregate(rows,r=>r.donor==='Global Environment Centre').coffee,10430);assert.equal(api.aggregate(rows,r=>r.donor==='Yayasan Gambut').coffee,100);
+ assert.deepEqual(api.aggregate(rows),{mangrove:47225,coffee:13830,peat:0,forest:1200});
+ assert.equal(api.aggregate(rows,r=>r.donor==='Aramco Asia Singapore').mangrove,45225);assert.equal(api.aggregate(rows,r=>r.donor==='Aliansi Kolibri').forest,1200);assert.equal(api.aggregate(rows,r=>r.donor==='Donor belum tercatat').coffee,0);assert.equal(api.aggregate(rows,r=>r.donor==='Global Environment Centre').coffee,10030);assert.equal(api.aggregate(rows,r=>r.donor==='Yayasan Gambut').coffee,100);
  assert.equal(rows.filter(r=>r.villages.length===0).length,0);
 });
 test('all surfaces load the shared engine before consumers',()=>{
@@ -15,3 +15,5 @@ test('confirmed coffee attribution overrides stale defaults without changing pla
  const ids=["KOPI-TEMIANG-2021-001","KOPI-TANJUNG-KURAS-2025-001","KOPI-PENCING-BEKULO-2025-001","KOPI-SEPAHAT-2023-001","KOPI-BURUK-BAKUL-2024-001","KOPI-MEREMPAN-2024-001"];
  for(const id of ids){const f=objects.find(f=>f.properties.Object_ID===id),wrong={...f,properties:{...f.properties,Donor:'Old default'}};const after=api.applyDonorAttributions([wrong],attrs)[0];assert.equal(after.properties.Donor,id.includes('MEREMPAN')?'Yayasan Gambut':'Global Environment Centre');assert.equal(after.properties.Jumlah_Tanam,f.properties.Jumlah_Tanam);assert.deepEqual(after.geometry,f.geometry);assert.equal(wrong.properties.Donor,'Old default');}
 });
+
+test('Temiang counts the report-supported 400 baseline once and retains the disputed entry for review',()=>{const p=read('data/kopi.geojson').features.find(f=>f.properties.Object_ID==='KOPI-TEMIANG-2021-001').properties;assert.equal(p.Jumlah_Tanam,2300);assert.equal(p.Planting_Reconciliation.pendingQuantity,400);assert.match(p.Planting_Reconciliation.originalHistory,/2022: 400 bibit; 2022: 400 bibit/);assert.equal(api.aggregate(rows,r=>r.villages.some(v=>v.name==='Temiang')).coffee,2430);assert.equal(rows.find(r=>r.id==='reviewed:temiang-coffee-2021-2025-source-reconciled').reviewNote,p.Planting_Review_Note);});

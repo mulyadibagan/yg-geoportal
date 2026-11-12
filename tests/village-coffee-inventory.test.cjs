@@ -13,13 +13,13 @@ const feature=(id,count,extra={})=>({type:'Feature',geometry:null,properties:{Ob
 test('Temiang official planting total fills a blank snapshot without duplicate inventory',()=>{
  const coffee=JSON.parse(fs.readFileSync(path.join(root,'data/kopi.geojson')));
  const official=coffee.features.find(f=>f.properties.Object_ID==='KOPI-TEMIANG-2021-001');
- assert.equal(official.properties.Jumlah_Tanam,2700);
+ assert.equal(official.properties.Jumlah_Tanam,2300);
  const primary={features:[feature(official.properties.Object_ID,''),feature('BPDP',100),feature('ADDITIONAL',10)]};
  const result=context.mergeFeatureCollections(primary,[{features:[official]}]);
  assert.equal(result.length,3);
- assert.equal(context.plantInventory(result,[]).coffee,2810);
+ assert.equal(context.plantInventory(result,[]).coffee,2410);
  assert.equal(primary.features[0].properties.Jumlah_Tanam,'');
- assert.equal(context.plantInventory(result,[result[2]]).coffee,2810);
+ assert.equal(context.plantInventory(result,[result[2]]).coffee,2410);
 });
 
 test('explicit current values including zero override the official fallback; nursery excluded',()=>{
