@@ -38,7 +38,16 @@
       features.forEach(function(feature){
         var p=feature&&feature.properties||{},id=String(p.Object_ID||p.Source_Object_ID||"").trim();
         var dedupe=id?"id:"+id:[layerId(feature),p.Nama_Objek||p.title||"",JSON.stringify(feature&&feature.geometry||null)].join("|");
-        if(seen[dedupe]){return;}seen[dedupe]=true;merged.push(feature);
+        if(seen[dedupe]){
+          var existing=seen[dedupe].properties;
+          if((existing.Jumlah_Tanam==null||String(existing.Jumlah_Tanam).trim()==="")&&number(p.Jumlah_Tanam)>0){
+            existing.Jumlah_Tanam=p.Jumlah_Tanam;
+            existing.Riwayat_Penanaman=p.Riwayat_Penanaman||existing.Riwayat_Penanaman;
+            existing.Sumber_Data=p.Sumber_Data||existing.Sumber_Data;
+          }
+          return;
+        }
+        var copy=Object.assign({},feature,{properties:Object.assign({},p)});seen[dedupe]=copy;merged.push(copy);
       });
     });
     return merged;
@@ -613,8 +622,8 @@
     el("map-layout-link").href="map-layout.html?source="+encodeURIComponent(source)+"&key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
-      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),optionalJson(SNAPSHOT_URL,"kegiatan terbaru",{features:[]}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20261110-mahkota-document1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};})]);
-      var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=mergeFeatureCollections(snapshot,[pair[5]]),candidateKeys=feature?analyticsKeyCandidates(feature):[key],analyticsKey=candidateKeys.find(function(candidate){return manifest.index&&Object.prototype.hasOwnProperty.call(manifest.index,candidate);})||candidateKeys[0],shard=manifest.index&&manifest.index[analyticsKey];
+      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),optionalJson(SNAPSHOT_URL,"kegiatan terbaru",{features:[]}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20261110-mahkota-document1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};}),optionalJson("data/kopi.geojson?v=20261112-profile-coffee1","rekap kopi",{features:[]}),optionalJson("data/area_kopi.geojson?v=20261112-profile-coffee1","area kopi",{features:[]})]);
+      var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=mergeFeatureCollections(snapshot,[pair[5],pair[6],pair[7]]),candidateKeys=feature?analyticsKeyCandidates(feature):[key],analyticsKey=candidateKeys.find(function(candidate){return manifest.index&&Object.prototype.hasOwnProperty.call(manifest.index,candidate);})||candidateKeys[0],shard=manifest.index&&manifest.index[analyticsKey];
       if(shard==null){
         el("profile-status").innerHTML="<i></i> Analisis utama belum tersedia";
         render({},manifest,feature,snapshotFeatures,capacityRows,communityGroups);
