@@ -1431,7 +1431,7 @@
     const aramcoMonitoring = layerAssets(aramcoAssets, ["monitoring_reports"]);
     const aramcoMappedTrees = sumProperties(aramcoMangrove,
       ["Jumlah_Bib", "Jumlah_Bibit", "Jumlah bibit", "jumlah_bibit", "Jumlah_Tanam", "Pohon"]);
-    Promise.all([fetch('data/donors.json',{cache:'no-store'}).then(r=>r.json()),window.YG_ARAMCO_PHASE3.ready]).then(([donors,final])=>{const donor=window.YG_ARAMCO_PHASE3.reconcileDonors(donors,final).find(d=>d.id==='DNR-ARAMCO');setMetric('aramco-tree-count',window.YG_ARAMCO_PHASE3.cumulative(donor));});
+    window.YG_PLANTING_INVENTORY.load().then(function(data){setMetric('aramco-tree-count',window.YG_PLANTING_INVENTORY.aggregate(data.rows,r=>r.donor==='Aramco Asia Singapore').mangrove);});
     setMetric("aramco-village-count",
       officialMetric(villageCount(aramcoProgrammeAssets), 4));
     const aramcoMappedArea = sumProperties(aramcoMangrove,
@@ -1456,8 +1456,7 @@
     setMetric("ppcf-location-count", officialMetric(villageCount(ppcfAssets), 1));
     setMetric("ppcf-area-count", officialMetric(sumProperties(ppcfCoffeeAreas,
       ["Luas_Ha", "Luas", "luas_ha"]), 3.6), 2, " ha");
-    setMetric("ppcf-planted-count", officialMetric(sumProperties(ppcfCoffeeAreas,
-      ["Jumlah_Bibit", "Jumlah bibit", "jumlah_bibit", "Bibit_Ditanam"]), 4000));
+    window.YG_PLANTING_INVENTORY.load().then(function(data){setMetric('ppcf-planted-count',window.YG_PLANTING_INVENTORY.aggregate(data.rows,r=>r.donor==='Pan Pacific Conservation Foundation (PPCF)').coffee);});
     setMetric("ppcf-nursery-seedling-count", officialMetric(sumProperties(ppcfCoffee,
       ["Jumlah_Bibit", "Jumlah bibit", "jumlah_bibit", "Bibit"]), 4500), 0, "+");
     setMetric("ppcf-canal-count", officialMetric(ppcfCanals.length, 4));
@@ -1620,6 +1619,10 @@
       }
     }
 
+    const syncedPlanting = await window.YG_PLANTING_INVENTORY.load();
+    programmeMetrics.mangrove.seedlings = syncedPlanting.totals.mangrove;
+    programmeMetrics.peat.coffee = syncedPlanting.totals.coffee;
+    programmeMetrics.peat.forest = syncedPlanting.totals.peat;
     const estimatedPeatRewettingArea = calculateEstimatedPeatRewettingArea(programmeMetrics.peat.canals);
     const peatRewettingArea = programmeMetrics.peat.rewetting > 0
       ? programmeMetrics.peat.rewetting
@@ -1643,10 +1646,7 @@
     });
 
     const mineralArea = programmeMetrics.mineral.area;
-    const mineralSeedlings = Math.max(
-      programmeMetrics.mineral.seedlings,
-      mineralProgrammeSeedlings
-    );
+    const mineralSeedlings = syncedPlanting.totals.forest;
     const revegetationArea = programmeMetrics.mangrove.area +
       programmeMetrics.peat.area + mineralArea;
     const totalRestorationArea =
@@ -1682,6 +1682,7 @@
     petapahanMetrics.restorationSigns = Math.max(1, programmeMetrics.mineral.signs);
     villageMetricDetails.set(petapahanKey, petapahanMetrics);
 
+    syncedPlanting.rows.flatMap(row=>row.villages).forEach(village=>{const k=village.name.toLowerCase(),metrics=villageMetricDetails.get(k)||{name:village.name};const totals=window.YG_PLANTING_INVENTORY.aggregate(syncedPlanting.rows,row=>row.villages.some(v=>v.key===village.key));metrics.mangroveSeedlings=totals.mangrove;metrics.coffeeSeedlings=totals.coffee;metrics.genericSeedlings=totals.forest+totals.peat;villageMetricDetails.set(k,metrics);});
     window.YG_DASHBOARD_STATS = {
       mangroveArea: programmeMetrics.mangrove.area,
       peatArea: programmeMetrics.peat.area,

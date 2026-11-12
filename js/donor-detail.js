@@ -2,7 +2,7 @@
   'use strict';
   var donorName = new URLSearchParams(location.search).get('donor') || 'Aramco Asia Singapore';
   var storageKey = 'ygDonorDrafts_v1';
-  var donor;
+  var donor,plantingData;
 
   function esc(value) {
     return String(value == null ? '' : value).replace(/[&<>"']/g, function (char) {
@@ -22,6 +22,8 @@
   function render() {
     var data = combinedData();
     var indicators = (donor.indicators || []).map(function (item) {
+      var mapped=plantingData&&window.YG_PLANTING_INVENTORY.aggregate(plantingData.rows,r=>r.donor===window.YG_PLANTING_INVENTORY.donorName(donor.name));
+      if(mapped&&/^(bibit tertanam|bibit ditanam|pohon mangrove ditanam)$/i.test(item.label||'')){item=Object.assign({},item,{value:Object.values(mapped).reduce((a,b)=>a+b,0).toLocaleString('id-ID'),label:item.label+' · lokasi unik terpetakan'});}
       var progress = Math.max(0, Math.min(100, Number(item.progress || 0)));
       return '<article class="funding-indicator donor-page-indicator"><i aria-hidden="true">●</i><strong>' + esc(item.value) + '</strong><span>' + esc(item.label) + '</span><div class="impact-track" aria-label="Capaian ' + progress + '%"><b style="width:' + progress + '%"></b></div><small>' + progress.toLocaleString('id-ID', {maximumFractionDigits:1}) + '% capaian</small></article>';
     }).join('') || '<p>Belum ada indikator capaian.</p>';
@@ -70,7 +72,8 @@
 
   fetch('data/donors.json?v=20260726-2', { cache: 'no-store' })
     .then(function (response) { return response.json(); })
-    .then(function (rows) {
+    .then(async function (rows) {
+      plantingData=await window.YG_PLANTING_INVENTORY.load();
       donor = rows.find(function (item) { return item.name === donorName; }) || rows[0];
       render();
       document.getElementById('donor-entry-form').addEventListener('submit', saveDraft);

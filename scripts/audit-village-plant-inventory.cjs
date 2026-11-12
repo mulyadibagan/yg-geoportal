@@ -1,7 +1,7 @@
 const fs=require('node:fs'),vm=require('node:vm'),assert=require('node:assert/strict'),path=require('node:path');
 const root=path.resolve(__dirname,'..'),read=p=>JSON.parse(fs.readFileSync(path.join(root,p),'utf8'));
 const source=fs.readFileSync(path.join(root,'js/village-profile.js'),'utf8');
-const context={window:{location:{search:''}},URLSearchParams,console};vm.createContext(context);
+const context={window:{location:{search:''},YG_PLANTING_INVENTORY:require(path.join(root,'js/planting-inventory.js'))},URLSearchParams,console};vm.createContext(context);
 vm.runInContext(source.slice(0,source.lastIndexOf('  el("print-profile")'))+'globalThis.h={mergeFeatureCollections,featureMatchesPlace,activityMatchesPlace,isActivityFeature,isProgramFeature,plantInventory,plantInventoryLedger};})();',context);
 const snapshot=read('data/master-database-snapshot.json'),objects=context.h.mergeFeatureCollections(snapshot,['area_mangrove.geojson','kopi.geojson','area_kopi.geojson'].map(p=>read('data/'+p))),attributions=read('data/village-activity-attributions.json').attributions;
 const villages=read('data/desa_intervensi.geojson').features.map(boundary=>{
