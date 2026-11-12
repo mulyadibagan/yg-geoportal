@@ -3760,6 +3760,7 @@ L.control.scale({
       .map(applyExternalPeatInfrastructureDonorPolicy)
       .map(applyVerifiedTemiangCanalMaintenance)
       .map(applyRequestedDonorCorrections));
+    if(plantingInventoryData)rawFeatures=window.YG_PLANTING_INVENTORY.applyDonorAttributions(rawFeatures,plantingInventoryData.attributions);
     const groups = {};
 
     rawFeatures.forEach(feature => {
