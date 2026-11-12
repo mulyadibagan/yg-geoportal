@@ -1,7 +1,7 @@
 (function(){
   "use strict";
   var SNAPSHOT_URL="https://webgis-api.yayasangambut.org/snapshots/current/objects.json";
-  var LOCAL_SNAPSHOT_URL="data/master-database-snapshot.json",timelineDonors=[],timelineSyncStarted=false;
+  var LOCAL_SNAPSHOT_URL="data/master-database-snapshot.json",timelineDonors=[],timelineAttributions=[],timelineSyncStarted=false;
   var MANIFEST_URL="data/administrative-village-analytics/manifest.json";
   var params=new URLSearchParams(window.location.search);
   var key=String(params.get("key")||"").trim().toLowerCase();
@@ -575,7 +575,7 @@
     el("activity-list").innerHTML=expandableList(activities,activityItem,4,"kegiatan");
     if(window.VillageActivityTimeline){
       var timelineFeatures=allFeatures.filter(function(f){var p=f.properties||{};return (isActivityFeature(f)||(p.Source_Type==="verified_report_asset"&&p.Source_Report_ID))&&activityMatchesPlace(f,name,district,regency,boundary);});
-      window.VillageActivityTimeline.mount(timelineFeatures,trainings,{name:name,regency:regency,donors:timelineDonors,objects:allFeatures,localObjectIds:allFeatures.filter(function(f){return featureMatchesPlace(f,name,district,regency,boundary);}).map(function(f){return String((f.properties||{}).Object_ID||'').toLowerCase();})});
+      window.VillageActivityTimeline.mount(timelineFeatures,trainings,{name:name,regency:regency,donors:timelineDonors,attributions:timelineAttributions,objects:allFeatures,localObjectIds:allFeatures.filter(function(f){return featureMatchesPlace(f,name,district,regency,boundary);}).map(function(f){return String((f.properties||{}).Object_ID||'').toLowerCase();})});
     }
     el("program-note").textContent="Kegiatan dan monitoring yang memiliki titik, garis, atau polygon dicocokkan melalui posisi dan irisannya dengan batas desa pada peta. Atribut nama desa digunakan untuk catatan nonspasial, seperti data pelatihan yang belum memiliki koordinat.";
   }
@@ -654,8 +654,8 @@
     el("map-layout-link").href="map-layout.html?source="+encodeURIComponent(source)+"&key="+encodeURIComponent(key);
     if(!key){showError("Tautan desa tidak lengkap. Silakan pilih desa melalui WebGIS.");return;}
     try{
-      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadPublishedSnapshot().catch(function(){unavailableData.push("kegiatan terbaru");return {features:[]};}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20261110-mahkota-document1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};}),optionalJson("data/kopi.geojson?v=20261112-profile-coffee1","rekap kopi",{features:[]}),optionalJson("data/area_kopi.geojson?v=20261112-profile-coffee1","area kopi",{features:[]}),loadJson("data/donors.json?v=20261112-timeline-sync1").catch(function(){return [];})]);
-      timelineDonors=pair[8];
+      var pair=await Promise.all([loadJson(MANIFEST_URL+"?v="+Date.now()),findFeature(),loadPublishedSnapshot().catch(function(){unavailableData.push("kegiatan terbaru");return {features:[]};}),optionalJson("data/capacity-building.json?v=20260823-dayun-coffee","pelatihan",[]),loadJson("data/community-groups.json?v=20261110-mahkota-document1").catch(function(){return {groups:[]};}),loadJson("data/area_mangrove.geojson?v=20260919-ma-earth-teluk-piyai1").catch(function(){return {features:[]};}),optionalJson("data/kopi.geojson?v=20261112-profile-coffee1","rekap kopi",{features:[]}),optionalJson("data/area_kopi.geojson?v=20261112-profile-coffee1","area kopi",{features:[]}),loadJson("data/donors.json?v=20261112-timeline-sync1").catch(function(){return [];}),loadJson("data/village-activity-attributions.json?v=20261112-donors1").catch(function(){return {attributions:[]};})]);
+      timelineDonors=pair[8];timelineAttributions=(pair[9]&&pair[9].attributions)||[];
       var manifest=pair[0],feature=pair[1],snapshot=pair[2]||{},capacityRows=pair[3]||[],communityGroups=pair[4]&&pair[4].groups||[],snapshotFeatures=mergeFeatureCollections(snapshot,[pair[5],pair[6],pair[7]]),candidateKeys=feature?analyticsKeyCandidates(feature):[key],analyticsKey=candidateKeys.find(function(candidate){return manifest.index&&Object.prototype.hasOwnProperty.call(manifest.index,candidate);})||candidateKeys[0],shard=manifest.index&&manifest.index[analyticsKey];
       startTimelineSync(feature,capacityRows,[pair[5],pair[6],pair[7]],snapshot);
       if(shard==null){

@@ -24,3 +24,11 @@ test('invalid dates remain undated and ISO date never shifts across time zones',
  assert.equal(timeline.dateInfo('2026-08-26').year,'2026');
  assert.equal(timeline.dateInfo('2026-08-26').sort,timeline.dateInfo('26/08/2026').sort);
 });
+
+test('verified attribution enriches exact existing IDs without adding events or inferring numbered phases',()=>{
+ const features=[feature({reportId:'YG-ONE',Donor:'Donor belum tercatat',targetFeatureProperties:{Fase:'Fase 2'},photos:['https://example.org/photo.jpg']}),feature({reportId:'OTHER',activityDate:'2026-07-01'})];
+ const attributions=[{evidenceId:'MONITORING-YG-ONE',donor:'Aramco',phase:'Fase 3',source:'https://example.org/report'},{evidenceId:'OTHER',donor:'GEC',phase:'',source:'https://example.org/report'},{evidenceId:'ABSENT',donor:'GEC',source:'https://example.org/report'}];
+ const rows=timeline.buildRecords(features,[],{attributions});
+ assert.equal(rows.length,2);const row=rows.find(r=>r.id==='YG-ONE');assert.equal(row.donor,'Aramco Asia Singapore');assert.equal(row.phase,'Fase 3');assert.equal(row.photos.length,1);assert.equal(rows.find(r=>r.id==='OTHER').phase,'');
+ assert.equal(timeline.buildRecords([feature({reportId:'YG-ONE-similar'})],[],{attributions})[0].donor,'Donor belum tercatat');
+});
