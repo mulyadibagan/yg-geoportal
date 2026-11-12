@@ -23,7 +23,7 @@
     var data = combinedData();
     var indicators = (donor.indicators || []).map(function (item) {
       var mapped=plantingData&&window.YG_PLANTING_INVENTORY.aggregate(plantingData.rows,r=>r.donor===window.YG_PLANTING_INVENTORY.donorName(donor.name));
-      if(mapped&&/^(bibit tertanam|bibit ditanam|pohon mangrove ditanam)$/i.test(item.label||'')){item=Object.assign({},item,{value:Object.values(mapped).reduce((a,b)=>a+b,0).toLocaleString('id-ID'),label:item.label+' · lokasi unik terpetakan'});}
+      if(mapped&&/^(bibit tertanam|bibit ditanam|bibit kopi ditanam|pohon kopi ditanam|pohon mangrove ditanam)$/i.test(item.label||'')){item=Object.assign({},item,{value:(/kopi/i.test(item.label)?mapped.coffee:/mangrove/i.test(item.label)?mapped.mangrove:Object.values(mapped).reduce((a,b)=>a+b,0)).toLocaleString('id-ID'),label:item.label+' · lokasi unik terpetakan'});}
       var progress = Math.max(0, Math.min(100, Number(item.progress || 0)));
       return '<article class="funding-indicator donor-page-indicator"><i aria-hidden="true">●</i><strong>' + esc(item.value) + '</strong><span>' + esc(item.label) + '</span><div class="impact-track" aria-label="Capaian ' + progress + '%"><b style="width:' + progress + '%"></b></div><small>' + progress.toLocaleString('id-ID', {maximumFractionDigits:1}) + '% capaian</small></article>';
     }).join('') || '<p>Belum ada indikator capaian.</p>';
