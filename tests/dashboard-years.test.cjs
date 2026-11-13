@@ -29,3 +29,5 @@ test('unknown dates, duplicate assets, and repeated attendance have separate sem
 });
 
 test('Indonesian report dates are parsed without using publication dates',()=>{assert.equal(api.year('17/07/2026'),'2026');assert.equal(api.year('31/02/2026'),'unknown');const records=api.build({planting:{objects:[],rows:[]},features:[],capacity:[{id:'R1',date:'2026-11-13',achievementDate:'',male:20},{id:'R2',achievementDate:'25/07/2026',male:43}]});assert.equal(api.summary(records,'2026').participants,43);assert.equal(api.summary(records,'unknown').participants,20);});
+
+test('annual infrastructure retains mapped construction status and reconciles all yearly buckets',()=>{const infra=['sekat_kanal.geojson','fdrs.geojson'].flatMap(f=>read(f).features);const list=api.build({planting:{objects:[],rows:[]},features:infra});assert.equal(api.summary(list,'all').canals,13);assert.equal(api.summary(list,'2026').canals,2);assert.ok(list.some(e=>e.id==='SEKAT-PEDEKIK-2026-001'&&e.status==='Sedang dibangun'));const ys=[...new Set(list.map(e=>e.year))];assert.equal(ys.reduce((n,y)=>n+api.summary(list,y).canals,0),api.summary(list,'all').canals);});
