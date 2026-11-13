@@ -27,3 +27,5 @@ test('unknown dates, duplicate assets, and repeated attendance have separate sem
  const s=api.summary(api.build(input),'2025');assert.equal(s.fdrs,1);assert.equal(s.trainings,2);assert.equal(s.participants,20);assert.equal(s.villages.size,1);
  assert.equal(api.year('2021–2022'),'unknown');assert.equal(api.year('2026-11-12T00:00:00Z'),'2026');assert.equal(api.historyParts('2025: 200 bibit',400),null);
 });
+
+test('Indonesian report dates are parsed without using publication dates',()=>{assert.equal(api.year('17/07/2026'),'2026');assert.equal(api.year('31/02/2026'),'unknown');const records=api.build({planting:{objects:[],rows:[]},features:[],capacity:[{id:'R1',date:'2026-11-13',achievementDate:'',male:20},{id:'R2',achievementDate:'25/07/2026',male:43}]});assert.equal(api.summary(records,'2026').participants,43);assert.equal(api.summary(records,'unknown').participants,20);});

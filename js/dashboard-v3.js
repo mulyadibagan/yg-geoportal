@@ -237,6 +237,7 @@
   }
 
   function animateCounter(element, value, digits = 0, suffix = "") {
+    const counterVersion = element._ygCounterVersion = (element._ygCounterVersion || 0) + 1;
     const reduceMotion = window.matchMedia &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     if (reduceMotion || value === 0) {
@@ -246,6 +247,7 @@
     const startedAt = performance.now();
     const duration = 650;
     function frame(now) {
+      if (element._ygCounterVersion !== counterVersion) return;
       const progress = Math.min(1, (now - startedAt) / duration);
       const eased = 1 - Math.pow(1 - progress, 3);
       element.textContent = formatNumber(value * eased, digits) + suffix;
@@ -355,6 +357,7 @@
       id: firstValue(props, ["reportId", "Object_ID"]),
       name: firstValue(props, ["title", "Nama_Objek"]),
       date: firstValue(props, ["activityDate", "publishedAt"]),
+      achievementDate: firstValue(props, ["activityDate"]),
       location: firstValue(props, ["locationName", "Desa", "village"]),
       village: firstValue(props, ["Desa", "village"]),
       male: numericFrom(details, ["maleParticipants", "male"]),
@@ -387,6 +390,7 @@
       id: firstValue(props, ["reportId", "Object_ID"]),
       name: firstValue(props, ["title", "Nama_Objek"]),
       date: firstValue(props, ["activityDate", "publishedAt"]),
+      achievementDate: firstValue(props, ["activityDate"]),
       location: firstValue(props, ["locationName", "Desa", "village"]),
       village: firstValue(props, ["Desa", "village"]),
       male: Math.max(0, participants - female),
@@ -2076,7 +2080,7 @@
     hydratePenabuluPhotos(active);
 
     if (window.YG_DASHBOARD_YEARS) {
-      window.YG_DASHBOARD_YEARS.mount({ features: active, planting: syncedPlanting, capacity: capacitySummary.records || [] });
+      window.YG_DASHBOARD_YEARS.mount({ features: active, planting: syncedPlanting, capacity: capacitySummary.records || [], totals: window.YG_DASHBOARD_STATS });
     }
 
     document.getElementById("dashboard-updated").textContent =
