@@ -10,7 +10,7 @@ function item(label,value){return'<div><span>'+esc(label)+'</span><strong>'+esc(
 function kpi(icon,label,value,note){return'<article class="vp-kpi"><div class="vp-kpi__icon">'+esc(icon)+'</div><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong><small>'+esc(note||"")+'</small></article>'}
 function toast(message){var n=el("toast");n.textContent=message;n.classList.add("is-visible");setTimeout(function(){n.classList.remove("is-visible")},2200)}
 function showError(message){el("loading-state").hidden=true;el("error-message").textContent=message;el("error-state").hidden=false}
-async function json(url){return window.YG_PRIVATE_DATA.json(url)}
+async function json(url,options){return window.YG_PRIVATE_DATA.json(url,options)}
 function dateValue(value){if(value==null||value==="")return"—";var d=typeof value==="number"?new Date(value):new Date(String(value));return isNaN(d.getTime())?String(value):d.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"})}
 function monthLabel(value){var parts=String(value).split("-"),d=new Date(Number(parts[0]),Number(parts[1])-1,1);return d.toLocaleDateString("id-ID",{month:"long",year:"numeric"})}
 function profileId(feature){var p=feature&&feature.properties||{};return String(p.PBPH_ID||[p.NAMOBJ,p.NO_SK].filter(Boolean).join("|")).trim()}
@@ -24,6 +24,7 @@ function profileDetections(reports,profile){
   })});return rows;
 }
 function renderMap(features,name,reports,profile){
+  if(map){map.remove();map=null}
   map=L.map("village-map",{zoomControl:true,scrollWheelZoom:false});
   L.tileLayer("https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}",{maxNativeZoom:17,maxZoom:20,attribution:"Tiles © Esri"}).addTo(map);
   var boundary=L.geoJSON({type:"FeatureCollection",features:features},{style:{color:"#ff7a18",weight:3,opacity:1,fillColor:"#f97316",fillOpacity:.12}}).addTo(map),bounds=boundary.getBounds();
@@ -86,15 +87,41 @@ function render(features,reports,registry,forestAnalytics){
   document.title=(p.NAMOBJ||"PBPH")+" · Profil PBPH | Yayasan Gambut";el("area-name").textContent=p.NAMOBJ||"Profil PBPH";el("area-location").textContent=[p.JENIS,p.KEGIATAN].filter(Boolean).join(" · ");el("data-updated").textContent=latest?"Laporan terakhir "+monthLabel(latest.month):"Laporan bulanan belum tersedia";
   el("kpi-grid").innerHTML=[kpi("⌗","Luas SK akhir",area==null?"—":format(area,2)+" ha","atribut sumber PBPH"),kpi("◫","Bagian polygon",format(features.length,0),"digabung dalam profil"),kpi("▤","Laporan tersedia",format(reports.length,0),"mulai Juli 2026"),kpi("◉","Hotspot dalam laporan",format(total,0),"akumulasi laporan bulanan")].join("");
   el("identity-list").innerHTML=[item("Pemegang PBPH",p.NAMOBJ),item("PBPH ID",p.PBPH_ID),item("Nomor SK",p.NO_SK),item("Tanggal SK",dateValue(p.TGL_SK)),item("Luas SK akhir",area==null?"—":format(area,2)+" ha"),item("Jenis PBPH",p.JENIS),item("Kegiatan",p.KEGIATAN)].join("");
-  renderDocuments(registry,p);renderForestLoss(forestAnalytics,p);el("loading-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){renderMap(features,p.NAMOBJ||"PBPH",reports,p)});
+  renderDocuments(registry,p);renderForestLoss(forestAnalytics,p);el("loading-state").hidden=true;el("profile-content").hidden=false;requestAnimationFrame(function(){try{renderMap(features,p.NAMOBJ||"PBPH",reports,p)}catch(error){console.error(error);el("village-map").textContent="Peta belum dapat dimuat. Identitas dan laporan PBPH tetap tersedia."}});
+}
+function supportWarning(messages){
+  var node=el("profile-support-status");if(!node){node=document.createElement("div");node.id="profile-support-status";node.className="vp-message";node.setAttribute("role","status");el("profile-content").prepend(node)}
+  node.hidden=!messages.length;node.textContent=messages.join(" ");
 }
 async function init(){
-  if(!id){showError("Tautan PBPH tidak lengkap. Pilih areal melalui WebGIS.");return}
+  if(!id){showError("Tautan PBPH tidak lengkap. Pilih areal melalui direktori PHL & SVLK atau peta internal.");return}
+  el("error-state").hidden=true;el("loading-state").hidden=false;
   try{
-    var base=await Promise.all([json("data/PBPH_RIAU_052026.geojson?v=20260831-profile1"),json("data/fire-monthly/index.json?v=20260831-profile1"),json("data/pbph-documents.json?v=20260831-profile1"),json("data/pbph-tree-cover-monitoring.json?v=20260917-forest-loss1").catch(function(){return null})]),geo=base[0],index=base[1],registry=base[2],forestAnalytics=base[3],features=(geo.features||[]).filter(function(feature){return profileId(feature)===id});
-    if(!features.length)throw new Error("Areal PBPH tidak ditemukan pada snapshot Mei 2026.");
-    var entries=(index.reports||[]).filter(function(row){return row.month>=REPORT_START&&row.status==="final"}).sort(function(a,b){return a.month.localeCompare(b.month)}),reports=await Promise.all(entries.map(function(row){return json(row.data+"?v="+encodeURIComponent(row.generatedAt||"1"))}));render(features,reports,registry,forestAnalytics);
+    // Only the authenticated boundary is required to open the profile.
+    var geo=await json("data/PBPH_RIAU_052026.geojson?v=20261113-profile2"),features=(geo.features||[]).filter(function(feature){var p=feature.properties||{};return profileId(feature)===id||[p.NAMOBJ,p.NO_SK].filter(Boolean).join("|").trim()===id});
+    if(!features.length)throw new Error("Areal PBPH pada tautan ini tidak ditemukan. Pilih kembali melalui direktori PHL & SVLK atau peta internal.");
+    id=profileId(features[0]);
+    render(features,[],{profiles:{}},null);var pendingKpi=el("kpi-grid").querySelectorAll(".vp-kpi>strong")[3];if(pendingKpi)pendingKpi.textContent="Memuat…";supportWarning(["Identitas PBPH tersedia. Memuat laporan, dokumen, dan analisis pendukung…"]);
+    var results=await Promise.allSettled([
+      json("data/fire-monthly/index.json?v=20261113-profile2",{optional:true,timeoutMs:12000}),
+      json("data/pbph-documents.json?v=20261113-profile2",{optional:true,timeoutMs:12000}),
+      json("data/pbph-tree-cover-monitoring.json?v=20261113-profile2",{optional:true,timeoutMs:12000})
+    ]),index=results[0].status==="fulfilled"?results[0].value:{reports:[]},registry=results[1].status==="fulfilled"?results[1].value:{profiles:{}},forest=results[2].status==="fulfilled"?results[2].value:null;
+    var entries=(index.reports||[]).filter(function(row){return row.month>=REPORT_START&&row.status==="final"}).sort(function(a,b){return a.month.localeCompare(b.month)});
+    var loaded=await Promise.allSettled(entries.map(function(row){return json(row.data+"?v="+encodeURIComponent(row.generatedAt||"1"),{optional:true,timeoutMs:12000})}));
+    var reports=loaded.filter(function(r){return r.status==="fulfilled"}).map(function(r){return r.value}),messages=[];
+    render(features,reports,registry,forest);
+    if(results[0].status!=="fulfilled"||loaded.some(function(r){return r.status!=="fulfilled"})){
+      messages.push("Sebagian laporan hotspot belum dapat dimuat; rekap belum lengkap.");
+      var value=el("kpi-grid").querySelectorAll(".vp-kpi>strong")[3];if(value)value.textContent="Belum lengkap";
+      el("hotspot-note").textContent="Rekap hanya mencakup laporan yang berhasil dimuat. Bulan yang gagal dimuat tidak dianggap nol hotspot.";
+      if(!reports.length)el("hotspot-empty").textContent="Data hotspot belum dapat dimuat. Jumlah deteksi belum dapat disimpulkan.";
+    }
+    if(results[1].status!=="fulfilled"){messages.push("Dokumen dan status SVLK belum dapat dimuat.");el("document-empty").textContent="Register dokumen belum dapat dimuat.";el("document-note").textContent="Ketersediaan dokumen belum dapat disimpulkan dari gangguan pemuatan ini.";el("svlk-status").textContent="Belum dapat dimuat";el("svlk-note").textContent="Status sertifikat belum dapat dimuat. Coba muat ulang halaman.";}
+    if(results[2].status!=="fulfilled")messages.push("Analisis tutupan pohon belum dapat dimuat.");
+    supportWarning(messages);
   }catch(e){console.error(e);showError(e.message||"Profil PBPH gagal dimuat.")}
 }
+
 el("print-profile").addEventListener("click",function(){window.print()});el("share-profile").addEventListener("click",async function(){try{if(navigator.share){await navigator.share({title:document.title,url:location.href});return}await navigator.clipboard.writeText(location.href);toast("Tautan profil disalin")}catch(e){if(e&&e.name!=="AbortError")toast("Tautan belum dapat disalin")}});init();
 })();
