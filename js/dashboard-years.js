@@ -64,37 +64,39 @@ function summary(entries,selected){
  rows.forEach(e=>{if(e.kind==='planting'){out.plants+=e.count;out[e.category]+=e.count;}if(e.kind==='area')out.area+=e.count;if(e.kind==='sekat_kanal')out.canals+=e.count;if(e.kind==='fdrs')out.fdrs+=e.count;if(e.kind.startsWith('nursery_'))out.nurseries+=e.count;if(e.kind==='nursery_mangrove')out.mangroveNurseries+=e.count;if(e.kind==='apo')out.wave+=e.count;if(e.kind==='training')out.trainings++;if(e.kind==='engagement')out.engagement++;out.participants+=e.participants||0;e.villages.forEach(v=>{const a=v.split('|');out.villages.add(a[0]+'|'+(a[2]||''));});e.regencies.filter(Boolean).forEach(v=>out.regencies.add(v));if(e.group)out.groups.add(norm(e.group));});
  return out;
 }
-let selected='all',saved=null;
 function mount(input){
- const grid=document.getElementById('category-grid'),host=document.getElementById('programme-overview');if(!grid||!host)return;
- const entries=build(input),years=[...new Set(entries.map(e=>e.year).filter(y=>y!=='unknown'))].sort().reverse();
- const ids=['dash-restoration-area','dash-seedlings-planted','dash-participants','dash-villages','dash-regencies','dash-participants-detail'];
- saved={grid:grid.innerHTML,values:Object.fromEntries(ids.map(id=>[id,document.getElementById(id)?.textContent])),heading:document.querySelector('.hero-data-summary__head small')?.textContent,areaLabel:document.querySelector('#dash-restoration-area + span')?.textContent};
- let box=document.getElementById('achievement-years');if(!box){box=document.createElement('section');box.id='achievement-years';host.insertBefore(box,grid);}
- let details=document.getElementById('achievement-year-details');if(!details){details=document.createElement('section');details.id='achievement-year-details';host.appendChild(details);}
- const totals=input.totals||{};
- const fmt=(n,d=0)=>new Intl.NumberFormat('id-ID',{maximumFractionDigits:d}).format(n),esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
- Object.assign(saved.values,{'dash-restoration-area':fmt(totals.totalRestorationArea,2),'dash-seedlings-planted':fmt(totals.totalPlantedSeedlings),'dash-participants':fmt(totals.participants),'dash-villages':fmt(totals.villages),'dash-regencies':fmt(totals.regencies)});
- const label=y=>y==='all'?'Semua Tahun':y==='unknown'?'Belum teridentifikasi':y;
- const buckets=years.concat(entries.some(e=>e.year==='unknown')?['unknown']:[]);
- if(selected!=='all'&&!buckets.includes(selected))selected='all';
- box.innerHTML='<div class="achievement-year-toolbar"><label for="achievement-year">Capaian per tahun</label><select id="achievement-year"><option value="all">Semua Tahun</option>'+buckets.map(y=>'<option value="'+y+'">'+label(y)+'</option>').join('')+'</select></div><p class="achievement-year-note">Pilih tahun untuk melihat penanaman, infrastruktur, dan kegiatan yang tercatat pada tahun tersebut. Jumlah kehadiran dapat mencakup orang yang sama pada beberapa kegiatan.</p>';
- const select=document.getElementById('achievement-year');select.value=selected;
- function render(){
-  const s=summary(entries,selected);select.value=selected;
-  const set=(id,v)=>{const e=document.getElementById(id);if(e){e._ygCounterVersion=(e._ygCounterVersion||0)+1;e.textContent=v;}};
-  const head=document.querySelector('.hero-data-summary__head small'),areaLabel=document.querySelector('#dash-restoration-area + span');
-  if(selected==='all'){grid.innerHTML=saved.grid;ids.forEach(id=>set(id,saved.values[id]));if(head)head.textContent=saved.heading;if(areaLabel)areaLabel.textContent=saved.areaLabel;}
-  else {
-   set('dash-restoration-area',fmt(s.area,2));set('dash-seedlings-planted',fmt(s.plants));set('dash-participants',fmt(s.participants));set('dash-villages',fmt(s.villages.size));set('dash-regencies',fmt(s.regencies.size));set('dash-participants-detail','kehadiran pada kegiatan tercatat');if(head)head.textContent=label(selected);if(areaLabel)areaLabel.textContent='Luas penanaman terdata';
-   const cards=[['Restorasi Mangrove',s.mangrove,'tanaman',[['Rumah bibit',s.mangroveNurseries,'unit'],['Wave breaker',s.wave,'unit']],'webgis.html?layer=area_mangrove'],['Restorasi Gambut',s.coffee+s.peat,'tanaman',[['Sekat kanal',s.canals,'unit'],['FDRS',s.fdrs,'unit']],'webgis.html?layer=sekat_kanal'],['Restorasi Lahan Mineral',s.forest,'tanaman',[],'webgis.html?layer=mineral_land_restoration_area'],['Pelibatan Masyarakat & Kapasitas',s.participants,'kehadiran',[['Pelatihan',s.trainings,'sesi'],['Kegiatan lapangan',s.engagement,'kegiatan']],'community-engagement.html']];
-   grid.innerHTML=cards.map(c=>'<a class="programme-card dashboard-link" href="'+c[4]+'"><header><h3>'+c[0]+'</h3><span>→</span></header><div class="programme-current"><span>'+(c[2]==='tanaman'?'Bibit tertanam':'Kehadiran')+' · '+label(selected)+'</span><strong>'+fmt(c[1])+'</strong><small>'+c[2]+'</small></div><div class="programme-support-grid">'+c[3].map(r=>'<span><small>'+r[0]+'</small><strong>'+fmt(r[1])+' '+r[2]+'</strong></span>').join('')+'</div><div class="programme-card__meta">Sesuai bukti tahun yang tersedia · rincian di bawah</div></a>').join('');
-  }
-  const max=Math.max(1,...buckets.map(y=>summary(entries,y).plants));
-  details.innerHTML='<details class="achievement-year-chart" '+(selected==='all'?'':'open')+'><summary>Perbandingan penanaman per tahun</summary><p>Jumlah tertanam per tahun, bukan jumlah tanaman hidup. Klik tahun untuk membuka rinciannya.</p>'+buckets.map(y=>{const n=summary(entries,y).plants;return '<button type="button" data-achievement-year="'+y+'" aria-pressed="'+(selected===y)+'"><span>'+label(y)+'</span><i aria-hidden="true"><b style="width:'+Math.max(n?1:0,n/max*100)+'%"></b></i><strong>'+fmt(n)+'</strong></button>';}).join('')+'</details><p class="achievement-year-note">Luas tahunan adalah luas polygon penanaman yang memiliki tahun, bukan total dampak restorasi atau rewetting. Desa dihitung sekali per tahun berdasarkan nama dan kabupaten yang tersedia. Data lintas tahun yang belum terurai masuk “Belum teridentifikasi”.</p>'+
-  '<details class="achievement-year-records"><summary>Rincian bukti · '+esc(label(selected))+'</summary><div class="achievement-year-table"><table><thead><tr><th>Tahun</th><th>Kegiatan / lokasi</th><th>Capaian tercatat</th><th>Program / mitra</th></tr></thead><tbody>'+entries.filter(e=>selected==='all'||e.year===selected).map(e=>'<tr><td>'+label(e.year)+'</td><td><a href="'+esc(e.url)+'">'+esc(e.name)+'</a>'+(e.note?'<small>'+esc(e.note)+'</small>':'')+'</td><td>'+fmt(e.count,e.kind==='area'?2:0)+' '+(e.kind==='planting'?'tanaman':e.kind==='area'?'ha':e.kind==='training'?'sesi':e.kind==='engagement'?'kegiatan':'unit')+(e.participants?' · '+fmt(e.participants)+' kehadiran':'')+'</td><td>'+esc(e.donor||'Belum tercatat')+'</td></tr>').join('')+'</tbody></table></div></details>';
+ const trigger=document.getElementById('dash-restoration-area')?.closest('a');
+ if(!trigger)return;
+ // Keep annual reporting behind the existing restoration total.
+ document.getElementById('achievement-years')?.remove();
+ document.getElementById('achievement-year-details')?.remove();
+ const entries=build(input),fmt=(n,d=0)=>new Intl.NumberFormat('id-ID',{maximumFractionDigits:d}).format(n);
+ const esc=s=>String(s||'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const label=y=>y==='unknown'?'Belum teridentifikasi':y;
+ const years=[...new Set(entries.map(e=>e.year).filter(y=>y!=='unknown'))].sort().reverse();
+ if(entries.some(e=>e.year==='unknown'))years.push('unknown');
+ let dialog=document.getElementById('restoration-achievements');
+ const wasOpen=dialog?.open;
+ if(!dialog){dialog=document.createElement('dialog');dialog.id='restoration-achievements';dialog.className='restoration-achievements';dialog.setAttribute('aria-labelledby','restoration-achievements-title');document.body.appendChild(dialog);}
+ const all=summary(entries,'all');
+ dialog.innerHTML='<div class="restoration-report-head"><div><span>CAPAIAN RESTORASI</span><h2 id="restoration-achievements-title">Capaian per tahun</h2><p>Penanaman dan infrastruktur yang telah tercatat dalam WebGIS.</p></div><button type="button" data-close-restoration aria-label="Tutup capaian restorasi">×</button></div>'+
+ '<div class="restoration-report-content"><div class="restoration-report-totals">'+[['Bibit tertanam',all.plants,'tanaman'],['Sekat kanal',all.canals,'unit'],['FDRS',all.fdrs,'unit'],['Rumah bibit',all.nurseries,'unit']].map(m=>'<div><span>'+m[0]+'</span><strong>'+fmt(m[1])+'<small>'+m[2]+'</small></strong></div>').join('')+'</div>'+
+ '<p class="restoration-report-hint">Pilih tahun untuk melihat rincian lokasi dan bukti kegiatan.</p><div class="restoration-report-table" tabindex="0" role="region" aria-label="Tabel capaian restorasi per tahun"><table><thead><tr><th scope="col">Tahun</th><th scope="col">Bibit tertanam</th><th scope="col">Sekat kanal</th><th scope="col">FDRS</th><th scope="col">Rumah bibit</th><th scope="col">Wave breaker</th></tr></thead><tbody>'+years.map(y=>{const t=summary(entries,y);return '<tr data-restoration-row="'+y+'"><th scope="row"><button type="button" data-restoration-year="'+y+'" aria-expanded="false" aria-controls="restoration-year-detail">'+label(y)+' <span aria-hidden="true">→</span></button></th>'+[t.plants,t.canals,t.fdrs,t.nurseries,t.wave].map(n=>'<td>'+fmt(n)+'</td>').join('')+'</tr>';}).join('')+'</tbody><tfoot><tr><th scope="row">Total</th>'+[all.plants,all.canals,all.fdrs,all.nurseries,all.wave].map(n=>'<td>'+fmt(n)+'</td>').join('')+'</tr></tfoot></table></div>'+
+ '<section id="restoration-year-detail" hidden aria-live="polite"></section><details class="restoration-report-method"><summary>Dasar perhitungan</summary><p>Bibit dihitung sekali per lokasi penanaman. Monitoring ulang tidak menambah jumlah. Infrastruktur mengikuti tahun pembangunan yang tercatat. Jumlah yang belum dapat dipisahkan per tahun ditempatkan pada “Belum teridentifikasi”.</p><p>Total luas restorasi pada dashboard mencakup dampak pemulihan dan rewetting. Luas polygon penanaman ditampilkan terpisah pada rincian tahun.</p></details></div>';
+ function showYear(y){
+  const t=summary(entries,y),detail=document.getElementById('restoration-year-detail');
+  const restoration=entries.filter(e=>e.year===y&&!['training','engagement'].includes(e.kind));
+  dialog.querySelectorAll('[data-restoration-year]').forEach(b=>b.setAttribute('aria-expanded',String(b.dataset.restorationYear===y)));
+  dialog.querySelectorAll('[data-restoration-row]').forEach(row=>row.classList.toggle('is-selected',row.dataset.restorationRow===y));
+  detail.hidden=false;
+  detail.innerHTML='<div class="restoration-detail-heading"><h3>Rincian '+esc(label(y))+'</h3><span>'+fmt(t.plants)+' bibit tertanam</span></div><div class="restoration-detail-breakdown">'+[['Mangrove',t.mangrove],['Kopi',t.coffee],['Tanaman gambut',t.peat],['Tanaman hutan',t.forest]].map(m=>'<span>'+m[0]+' <b>'+fmt(m[1])+'</b></span>').join('')+'</div><p class="restoration-detail-area">Luas polygon penanaman terdata: <b>'+fmt(t.area,2)+' ha</b></p><details class="restoration-report-evidence"><summary>Lokasi dan bukti · '+restoration.length+' catatan</summary><ul>'+restoration.map(e=>'<li><a href="'+esc(e.url)+'">'+esc(e.name.length>150?e.name.slice(0,150)+'…':e.name)+'</a><strong>'+fmt(e.count,e.kind==='area'?2:0)+' '+(e.kind==='planting'?'bibit':e.kind==='area'?'ha':'unit')+'</strong></li>').join('')+'</ul></details>';
  }
- select.onchange=()=>{selected=select.value;render();};details.onclick=e=>{const button=e.target.closest('[data-achievement-year]');if(button){selected=button.dataset.achievementYear;render();}};render();
+ dialog.onclick=e=>{const button=e.target.closest('[data-restoration-year]');if(button)showYear(button.dataset.restorationYear);if(e.target.closest('[data-close-restoration]')||e.target===dialog)dialog.close();};
+ dialog.onclose=()=>{document.body.classList.remove('restoration-report-open');trigger.focus();};
+ trigger.href='#restoration-achievements';trigger.setAttribute('aria-haspopup','dialog');trigger.setAttribute('aria-controls',dialog.id);
+ const hint=trigger.querySelector('small');if(hint)hint.textContent='hektare · rincian tahunan →';
+ trigger.onclick=e=>{e.preventDefault();if(!dialog.open)dialog.showModal();document.body.classList.add('restoration-report-open');};
+ if(wasOpen)document.body.classList.add('restoration-report-open');
 }
 return {year,historyParts,build,summary,mount};
 });
