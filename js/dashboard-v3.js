@@ -2075,6 +2075,10 @@
 
     hydratePenabuluPhotos(active);
 
+    if (window.YG_DASHBOARD_YEARS) {
+      window.YG_DASHBOARD_YEARS.mount({ features: active, planting: syncedPlanting, capacity: capacitySummary.records || [] });
+    }
+
     document.getElementById("dashboard-updated").textContent =
       "Sumber: Master Database + layer resmi WebGIS · " +
       "diperbarui " +
