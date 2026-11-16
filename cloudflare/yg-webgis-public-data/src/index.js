@@ -199,6 +199,7 @@ async function rspoGroupsApi(request, env) {
   }
 }
 const PRIVATE_DATA_ROUTES = {
+  "/api/staff/restoration-riau-dashboard": ["internal/restoration/riau-dashboard-v1.json", "application/json; charset=utf-8"],
   "/api/staff/dayun-member-roster": ["internal/dayun/kwt-mandiri-sejahtera-roster.json", "application/json; charset=utf-8"],
   "/api/staff/rtrw-riau-2018-2038": ["internal/spatial-planning/rtrw-riau-2018-2038.geojson", "application/geo+json; charset=utf-8"],
   "/api/staff/feg-sk130-riau": ["internal/peat/feg-sk130-riau.geojson", "application/geo+json; charset=utf-8"],

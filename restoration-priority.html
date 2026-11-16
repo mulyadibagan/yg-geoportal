@@ -13,11 +13,13 @@
 <body>
   <header><a href="staff-riau-reference.html">← Peta Referensi Riau</a><span>YG GeoPortal · Internal</span></header>
   <main>
-    <p class="eyebrow">PERENCANAAN PEMULIHAN · PENGEMBANGAN INTERNAL STAF</p>
+    <p class="eyebrow">PERENCANAAN RESTORASI · RIAU</p>
     <h1>Wilayah Prioritas Restorasi Gambut</h1>
     <p id="access-status" role="status">Memeriksa akses staf…</p>
     <section id="workspace" hidden>
-      <p class="notice">Belum ada wilayah prioritas yang dapat ditetapkan. Lengkapi dan validasi indikator ekologis sebelum menggunakan hasil untuk keputusan restorasi.</p>
+      <section id="riau-clusters" hidden aria-label="Prioritas dan kluster restorasi Riau"></section>
+      <details id="reference-workspace" class="panel analysis"><summary>Data referensi dan alat telaah</summary>
+      <p class="notice">Data referensi untuk menelaah hasil prioritas indikatif di atas. Kelayakan tindakan restorasi memerlukan verifikasi kondisi lapangan.</p>
       <div class="stats" aria-live="polite">
         <article><span>Luas sumber gambut tersaring</span><strong id="area">—</strong><small>Jumlah atribut Luas_Ha BBSDLP, bukan luas irisan KHG</small></article>
         <article><span>Poligon gambut</span><strong id="polygon-count">—</strong><small id="unassessed">Belum dinilai</small></article>
@@ -51,6 +53,7 @@
       <section class="panel analysis" aria-labelledby="regions-title"><h2 id="regions-title">Wilayah kajian & status prioritas</h2><p id="region-status" role="status"></p><div class="table-wrap"><table><thead><tr><th>Kabupaten/kota</th><th>Luas sumber (ha)</th><th>Poligon gambut</th><th>Prioritas tinggi (poligon)</th><th>Belum dinilai (poligon)</th></tr></thead><tbody id="regions"></tbody></table></div><p class="muted">Luas mengikuti atribut sumber BBSDLP 2019, bukan luas restorasi atau irisan KHG. Tidak ada peringkat ekologis untuk wilayah yang belum dinilai. Gunakan filter kabupaten untuk memfokuskan peta.</p></section>
       <details class="panel analysis"><summary>Indikator & metode penilaian</summary><h2>Prioritas dari tiga tekanan</h2><p>Penapisan awal berdasarkan tumpang tindih kebakaran, bukaan hutan di lahan gambut, dan kanal/drainase: tiga tekanan = tinggi, dua = sedang, satu = rendah. Ini aturan penapisan, tanpa skor 0–100 atau bobot perkiraan. Ketiga status perlu diketahui dari sumber dan overlay yang terverifikasi. Data kosong tidak dianggap tidak ada tekanan. TMAT bukan prasyarat.</p><div class="table-wrap"><table><thead><tr><th>Indikator</th><th>Peran</th><th>Status</th></tr></thead><tbody id="indicators"></tbody></table></div><p>Kesiapan pelaksanaan: <strong>Belum dinilai</strong>. Tidak digabung ke skor ekologis.</p></details>
       <details class="panel analysis"><summary>Sumber & keterbatasan data</summary><div id="sources"></div><p>Kebutuhan utama: bukti kebakaran sesuai periode, bukaan hutan gambut, dan jaringan kanal yang bisa dioverlay pada unit yang sama. Titik sekat bukan jaringan kanal. Kehilangan tutupan pohon merupakan bukti kandidat, bukan otomatis seluruh bukaan hutan. Tidak ada skor dari data yang belum tervalidasi.</p></details>
+      </details>
     </section>
   </main>
   <script src="js/auth.js?v=20261006-api-domain1"></script>
@@ -59,6 +62,7 @@
   <script src="js/restoration-catalog.js?v=20261104-bpbd1"></script>
   <script src="js/restoration-inventory.js?v=20261104-database1"></script>
   <script src="js/restoration-review.js?v=20261110-review1"></script>
-  <script src="js/restoration-priority.js?v=20261110-review1"></script>
+  <script src="js/restoration-riau.js?v=20261117-clusters1"></script>
+  <script src="js/restoration-priority.js?v=20261117-clusters1"></script>
 </body>
 </html>
