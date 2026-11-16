@@ -1,0 +1,21 @@
+import { readFileSync, writeFileSync } from 'node:fs';
+import { createDecipheriv, createHash } from 'node:crypto';
+import { gunzipSync } from 'node:zlib';
+
+const [input, output] = process.argv.slice(2);
+if (!input || !output) throw Error('Encrypted input and private output paths are required');
+const key = process.env.RESTORATION_RIAU_PAYLOAD_KEY;
+if (!/^[a-f0-9]{64}$/i.test(key || '')) throw Error('Restoration data configuration is missing');
+const envelope = JSON.parse(readFileSync(input, 'utf8'));
+if (envelope.algorithm !== 'AES-256-GCM+gzip-v1') throw Error('Unsupported envelope');
+const decipher = createDecipheriv('aes-256-gcm', Buffer.from(key, 'hex'), Buffer.from(envelope.iv, 'base64'));
+decipher.setAuthTag(Buffer.from(envelope.tag, 'base64'));
+const bytes = gunzipSync(Buffer.concat([decipher.update(Buffer.from(envelope.data, 'base64')), decipher.final()]), { maxOutputLength: 12 * 1024 * 1024 });
+if (createHash('sha256').update(bytes).digest('hex') !== envelope.sha256) throw Error('Payload checksum mismatch');
+const payload = JSON.parse(bytes);
+const d = payload.data;
+if (payload.schema !== 'yg-restoration-riau-v1' || d?.units?.length !== 733 || d?.cells?.length !== 192 || d?.desa?.length !== 2093) throw Error('Unexpected restoration dataset');
+if (/<script\b|\son[a-z]+\s*=/i.test(payload.template)) throw Error('Executable HTML is not allowed in the data template');
+if (new Set(d.units.map(u => u.unit_id)).size !== 733) throw Error('Duplicate unit IDs');
+writeFileSync(output, bytes, { mode: 0o600 });
+console.log('Validated restoration package: 733 unique units, 192 evidence cells, 2093 administrative clusters.');

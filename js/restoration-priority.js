@@ -296,9 +296,10 @@
       if (!response.ok) throw new Error('Sesi/otorisasi belum terverifikasi (HTTP ' + response.status + ')');
       const catalog = await response.json();
       if (catalog.access !== 'staff_only' || !Array.isArray(catalog.datasets)) throw new Error('Respons verifikasi katalog tidak valid');
-      status('Sesi staf diverifikasi backend · pengembangan internal · analisis belum dinilai');
+      status('Akses staf terverifikasi');
       C.candidates(catalog,'fire').forEach(item => definitions.push({id:'bpbd-'+item.uuid,label:'Lokasi kebakaran BPBD · '+item.title.match(/_(\d{4})_/)[1]+' (judul sumber)',path:BASE+'/api/staff/riau-geoportal/datasets/'+item.uuid+'/display',catalog:item,color:'#a54b38',note:'Titik asli dalam gambut tersaring · bukan luas terbakar/skor · '+item.metadataConflictCount+' catatan metadata'}));
       renderControls(); $('workspace').hidden = false;
+      window.YG_RESTORATION_RIAU?.mount({session:state.session});
       const manifest = await fetchJSON('data/restoration-priority-sources.json');
       manifest.sources.forEach(s => {
         const p = document.createElement('p'); p.textContent = s.title + ' — ' + s.source + ' · tahun: ' + (s.year ?? 'belum diketahui') + ' · versi: ' + s.version + ' · ' + s.note; $('sources').appendChild(p);
@@ -308,6 +309,7 @@
       L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap contributors' }).addTo(state.map);
       L.control.scale({ imperial: false }).addTo(state.map);
       window.addEventListener('resize', () => state.map.invalidateSize());
+      $('reference-workspace')?.addEventListener('toggle',()=>state.map.invalidateSize());
       const boundary = await fetchJSON('data/batas_provinsi_riau_dissolve.geojson'); state.boundary = collection(boundary);
       L.geoJSON(boundary, { style: { color: '#235a46', weight: 2, fill: false }, interactive: false }).addTo(state.map); fit();
       const peat = collection(await fetchJSON(definitions[0].path,false,true));
