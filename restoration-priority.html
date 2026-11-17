@@ -9,6 +9,7 @@
   <title>Analisis Prioritas Restorasi Gambut | YG GeoPortal</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="css/restoration-priority.css?v=20261117-dumai2">
+  <link rel="stylesheet" href="css/restoration-plan.css?v=20261117-plan1">
 </head>
 <body>
   <header><a href="staff-riau-reference.html">← Peta Referensi Riau</a><span>YG GeoPortal · Internal</span></header>
@@ -17,6 +18,40 @@
     <h1>Wilayah Prioritas Restorasi Gambut</h1>
     <p id="access-status" role="status">Memeriksa akses staf…</p>
     <section id="workspace" hidden>
+      <section id="restoration-plan-workspace" class="panel plan-workspace" aria-labelledby="plan-title">
+        <p class="eyebrow">DRAF PROGRAM &amp; PROPOSAL</p>
+        <h2 id="plan-title">Rencana restorasi Bengkalis &amp; Dumai</h2>
+        <p id="plan-status" role="status">Memuat analisis dan rencana tersimpan.</p>
+        <details id="plan-import"><summary>Sumber analisis internal</summary>
+          <p class="muted">Paket analisis disimpan untuk akses staf. Gunakan sumber dengan tanggal serta checksum geometri yang sesuai.</p>
+          <label for="plan-file">Paket analisis restorasi (JSON)</label><input id="plan-file" type="file" accept=".json,application/json" disabled>
+          <p id="plan-import-status" role="status">Belum ada paket dipilih.</p><button id="plan-save-source" type="button" disabled>Simpan sumber internal</button>
+          <p id="plan-source-info" class="muted"></p>
+        </details>
+        <div id="plan-editor" hidden>
+          <p id="plan-summary" class="plan-summary" aria-live="polite"></p>
+          <p class="muted">P1: bukti setempat berimpit. P2: tekanan historis pada unit yang sama, perlu dilokalisasi. P3: api historis dan kanal, bukti perubahan vegetasi belum lengkap. D: data belum cukup. Kelas ini mengurutkan verifikasi tapak.</p>
+          <details class="plan-catalog"><summary>Pilih desa atau kelurahan untuk rencana</summary>
+            <div class="plan-filters">
+              <label>Wilayah<select id="plan-region"><option value="">Bengkalis &amp; Dumai</option><option>Bengkalis</option><option>Kota Dumai</option></select></label>
+              <label>Cari desa / kecamatan<input id="plan-search" type="search" placeholder="Nama lokasi"></label>
+              <label>Cakupan<select id="plan-scope"><option value="candidate">Kandidat P1–P3</option><option value="all">Semua kelas bukti</option></select></label>
+            </div>
+            <p id="plan-catalog-count" class="muted"></p>
+            <div class="table-wrap plan-catalog-table"><table><thead><tr><th>Pilih</th><th>Desa / kelurahan</th><th>Wilayah sumber</th><th>Kelas</th><th>Sel setempat</th><th>Unit P1–P3</th></tr></thead><tbody id="plan-villages"></tbody></table></div>
+          </details>
+          <p class="muted">Target kosong berarti belum dihitung. Nilai 0 hanya diisi jika memang diputuskan tidak diusulkan. Inventaris sekat eksisting perlu diperiksa sebelum menetapkan struktur baru.</p>
+          <div id="plan-entries" class="plan-entries"></div>
+          <div class="plan-actions"><button id="plan-scenario" type="button" class="secondary">Pakai skenario 8 sekat Dumai</button><span class="muted">4 Pelintung + 4 Guntung; asumsi awal anggaran, menunggu survei.</span></div>
+          <div class="plan-actions"><button id="plan-save" type="button">Simpan draf rencana</button><button id="plan-reload" type="button" class="secondary">Muat rencana tersimpan</button><span id="plan-save-state" role="status"></span></div>
+          <details><summary>Pratinjau &amp; unduh rencana</summary>
+            <div class="plan-actions"><button id="plan-md" type="button">Unduh narasi proposal (.md)</button><button id="plan-csv" type="button">Unduh tabel (.csv)</button><button id="plan-geojson" type="button">Unduh unit referensi (.geojson)</button><button id="plan-json" type="button">Unduh draf (.json)</button></div>
+            <p class="muted">Poligon unduhan mencakup unit referensi utuh, bukan poligon intervensi. Luas restorasi dan titik sekat menunggu hasil survei.</p>
+            <pre id="plan-report"></pre>
+          </details>
+          <p id="plan-map-status" class="muted" role="status"></p>
+        </div>
+      </section>
       <section class="panel proposal-focus" aria-labelledby="proposal-focus-title">
         <p class="eyebrow">PRIORITAS PENGEMBANGAN PROPOSAL</p>
         <h2 id="proposal-focus-title">Pelintung &amp; Guntung</h2>
@@ -55,7 +90,7 @@
         <p class="muted">Luas terbakar bersumber dari catatan Pemkot untuk seluruh kelurahan; belum dipotong ke gambut. Kehilangan tutupan pohon adalah indikator berbeda. Seluruh angka tersebut bukan luas restorasi proyek.</p>
         <a href="#proposal-history-title">Lihat histori luas terbakar dan rekomendasi ↓</a>
       </section>
-      <p class="notice">Fokus proposal: Pelintung dan Guntung. Kelas prioritas ekologis dan luas intervensi belum ditetapkan sebelum bukti tapak tervalidasi.</p>
+      <p class="notice">Rencana Bengkalis dan Dumai disusun di atas. Ringkasan berikut adalah konteks peta sumber; luasnya bukan luas intervensi rencana.</p>
       <div class="stats" aria-live="polite">
         <article><span>Luas sumber gambut tersaring</span><strong id="area">—</strong><small>Jumlah atribut Luas_Ha BBSDLP, bukan luas irisan KHG</small></article>
         <article><span>Poligon gambut</span><strong id="polygon-count">—</strong><small id="unassessed">Belum dinilai</small></article>
@@ -117,7 +152,8 @@
   <script src="js/restoration-inventory.js?v=20261104-database1"></script>
   <script src="js/restoration-review.js?v=20261110-review1"></script>
   <script src="js/restoration-focus.js?v=20261117-dumai2"></script>
-  <script src="js/restoration-priority.js?v=20261117-dumai2"></script>
+  <script src="js/restoration-plan-ui.js?v=20261117-plan1"></script>
+  <script src="js/restoration-priority.js?v=20261117-plan1"></script>
 </body>
 </html>
 

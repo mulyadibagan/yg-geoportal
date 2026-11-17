@@ -336,6 +336,12 @@
           }
         });
       }
+      if (window.YG_RESTORATION_PLAN_UI) state.planner = window.YG_RESTORATION_PLAN_UI.init({
+        map: state.map, L, peatFeatures: state.originalPeat, peatHash: state.peatSourceHash,
+        getSession: () => window.YG_AUTH?.readStoredSession(),
+        isActive: () => !$('workspace').hidden && window.YG_AUTH?.readStoredSession()?.token === state.session?.token,
+        clearOtherFocus: () => state.proposalFocus?.clear()
+      });
       catalogKHG(catalog);
       ['review-data','review-manifest','review-load'].forEach(id=>$(id).disabled=false);
       $('review-load').addEventListener('click',loadReview);$('review-clear').addEventListener('click',clearReview);

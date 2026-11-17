@@ -1,3 +1,4 @@
+import {isRestorationRoute, handleRestoration} from './restoration-plans.mjs';
 import {runFruitLinkJob} from './dayun-fruit-link-job.js';
 export { DroneQueue } from './drone-queue.js';
 import { meritechTile } from './meritech.js';
@@ -17,6 +18,7 @@ export default {
       const response=await stub.fetch(new Request('https://queue.internal/'+(url.pathname==='/dayun/new-planting.geojson'?'dayun-agro-map':'dayun-live-counts')+(url.searchParams.get('refresh')==='1'?'?refresh=1':'')));
       return new Response(request.method==='HEAD'?null:response.body,{status:response.status,headers});
     }
+    if (isRestorationRoute(url.pathname)) return handleRestoration(request, env, validStaffToken);
     if(url.pathname.startsWith('/api/staff/meritech/tile/')) return meritechTile(request, env, validStaffToken);
     if(url.pathname==='/api/staff/login')return staffLogin(request,env,rememberValidStaffToken);
     if (isDroneRoute(url.pathname)) return handleDroneRequest(request, env, url, validStaffToken);
