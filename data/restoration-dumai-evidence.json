@@ -1,0 +1,171 @@
+{
+  "schemaVersion": 1,
+  "datasetId": "dumai-pelintung-guntung-burned-history",
+  "reviewedAt": "2026-11-17",
+  "unit": "ha",
+  "scope": "kelurahan",
+  "spatialFootprintsAvailable": false,
+  "targets": [
+    "kelurahan pelintung|medang kampai|kota dumai",
+    "kelurahan guntung|medang kampai|kota dumai"
+  ],
+  "sources": {
+    "rkpd2024": {
+      "title": "RKPD Kota Dumai 2024",
+      "url": "https://bappeda.dumaikota.go.id/assets/backend/dokumen/64bdddf124df7.pdf",
+      "locator": "Tabel 2.10, Bab II halaman 24",
+      "coverage": "2018–2022",
+      "publisher": "Pemerintah Kota Dumai"
+    },
+    "sektoral2023": {
+      "title": "Statistik Sektoral Kota Dumai 2023",
+      "url": "https://diskominfotiksan.dumaikota.go.id/dist/file/dokumen/658bde12540b0.pdf",
+      "locator": "Tabel 7.1.5, halaman 120",
+      "coverage": "2022",
+      "publisher": "Pemkot Dumai; BPBD melalui SIDATIN"
+    },
+    "sektoral2024": {
+      "title": "Statistik Sektoral Kota Dumai 2024",
+      "url": "https://dumaikota.go.id/assets/backend/publikasi/665951ea0eb72.pdf#page=163",
+      "locator": "Tabel 7.1.5, halaman cetak 126 (PDF 163)",
+      "coverage": "2023",
+      "publisher": "Pemkot Dumai; BPBD melalui SIDATIN"
+    },
+    "teknis": {
+      "title": "Pedoman teknis pemulihan ekosistem gambut",
+      "url": "https://pkgppkl.menlhk.go.id/v0/wp-content/uploads/2023/03/Guidelines-for-Restoration_.pdf",
+      "locator": "Restorasi hidrologis dan rehabilitasi vegetasi",
+      "publisher": "Kementerian Lingkungan Hidup dan Kehutanan"
+    }
+  },
+  "rows": [
+    {
+      "year": 2018,
+      "pelintung": {
+        "areaHa": null,
+        "raw": "-",
+        "status": "source_dash"
+      },
+      "guntung": {
+        "areaHa": null,
+        "raw": "-",
+        "status": "source_dash"
+      },
+      "sourceRefs": [
+        "rkpd2024"
+      ]
+    },
+    {
+      "year": 2019,
+      "pelintung": {
+        "areaHa": null,
+        "raw": "-",
+        "status": "source_dash"
+      },
+      "guntung": {
+        "areaHa": 33.5,
+        "raw": "33,5",
+        "status": "reported"
+      },
+      "sourceRefs": [
+        "rkpd2024"
+      ]
+    },
+    {
+      "year": 2020,
+      "pelintung": {
+        "areaHa": 5,
+        "raw": "5",
+        "status": "reported"
+      },
+      "guntung": {
+        "areaHa": 3,
+        "raw": "3",
+        "status": "reported"
+      },
+      "sourceRefs": [
+        "rkpd2024"
+      ]
+    },
+    {
+      "year": 2021,
+      "pelintung": {
+        "areaHa": null,
+        "raw": "-",
+        "status": "source_dash"
+      },
+      "guntung": {
+        "areaHa": 1,
+        "raw": "1",
+        "status": "reported"
+      },
+      "sourceRefs": [
+        "rkpd2024"
+      ]
+    },
+    {
+      "year": 2022,
+      "pelintung": {
+        "areaHa": 9.5,
+        "raw": "9,5",
+        "status": "reported"
+      },
+      "guntung": {
+        "areaHa": null,
+        "raw": "-",
+        "status": "source_dash"
+      },
+      "sourceRefs": [
+        "rkpd2024",
+        "sektoral2023"
+      ]
+    },
+    {
+      "year": 2023,
+      "pelintung": {
+        "areaHa": 66.25,
+        "raw": "66.25",
+        "status": "reported"
+      },
+      "guntung": {
+        "areaHa": 0.5,
+        "raw": "0.5",
+        "status": "reported"
+      },
+      "sourceRefs": [
+        "sektoral2024"
+      ]
+    }
+  ],
+  "interpretation": [
+    "Angka adalah perkiraan/catatan luas karhutla per kelurahan dalam dokumen Pemkot, bukan hasil overlay bekas terbakar dengan gambut.",
+    "Tanda '-' dipertahankan sebagai data tanpa angka; tidak diubah menjadi nol.",
+    "Penjumlahan angka tahunan bukan luas tapak unik karena lokasi yang sama dapat terbakar pada tahun berbeda.",
+    "Belum tersedia poligon historis per kejadian pada dataset ini; peta hanya menampilkan batas kelurahan dan garis perbatasannya.",
+    "Angka 2015–2017 dan 2024–2026 belum dimasukkan karena belum diperoleh angka tahunan kelurahan yang memadai dalam sumber yang ditelaah. Hotspot dan arsip estimasi satelit parsial tidak menggantikan angka tersebut."
+  ],
+  "recommendations": [
+    {
+      "target": "pelintung",
+      "title": "Pelintung · dahulukan penelusuran tapak bekas terbakar",
+      "basis": "Catatan 66,25 ha pada 2023 mendukung pendalaman lokasi bekas terbakar. Kehilangan tutupan pohon 2025 merupakan bukti berbeda, bukan luas kebakaran.",
+      "actions": [
+        "Cocokkan lokasi kejadian BPBD dengan gambut dan kondisi vegetasi terkini sebelum memilih poligon pemulihan.",
+        "Pada tapak gambut yang terdrainase, kaji pemulihan tata air dan perbaikan sekat eksisting; lokasi serta desain mengikuti survei aliran dan elevasi.",
+        "Sesuaikan regenerasi alami terbantu atau penanaman jenis adaptif dengan kondisi kebasahan, tutupan dan fungsi lahan."
+      ]
+    },
+    {
+      "target": "guntung",
+      "title": "Guntung · periksa tapak historis dan sambungan tata air",
+      "basis": "Catatan 33,5 ha pada 2019 dan 0,5 ha pada 2023 mendukung penelusuran tapak historis serta pencegahan kebakaran.",
+      "actions": [
+        "Telusuri kondisi tapak historis untuk menentukan kebutuhan pemulihan yang masih ada, tanpa menganggap semua bekas terbakar tetap rusak.",
+        "Petakan kanal dan aliran di kedua sisi perbatasan dengan Pelintung. Batas yang bersambung belum membuktikan satu sistem hidrologi.",
+        "Perkuat patroli, pembukaan lahan tanpa bakar, pemantauan TMAT dan peringatan dini bersama kelompok masyarakat."
+      ]
+    }
+  ],
+  "jointAction": "Siapkan satu kajian lanskap Pelintung–Guntung dengan rencana tapak per kelurahan. Pastikan KHG/fungsi gambut, PBPH, PS, HGU/perkebunan, pengelola lahan dan persetujuan masyarakat. Evaluasi pengaruh pembasahan pada kebun serta permukiman sebelum menetapkan struktur.",
+  "recommendationStatus": "Arahan awal berdasarkan telaah; bukan desain teknis atau pengesahan lokasi intervensi."
+}

@@ -328,7 +328,7 @@
         state.proposalFocus = window.YG_RESTORATION_FOCUS.init({
           map: state.map, regency: $('regency'), L, document, fetchJSON,
           isActive: () => !$('workspace').hidden && window.YG_AUTH?.readStoredSession()?.token === state.session?.token,
-          initialFocus: ['mundam', 'pelintung'].includes(requestedFocus) ? requestedFocus : 'both',
+          initialFocus: ['pelintung', 'guntung'].includes(requestedFocus) ? requestedFocus : 'both',
           setRegency: district => {
             const option = [...$('regency').options].find(item => A.district(item.value) === district);
             if (!option) return false;

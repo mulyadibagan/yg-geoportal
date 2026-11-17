@@ -8,7 +8,7 @@
   <script src="js/staff-frame-guard.js"></script>
   <title>Analisis Prioritas Restorasi Gambut | YG GeoPortal</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
-  <link rel="stylesheet" href="css/restoration-priority.css?v=20261117-dumai1">
+  <link rel="stylesheet" href="css/restoration-priority.css?v=20261117-dumai2">
 </head>
 <body>
   <header><a href="staff-riau-reference.html">← Peta Referensi Riau</a><span>YG GeoPortal · Internal</span></header>
@@ -19,29 +19,20 @@
     <section id="workspace" hidden>
       <section class="panel proposal-focus" aria-labelledby="proposal-focus-title">
         <p class="eyebrow">PRIORITAS PENGEMBANGAN PROPOSAL</p>
-        <h2 id="proposal-focus-title">Mundam &amp; Pelintung</h2>
-        <p>Kelurahan Mundam dan Pelintung · Kecamatan Medang Kampai · Kota Dumai.</p>
-        <p class="muted">Dua lokasi fokus yang dipilih YG. Penilaian kebutuhan ekologis dan penetapan tapak mengikuti bukti kebakaran, bukaan hutan gambut, kanal, serta status pengelolaan lahan.</p>
+        <h2 id="proposal-focus-title">Pelintung &amp; Guntung</h2>
+        <p>Kelurahan Pelintung dan Guntung · Kecamatan Medang Kampai · Kota Dumai.</p>
+        <p id="proposal-adjacency-status" class="muted" role="status">Memeriksa perbatasan pada peta referensi…</p>
         <div class="proposal-actions" role="group" aria-label="Fokus peta kelurahan">
           <button id="proposal-both" type="button" aria-pressed="false" disabled>Kedua kelurahan</button>
-          <button id="proposal-mundam" type="button" aria-pressed="false" disabled>Mundam</button>
           <button id="proposal-pelintung" type="button" aria-pressed="false" disabled>Pelintung</button>
+          <button id="proposal-guntung" type="button" aria-pressed="false" disabled>Guntung</button>
         </div>
         <p id="proposal-map-status" class="muted" role="status">Menyiapkan batas referensi kelurahan…</p>
         <div class="proposal-cards">
           <article>
-            <h3>Mundam</h3>
-            <dl>
-              <div><dt>Gambut dalam batas referensi</dt><dd id="proposal-peat-mundam">Memuat…</dd></div>
-              <div><dt>Kehilangan tutupan pohon 2025</dt><dd id="proposal-loss-mundam">Memuat…</dd></div>
-              <div><dt>Kehilangan tutupan pohon 2023–2025</dt><dd id="proposal-loss3-mundam">Memuat…</dd></div>
-            </dl>
-            <p id="proposal-data-mundam" class="muted" role="status">Memuat ringkasan kelurahan…</p>
-            <a id="proposal-profile-mundam" href="village-profile.html?key=kelurahan%20mundam%7Cmedang%20kampai%7Ckota%20dumai">Buka profil Mundam →</a>
-          </article>
-          <article>
             <h3>Pelintung</h3>
             <dl>
+              <div class="burned-highlight"><dt>Luas terbakar tercatat 2023</dt><dd id="proposal-burned-pelintung">Memuat…</dd></div>
               <div><dt>Gambut dalam batas referensi</dt><dd id="proposal-peat-pelintung">Memuat…</dd></div>
               <div><dt>Kehilangan tutupan pohon 2025</dt><dd id="proposal-loss-pelintung">Memuat…</dd></div>
               <div><dt>Kehilangan tutupan pohon 2023–2025</dt><dd id="proposal-loss3-pelintung">Memuat…</dd></div>
@@ -49,11 +40,22 @@
             <p id="proposal-data-pelintung" class="muted" role="status">Memuat ringkasan kelurahan…</p>
             <a id="proposal-profile-pelintung" href="village-profile.html?key=kelurahan%20pelintung%7Cmedang%20kampai%7Ckota%20dumai">Buka profil Pelintung →</a>
           </article>
+          <article>
+            <h3>Guntung</h3>
+            <dl>
+              <div class="burned-highlight"><dt>Luas terbakar tercatat 2023</dt><dd id="proposal-burned-guntung">Memuat…</dd></div>
+              <div><dt>Gambut dalam batas referensi</dt><dd id="proposal-peat-guntung">Memuat…</dd></div>
+              <div><dt>Kehilangan tutupan pohon 2025</dt><dd id="proposal-loss-guntung">Memuat…</dd></div>
+              <div><dt>Kehilangan tutupan pohon 2023–2025</dt><dd id="proposal-loss3-guntung">Memuat…</dd></div>
+            </dl>
+            <p id="proposal-data-guntung" class="muted" role="status">Memuat ringkasan kelurahan…</p>
+            <a id="proposal-profile-guntung" href="village-profile.html?key=kelurahan%20guntung%7Cmedang%20kampai%7Ckota%20dumai">Buka profil Guntung →</a>
+          </article>
         </div>
-        <p class="muted">Luas gambut merupakan konteks kelurahan. Kehilangan tutupan pohon berlaku untuk seluruh kelurahan, belum dipotong ke gambut atau tapak usulan. Angka ini bukan luas restorasi atau luas terbakar.</p>
-        <details><summary>Kebutuhan penyiapan tapak proposal</summary><p>Periksa kanal dan struktur eksisting, riwayat kebakaran, kondisi vegetasi, KHG/fungsi gambut, PBPH, perhutanan sosial, perkebunan/HGU, serta pengelola dan persetujuan masyarakat. Tentukan poligon, luas kegiatan dan desain pembasahan setelah pemeriksaan tapak.</p></details>
+        <p class="muted">Luas terbakar bersumber dari catatan Pemkot untuk seluruh kelurahan; belum dipotong ke gambut. Kehilangan tutupan pohon adalah indikator berbeda. Seluruh angka tersebut bukan luas restorasi proyek.</p>
+        <a href="#proposal-history-title">Lihat histori luas terbakar dan rekomendasi ↓</a>
       </section>
-      <p class="notice">Fokus proposal: Mundam dan Pelintung. Kelas prioritas ekologis dan luas intervensi belum ditetapkan sebelum bukti tapak tervalidasi.</p>
+      <p class="notice">Fokus proposal: Pelintung dan Guntung. Kelas prioritas ekologis dan luas intervensi belum ditetapkan sebelum bukti tapak tervalidasi.</p>
       <div class="stats" aria-live="polite">
         <article><span>Luas sumber gambut tersaring</span><strong id="area">—</strong><small>Jumlah atribut Luas_Ha BBSDLP, bukan luas irisan KHG</small></article>
         <article><span>Poligon gambut</span><strong id="polygon-count">—</strong><small id="unassessed">Belum dinilai</small></article>
@@ -83,6 +85,25 @@
         </aside>
         <section class="panel map-panel"><h2>Peta referensi Provinsi Riau</h2><div id="map" aria-label="Peta interaktif Riau"></div><p class="muted">Filter kabupaten berlaku pada poligon gambut, inventaris FDRS/sekat kanal, titik BPBD/hotspot dalam gambut tersaring, dan estimasi terbakar berdasarkan atribut kabupaten. FEG merupakan konteks seluruh Riau. Inventaris alat dan sekat menunjukkan infrastruktur yang tercatat, bukan pengukuran atau penilaian kebutuhan ekologis. Titik BPBD bukan luas terbakar atau jumlah kejadian unik. Estimasi terbakar tidak dipotong ulang; luasnya tidak masuk ringkasan gambut.</p></section>
       </div>
+      <section class="panel analysis proposal-history" aria-labelledby="proposal-history-title">
+        <h2 id="proposal-history-title">Histori luas terbakar · Pelintung–Guntung</h2>
+        <p id="proposal-history-status" class="muted" role="status">Memuat catatan luas karhutla dari dokumen Pemkot Dumai…</p>
+        <div class="table-wrap"><table>
+          <caption>Luas karhutla tercatat per tahun, satuan hektare</caption>
+          <thead><tr><th scope="col">Tahun</th><th scope="col">Pelintung</th><th scope="col">Guntung</th><th scope="col">Sumber</th></tr></thead>
+          <tbody id="proposal-burned-rows"></tbody>
+          <tfoot><tr><th scope="row">Jumlah angka tahunan tersedia, 2018–2023</th><td id="proposal-burned-total-pelintung">—</td><td id="proposal-burned-total-guntung">—</td><td>Bukan luas tapak unik</td></tr></tfoot>
+        </table></div>
+        <p class="muted">— = sumber tidak mencantumkan angka; tidak dianggap nol. Luas terbakar tidak diturunkan dari jumlah hotspot atau kehilangan tutupan pohon.</p>
+        <details><summary>Cakupan, tahun yang belum tersedia, dan batas interpretasi</summary><div id="proposal-history-notes" class="muted"></div><p class="muted"><a href="burned-area.html">Arsip estimasi satelit WebGIS →</a> ditampilkan terpisah dari catatan tahunan Pemkot.</p></details>
+      </section>
+      <section class="panel analysis" aria-labelledby="proposal-recommendation-title">
+        <h2 id="proposal-recommendation-title">Rekomendasi restorasi untuk pengembangan proposal</h2>
+        <p id="proposal-recommendation-status" class="muted">Arahan awal; tapak dan desain mengikuti verifikasi lokasi.</p>
+        <div id="proposal-recommendations" class="proposal-recommendations"></div>
+        <p id="proposal-joint-action"></p>
+        <p class="muted">Rujukan teknis: <span id="proposal-technical-source"></span>. Jumlah sekat, luas pembasahan dan penanaman ditentukan setelah survei; tidak dihitung dari total luas terbakar.</p>
+      </section>
       <details class="panel analysis"><summary>Kandidat telaah dari paket privat</summary><p>Paket hanya dibaca di browser staf, tanpa diunggah. Kandidat bukan prioritas final; warna ungu menunjukkan antrean telaah. Ringkasan penilaian tidak berubah.</p><label for="review-data">Berkas review-candidates.geojson</label><input id="review-data" type="file" accept=".geojson,application/geo+json" disabled><label for="review-manifest">Berkas manifest.json dari paket yang sama</label><input id="review-manifest" type="file" accept=".json,application/json" disabled><p><button id="review-load" type="button" disabled>Muat paket telaah</button> <button id="review-clear" type="button" disabled>Hapus paket dari tampilan</button></p><p id="review-status" role="status">Belum ada paket kandidat dimuat.</p><p class="muted">Tahun tutupan hutan BRG dan pengamatan kanal belum terkonfirmasi. Metadata menyebut tutupan lahan 2016, sedangkan field akhir bernama PL17_ID. AREA_KANAL merupakan konteks jangkauan 1 km menurut sumber, bukan bukti irisan langsung garis kanal.</p></details>
       <section class="panel analysis" aria-labelledby="regions-title"><h2 id="regions-title">Wilayah kajian & status prioritas</h2><p id="region-status" role="status"></p><div class="table-wrap"><table><thead><tr><th>Kabupaten/kota</th><th>Luas sumber (ha)</th><th>Poligon gambut</th><th>Prioritas tinggi (poligon)</th><th>Belum dinilai (poligon)</th></tr></thead><tbody id="regions"></tbody></table></div><p class="muted">Luas mengikuti atribut sumber BBSDLP 2019, bukan luas restorasi atau irisan KHG. Tidak ada peringkat ekologis untuk wilayah yang belum dinilai. Gunakan filter kabupaten untuk memfokuskan peta.</p></section>
       <details class="panel analysis"><summary>Indikator & metode penilaian</summary><h2>Prioritas dari tiga tekanan</h2><p>Penapisan awal berdasarkan tumpang tindih kebakaran, bukaan hutan di lahan gambut, dan kanal/drainase: tiga tekanan = tinggi, dua = sedang, satu = rendah. Ini aturan penapisan, tanpa skor 0–100 atau bobot perkiraan. Ketiga status perlu diketahui dari sumber dan overlay yang terverifikasi. Data kosong tidak dianggap tidak ada tekanan. TMAT bukan prasyarat.</p><div class="table-wrap"><table><thead><tr><th>Indikator</th><th>Peran</th><th>Status</th></tr></thead><tbody id="indicators"></tbody></table></div><p>Kesiapan pelaksanaan: <strong>Belum dinilai</strong>. Tidak digabung ke skor ekologis.</p></details>
@@ -95,8 +116,8 @@
   <script src="js/restoration-catalog.js?v=20261104-bpbd1"></script>
   <script src="js/restoration-inventory.js?v=20261104-database1"></script>
   <script src="js/restoration-review.js?v=20261110-review1"></script>
-  <script src="js/restoration-focus.js?v=20261117-dumai1"></script>
-  <script src="js/restoration-priority.js?v=20261117-dumai1"></script>
+  <script src="js/restoration-focus.js?v=20261117-dumai2"></script>
+  <script src="js/restoration-priority.js?v=20261117-dumai2"></script>
 </body>
 </html>
 
