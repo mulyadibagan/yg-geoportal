@@ -1,12 +1,28 @@
 {
   "schemaVersion": 1,
-  "updatedAt": "2026-10-04T05:08:40.931Z",
-  "latest": "2026-09",
+  "updatedAt": "2026-11-17T11:39:16.541Z",
+  "latest": "2026-10",
   "retention": {
     "rawArchiveMonths": 60,
     "finalReports": "permanent"
   },
   "reports": [
+    {
+      "month": "2026-10",
+      "status": "final",
+      "period": {
+        "start": "2026-10-01",
+        "end": "2026-10-31"
+      },
+      "generatedAt": "2026-11-17T11:39:15.279Z",
+      "summary": {
+        "hotspots": 44,
+        "villages": 12,
+        "regencies": 4
+      },
+      "href": "fire-monthly-report.html?month=2026-10",
+      "data": "data/fire-monthly/2026-10.json"
+    },
     {
       "month": "2026-09",
       "status": "final",

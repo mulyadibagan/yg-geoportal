@@ -1,6 +1,6 @@
 {
   "schemaVersion": 1,
-  "generatedAt": "2026-10-04T05:08:41.338Z",
+  "generatedAt": "2026-11-17T11:39:17.001Z",
   "earliestMonth": "2026-07",
   "source": "NASA FIRMS monthly final reports",
   "years": [
@@ -9,10 +9,11 @@
       "months": [
         "2026-07",
         "2026-08",
-        "2026-09"
+        "2026-09",
+        "2026-10"
       ],
       "start": "2026-07-01",
-      "end": "2026-09-30"
+      "end": "2026-10-31"
     }
   ],
   "villages": {
@@ -82,6 +83,24 @@
         "detectionDays": 3
       }
     },
+    "belaras|mandah|indragiri hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "bente|mandah|indragiri hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "binamang|xiii koto kampar|kampar": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 1
+      }
+    },
     "buluh apo|pinggir|bengkalis": {
       "2026": {
         "hotspots": 20,
@@ -130,6 +149,12 @@
         "detectionDays": 1
       }
     },
+    "kampung baru|concong|indragiri hilir": {
+      "2026": {
+        "hotspots": 3,
+        "detectionDays": 1
+      }
+    },
     "kampung pulau|rengat|indragiri hulu": {
       "2026": {
         "hotspots": 5,
@@ -146,6 +171,18 @@
       "2026": {
         "hotspots": 6,
         "detectionDays": 3
+      }
+    },
+    "kelurahan batu bersurat|xiii koto kampar|kampar": {
+      "2026": {
+        "hotspots": 7,
+        "detectionDays": 2
+      }
+    },
+    "kelurahan concong luar|concong|indragiri hilir": {
+      "2026": {
+        "hotspots": 2,
+        "detectionDays": 1
       }
     },
     "kelurahan kerumutan|kerumutan|pelalawan": {
@@ -214,6 +251,12 @@
         "detectionDays": 1
       }
     },
+    "kuala selat|kateman|indragiri hilir": {
+      "2026": {
+        "hotspots": 3,
+        "detectionDays": 1
+      }
+    },
     "kuantan baru|rengat|indragiri hulu": {
       "2026": {
         "hotspots": 22,
@@ -239,6 +282,12 @@
       }
     },
     "pangkalan libut|pinggir|bengkalis": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
+      }
+    },
+    "pantai|kuantan mudik|kuantan singingi": {
       "2026": {
         "hotspots": 1,
         "detectionDays": 1
@@ -332,6 +381,12 @@
       "2026": {
         "hotspots": 3,
         "detectionDays": 1
+      }
+    },
+    "ranah sungkai|xiii koto kampar|kampar": {
+      "2026": {
+        "hotspots": 3,
+        "detectionDays": 2
       }
     },
     "rantai langsat|batang gangsal|indragiri hulu": {
@@ -434,6 +489,24 @@
       "2026": {
         "hotspots": 6,
         "detectionDays": 2
+      }
+    },
+    "sungai upih|kuala kampar|pelalawan": {
+      "2026": {
+        "hotspots": 5,
+        "detectionDays": 1
+      }
+    },
+    "sungaibela|kuala indragiri|indragiri hilir": {
+      "2026": {
+        "hotspots": 15,
+        "detectionDays": 1
+      }
+    },
+    "sungaiberapit|concong|indragiri hilir": {
+      "2026": {
+        "hotspots": 1,
+        "detectionDays": 1
       }
     },
     "sungaigantang|kempas|indragiri hilir": {

@@ -1,0 +1,855 @@
+{
+  "schemaVersion": 2,
+  "month": "2026-10",
+  "period": {
+    "start": "2026-10-01",
+    "end": "2026-10-31"
+  },
+  "province": "Riau",
+  "status": "final",
+  "coverage": {
+    "start": "2026-10-01",
+    "end": "2026-10-31",
+    "sourceStatus": "complete",
+    "provenance": [
+      {
+        "snapshot": "88cd468af2af7b2c969c9869e9eec3b366ec4f50",
+        "generatedAt": "2026-11-17T11:21:21.766Z",
+        "coverageStart": "2026-10-19",
+        "coverageEnd": "2026-11-17",
+        "providers": [
+          "MODIS_NRT",
+          "VIIRS_SNPP_NRT",
+          "VIIRS_NOAA20_NRT",
+          "VIIRS_NOAA21_NRT"
+        ]
+      },
+      {
+        "snapshot": "057fd9e0cda396bfca2d52ae085b9ff54468e80b",
+        "generatedAt": "2026-10-19T23:27:22.666Z",
+        "coverageStart": "2026-09-20",
+        "coverageEnd": "2026-10-19",
+        "providers": [
+          "MODIS_NRT",
+          "VIIRS_SNPP_NRT",
+          "VIIRS_NOAA20_NRT",
+          "VIIRS_NOAA21_NRT"
+        ]
+      }
+    ]
+  },
+  "generatedAt": "2026-11-17T11:39:15.279Z",
+  "source": "NASA FIRMS",
+  "sources": [
+    "Terra",
+    "N20",
+    "N21",
+    "N",
+    "Aqua"
+  ],
+  "methodology": "Deteksi kategori high confidence di dalam polygon Provinsi Riau; pencocokan batas administrasi desa dilakukan secara spasial.",
+  "disclaimer": "Lokasi hotspot dan kecocokan batas administrasi bukan bukti penyebab kebakaran maupun tanggung jawab pihak tertentu.",
+  "summary": {
+    "hotspots": 44,
+    "villages": 12,
+    "regencies": 4
+  },
+  "daily": [
+    {
+      "date": "2026-10-01",
+      "hotspots": 2
+    },
+    {
+      "date": "2026-10-02",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-03",
+      "hotspots": 31
+    },
+    {
+      "date": "2026-10-04",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-05",
+      "hotspots": 10
+    },
+    {
+      "date": "2026-10-06",
+      "hotspots": 1
+    },
+    {
+      "date": "2026-10-07",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-08",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-09",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-10",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-11",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-12",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-13",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-14",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-15",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-16",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-17",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-18",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-19",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-20",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-21",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-22",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-23",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-24",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-25",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-26",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-27",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-28",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-29",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-30",
+      "hotspots": 0
+    },
+    {
+      "date": "2026-10-31",
+      "hotspots": 0
+    }
+  ],
+  "villages": [
+    {
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir",
+      "hotspots": 15,
+      "lastDetection": "2026-10-03",
+      "detectionDays": 1
+    },
+    {
+      "village": "Kelurahan Batu Bersurat",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar",
+      "hotspots": 7,
+      "lastDetection": "2026-10-05",
+      "detectionDays": 2
+    },
+    {
+      "village": "Sungai Upih",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan",
+      "hotspots": 5,
+      "lastDetection": "2026-10-03",
+      "detectionDays": 1
+    },
+    {
+      "village": "Kampung Baru",
+      "district": "Concong",
+      "regency": "Indragiri Hilir",
+      "hotspots": 3,
+      "lastDetection": "2026-10-03",
+      "detectionDays": 1
+    },
+    {
+      "village": "Kuala Selat",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir",
+      "hotspots": 3,
+      "lastDetection": "2026-10-03",
+      "detectionDays": 1
+    },
+    {
+      "village": "Ranah Sungkai",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar",
+      "hotspots": 3,
+      "lastDetection": "2026-10-05",
+      "detectionDays": 2
+    },
+    {
+      "village": "Binamang",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar",
+      "hotspots": 2,
+      "lastDetection": "2026-10-05",
+      "detectionDays": 1
+    },
+    {
+      "village": "Kelurahan Concong Luar",
+      "district": "Concong",
+      "regency": "Indragiri Hilir",
+      "hotspots": 2,
+      "lastDetection": "2026-10-03",
+      "detectionDays": 1
+    },
+    {
+      "village": "Belaras",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "hotspots": 1,
+      "lastDetection": "2026-10-03",
+      "detectionDays": 1
+    },
+    {
+      "village": "Bente",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir",
+      "hotspots": 1,
+      "lastDetection": "2026-10-03",
+      "detectionDays": 1
+    },
+    {
+      "village": "Pantai",
+      "district": "Kuantan Mudik",
+      "regency": "Kuantan Singingi",
+      "hotspots": 1,
+      "lastDetection": "2026-10-06",
+      "detectionDays": 1
+    },
+    {
+      "village": "Sungaiberapit",
+      "district": "Concong",
+      "regency": "Indragiri Hilir",
+      "hotspots": 1,
+      "lastDetection": "2026-10-03",
+      "detectionDays": 1
+    }
+  ],
+  "hotspots": [
+    {
+      "date": "2026-10-01",
+      "time": "0644",
+      "longitude": 100.7245,
+      "latitude": 0.35655,
+      "satellite": "N",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 10.79,
+      "village": "Ranah Sungkai",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar"
+    },
+    {
+      "date": "2026-10-01",
+      "time": "0644",
+      "longitude": 100.74408,
+      "latitude": 0.33423,
+      "satellite": "N",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 9.54,
+      "village": "Kelurahan Batu Bersurat",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.18408,
+      "latitude": 0.69646,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 11.39,
+      "village": "Sungai Upih",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.19231,
+      "latitude": 0.69773,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 13.54,
+      "village": "Sungai Upih",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.19643,
+      "latitude": 0.69836,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 7.82,
+      "village": "Sungai Upih",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.20055,
+      "latitude": 0.69899,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 7.82,
+      "village": "Sungai Upih",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.21693,
+      "latitude": 0.70152,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 8.25,
+      "village": "Sungai Upih",
+      "district": "Kuala Kampar",
+      "regency": "Pelalawan"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.52724,
+      "latitude": 0.05442,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 27,
+      "village": "Bente",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.56322,
+      "latitude": -0.25097,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 16.81,
+      "village": "Kampung Baru",
+      "district": "Concong",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.58531,
+      "latitude": -0.23297,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 18.62,
+      "village": "Kampung Baru",
+      "district": "Concong",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.58934,
+      "latitude": -0.23235,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 13.45,
+      "village": "Kampung Baru",
+      "district": "Concong",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.59867,
+      "latitude": -0.35048,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 36.63,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.60163,
+      "latitude": -0.34273,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 17.25,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.60861,
+      "latitude": -0.33437,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 23.83,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.61157,
+      "latitude": -0.32662,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 30.87,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.61265,
+      "latitude": -0.33375,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 13.12,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.61456,
+      "latitude": -0.23574,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 12.19,
+      "village": "Kelurahan Concong Luar",
+      "district": "Concong",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.61858,
+      "latitude": -0.23512,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 12.19,
+      "village": "Kelurahan Concong Luar",
+      "district": "Concong",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.61909,
+      "latitude": -0.32183,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 11.35,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.62713,
+      "latitude": -0.3206,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 29.8,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.62849,
+      "latitude": -0.35681,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 21.59,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.62928,
+      "latitude": -0.33483,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 22.52,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.63143,
+      "latitude": -0.34907,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 16.02,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.63288,
+      "latitude": -0.02308,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 7.52,
+      "village": "Belaras",
+      "district": "Mandah",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.6368,
+      "latitude": -0.33004,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 25.51,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.63813,
+      "latitude": -0.31163,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 16.05,
+      "village": "Sungaiberapit",
+      "district": "Concong",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.64697,
+      "latitude": -0.34303,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 20.73,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.64857,
+      "latitude": -0.35369,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 59.82,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.65527,
+      "latitude": -0.31629,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 22.05,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.65553,
+      "latitude": -0.34534,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 31.44,
+      "village": "Sungaibela",
+      "district": "Kuala Indragiri",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.73257,
+      "latitude": 0.20947,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 13.82,
+      "village": "Kuala Selat",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.74275,
+      "latitude": 0.22185,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 20.2,
+      "village": "Kuala Selat",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-03",
+      "time": "0627",
+      "longitude": 103.74329,
+      "latitude": 0.21833,
+      "satellite": "N20",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 14.62,
+      "village": "Kuala Selat",
+      "district": "Kateman",
+      "regency": "Indragiri Hilir"
+    },
+    {
+      "date": "2026-10-05",
+      "time": "0631",
+      "longitude": 100.72287,
+      "latitude": 0.36099,
+      "satellite": "N21",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 29.71,
+      "village": "Ranah Sungkai",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar"
+    },
+    {
+      "date": "2026-10-05",
+      "time": "0631",
+      "longitude": 100.72803,
+      "latitude": 0.3494,
+      "satellite": "N21",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 25.62,
+      "village": "Kelurahan Batu Bersurat",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar"
+    },
+    {
+      "date": "2026-10-05",
+      "time": "0631",
+      "longitude": 100.72828,
+      "latitude": 0.35113,
+      "satellite": "N21",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 28.7,
+      "village": "Kelurahan Batu Bersurat",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar"
+    },
+    {
+      "date": "2026-10-05",
+      "time": "0631",
+      "longitude": 100.7316,
+      "latitude": 0.35521,
+      "satellite": "N21",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 14.46,
+      "village": "Kelurahan Batu Bersurat",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar"
+    },
+    {
+      "date": "2026-10-05",
+      "time": "0631",
+      "longitude": 100.73544,
+      "latitude": 0.35581,
+      "satellite": "N21",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 14.46,
+      "village": "Ranah Sungkai",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar"
+    },
+    {
+      "date": "2026-10-05",
+      "time": "0631",
+      "longitude": 100.7401,
+      "latitude": 0.34765,
+      "satellite": "N21",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 25.06,
+      "village": "Kelurahan Batu Bersurat",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar"
+    },
+    {
+      "date": "2026-10-05",
+      "time": "0631",
+      "longitude": 100.74033,
+      "latitude": 0.34944,
+      "satellite": "N21",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 23.95,
+      "village": "Kelurahan Batu Bersurat",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar"
+    },
+    {
+      "date": "2026-10-05",
+      "time": "0631",
+      "longitude": 100.74165,
+      "latitude": 0.3372,
+      "satellite": "N21",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 31.22,
+      "village": "Kelurahan Batu Bersurat",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar"
+    },
+    {
+      "date": "2026-10-05",
+      "time": "0631",
+      "longitude": 100.74672,
+      "latitude": 0.27739,
+      "satellite": "N21",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 15.91,
+      "village": "Binamang",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar"
+    },
+    {
+      "date": "2026-10-05",
+      "time": "0631",
+      "longitude": 100.79173,
+      "latitude": 0.29143,
+      "satellite": "N21",
+      "confidence": "high",
+      "brightness": 367,
+      "frp": 24.9,
+      "village": "Binamang",
+      "district": "Xiii Koto Kampar",
+      "regency": "Kampar"
+    },
+    {
+      "date": "2026-10-06",
+      "time": "0907",
+      "longitude": 101.62787,
+      "latitude": -0.80685,
+      "satellite": "Aqua",
+      "confidence": "high",
+      "brightness": 324.2,
+      "frp": 21.83,
+      "village": "Pantai",
+      "district": "Kuantan Mudik",
+      "regency": "Kuantan Singingi"
+    }
+  ]
+}
