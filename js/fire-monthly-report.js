@@ -7,7 +7,7 @@
   var month=new URLSearchParams(location.search).get('month');
   if(!/^\d{4}-(0[1-9]|1[0-2])$/.test(month||''))month=null;
   var requestedMonth=month;
-  var year=new URLSearchParams(location.search).get('year');if(!/^20\\d{2}$/.test(year||''))year=null;
+  var year=new URLSearchParams(location.search).get('year');if(!/^20\d{2}$/.test(year||''))year=null;
   var map=L.map('monthly-fire-map',{preferCanvas:true}).fitBounds([[-1.3,100],[2.9,104.9]]);
   L.tileLayer('https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}',{maxZoom:19,attribution:'Tiles &copy; Esri'}).addTo(map);
 
