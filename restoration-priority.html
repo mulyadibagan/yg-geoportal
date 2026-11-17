@@ -8,7 +8,7 @@
   <script src="js/staff-frame-guard.js"></script>
   <title>Analisis Prioritas Restorasi Gambut | YG GeoPortal</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
-  <link rel="stylesheet" href="css/restoration-priority.css?v=20261104-pressures1">
+  <link rel="stylesheet" href="css/restoration-priority.css?v=20261117-dumai1">
 </head>
 <body>
   <header><a href="staff-riau-reference.html">← Peta Referensi Riau</a><span>YG GeoPortal · Internal</span></header>
@@ -17,7 +17,43 @@
     <h1>Wilayah Prioritas Restorasi Gambut</h1>
     <p id="access-status" role="status">Memeriksa akses staf…</p>
     <section id="workspace" hidden>
-      <p class="notice">Belum ada wilayah prioritas yang dapat ditetapkan. Lengkapi dan validasi indikator ekologis sebelum menggunakan hasil untuk keputusan restorasi.</p>
+      <section class="panel proposal-focus" aria-labelledby="proposal-focus-title">
+        <p class="eyebrow">PRIORITAS PENGEMBANGAN PROPOSAL</p>
+        <h2 id="proposal-focus-title">Mundam &amp; Pelintung</h2>
+        <p>Kelurahan Mundam dan Pelintung · Kecamatan Medang Kampai · Kota Dumai.</p>
+        <p class="muted">Dua lokasi fokus yang dipilih YG. Penilaian kebutuhan ekologis dan penetapan tapak mengikuti bukti kebakaran, bukaan hutan gambut, kanal, serta status pengelolaan lahan.</p>
+        <div class="proposal-actions" role="group" aria-label="Fokus peta kelurahan">
+          <button id="proposal-both" type="button" aria-pressed="false" disabled>Kedua kelurahan</button>
+          <button id="proposal-mundam" type="button" aria-pressed="false" disabled>Mundam</button>
+          <button id="proposal-pelintung" type="button" aria-pressed="false" disabled>Pelintung</button>
+        </div>
+        <p id="proposal-map-status" class="muted" role="status">Menyiapkan batas referensi kelurahan…</p>
+        <div class="proposal-cards">
+          <article>
+            <h3>Mundam</h3>
+            <dl>
+              <div><dt>Gambut dalam batas referensi</dt><dd id="proposal-peat-mundam">Memuat…</dd></div>
+              <div><dt>Kehilangan tutupan pohon 2025</dt><dd id="proposal-loss-mundam">Memuat…</dd></div>
+              <div><dt>Kehilangan tutupan pohon 2023–2025</dt><dd id="proposal-loss3-mundam">Memuat…</dd></div>
+            </dl>
+            <p id="proposal-data-mundam" class="muted" role="status">Memuat ringkasan kelurahan…</p>
+            <a id="proposal-profile-mundam" href="village-profile.html?key=kelurahan%20mundam%7Cmedang%20kampai%7Ckota%20dumai">Buka profil Mundam →</a>
+          </article>
+          <article>
+            <h3>Pelintung</h3>
+            <dl>
+              <div><dt>Gambut dalam batas referensi</dt><dd id="proposal-peat-pelintung">Memuat…</dd></div>
+              <div><dt>Kehilangan tutupan pohon 2025</dt><dd id="proposal-loss-pelintung">Memuat…</dd></div>
+              <div><dt>Kehilangan tutupan pohon 2023–2025</dt><dd id="proposal-loss3-pelintung">Memuat…</dd></div>
+            </dl>
+            <p id="proposal-data-pelintung" class="muted" role="status">Memuat ringkasan kelurahan…</p>
+            <a id="proposal-profile-pelintung" href="village-profile.html?key=kelurahan%20pelintung%7Cmedang%20kampai%7Ckota%20dumai">Buka profil Pelintung →</a>
+          </article>
+        </div>
+        <p class="muted">Luas gambut merupakan konteks kelurahan. Kehilangan tutupan pohon berlaku untuk seluruh kelurahan, belum dipotong ke gambut atau tapak usulan. Angka ini bukan luas restorasi atau luas terbakar.</p>
+        <details><summary>Kebutuhan penyiapan tapak proposal</summary><p>Periksa kanal dan struktur eksisting, riwayat kebakaran, kondisi vegetasi, KHG/fungsi gambut, PBPH, perhutanan sosial, perkebunan/HGU, serta pengelola dan persetujuan masyarakat. Tentukan poligon, luas kegiatan dan desain pembasahan setelah pemeriksaan tapak.</p></details>
+      </section>
+      <p class="notice">Fokus proposal: Mundam dan Pelintung. Kelas prioritas ekologis dan luas intervensi belum ditetapkan sebelum bukti tapak tervalidasi.</p>
       <div class="stats" aria-live="polite">
         <article><span>Luas sumber gambut tersaring</span><strong id="area">—</strong><small>Jumlah atribut Luas_Ha BBSDLP, bukan luas irisan KHG</small></article>
         <article><span>Poligon gambut</span><strong id="polygon-count">—</strong><small id="unassessed">Belum dinilai</small></article>
@@ -59,6 +95,8 @@
   <script src="js/restoration-catalog.js?v=20261104-bpbd1"></script>
   <script src="js/restoration-inventory.js?v=20261104-database1"></script>
   <script src="js/restoration-review.js?v=20261110-review1"></script>
-  <script src="js/restoration-priority.js?v=20261110-review1"></script>
+  <script src="js/restoration-focus.js?v=20261117-dumai1"></script>
+  <script src="js/restoration-priority.js?v=20261117-dumai1"></script>
 </body>
 </html>
+

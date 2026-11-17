@@ -127,12 +127,14 @@
     } finally { input.disabled = false; }
   }
   function fit() {
+    if (state.proposalFocus?.fit()) return;
     const peat = state.layers.get('peat');
     const bounds = peat && $('layer-peat').checked && peat.getBounds();
     if (bounds?.isValid()) state.map.fitBounds(bounds, { padding: [18, 18], maxZoom: 12 });
     else if (state.boundary) state.map.fitBounds(L.geoJSON(state.boundary).getBounds());
   }
   function filter() {
+    state.proposalFocus?.onRegencyChange($('regency').value);
     state.filtered = A.select(state.peat, $('regency').value, '');
     const summary = A.summarize(state.filtered, 'pressures');
     $('area').textContent = summary.sourceAreaHa === null ? 'Data belum tersedia' : number(summary.sourceAreaHa) + ' ha';
@@ -236,6 +238,7 @@
     const selected = $('khg').value;
     if (selected === '') { fit(); return; }
     const feature = state.khgFeatures[Number(selected)]; if (!feature) return;
+    state.proposalFocus?.clear();
     if (state.khgMode === 'feg' && !$('layer-feg').checked) { $('layer-feg').checked = true; draw(definitions.find(d => d.id === 'feg')); }
     const title = state.khgMode === 'feg' ? 'Bagian FEG pada ' + state.fegGroups.groups[Number(selected)].code + ' · bukan batas KHG mandiri' : 'KHG · referensi peta, belum dinilai';
     state.khgLayer = L.geoJSON(feature, { style: { color: '#375bb1', weight: 3, fillOpacity: .08 }, onEachFeature: (f,l) => l.bindPopup(() => popup(f, title)) }).addTo(state.map);
@@ -320,6 +323,19 @@
       const districts = new Map(); state.peat.forEach(f => { const name = f.properties?.KABKOT; if (name) districts.set(A.district(name), name); });
       [...districts].sort(([a], [b]) => a.localeCompare(b)).forEach(([key, name]) => { const o = document.createElement('option'); o.value = name; o.textContent = key === 'SIAK' ? 'Siak' : name; $('regency').appendChild(o); });
       $('regency').disabled = false; $('layers').disabled = false; $('fit').disabled = false; $('use-feg-khg').disabled = false; $('layer-peat').checked = true; filter();
+      if (window.YG_RESTORATION_FOCUS) {
+        const requestedFocus = new URLSearchParams(location.search).get('focus');
+        state.proposalFocus = window.YG_RESTORATION_FOCUS.init({
+          map: state.map, regency: $('regency'), L, document, fetchJSON,
+          isActive: () => !$('workspace').hidden && window.YG_AUTH?.readStoredSession()?.token === state.session?.token,
+          initialFocus: ['mundam', 'pelintung'].includes(requestedFocus) ? requestedFocus : 'both',
+          setRegency: district => {
+            const option = [...$('regency').options].find(item => A.district(item.value) === district);
+            if (!option) return false;
+            $('regency').value = option.value; filter(); return true;
+          }
+        });
+      }
       catalogKHG(catalog);
       ['review-data','review-manifest','review-load'].forEach(id=>$(id).disabled=false);
       $('review-load').addEventListener('click',loadReview);$('review-clear').addEventListener('click',clearReview);
