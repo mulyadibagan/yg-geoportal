@@ -58,7 +58,7 @@
     var reportPromise=bundle.preloaded&&requestedMonth===selected.month?Promise.resolve(bundle.preloaded):(selected.data?json(publicFetch,selected.data+'?v='+encodeURIComponent(selected.generatedAt||'1'),'snapshot belum tersedia'):Promise.resolve(fallback));
     return Promise.all([reportPromise,Promise.resolve(bundle.villageGeo)]);
   }).then(function(result){
-    if(staffSession&&!year){
+    if(staffSession){
       document.getElementById('fm-companies').closest('article').hidden=false;
       document.getElementById('fm-companies').closest('article').removeAttribute('aria-hidden');
       document.getElementById('fm-company-rows').closest('article').hidden=false;
@@ -67,7 +67,7 @@
     }
     var d=result[0],villageGeo=result[1],permitGeo=emptyGeo(),rspoGeo=emptyGeo();
     document.getElementById('fm-title').textContent=year?'Laporan tahunan '+year:monthLabel(d.month);
-    document.getElementById('fm-description').textContent='Deteksi hotspot high confidence NASA FIRMS periode '+d.period.start+'–'+d.period.end+', dipadankan dengan batas administrasi desa di Provinsi Riau.'+(staffSession&&!year?' Analisis PBPH, perkebunan anggota RSPO, dan Perhutanan Sosial dimuat terpisah untuk sesi staf.':'');
+    document.getElementById('fm-description').textContent='Deteksi hotspot high confidence NASA FIRMS periode '+d.period.start+'–'+d.period.end+', dipadankan dengan batas administrasi desa di Provinsi Riau.'+(staffSession?' Analisis PBPH, perkebunan anggota RSPO, dan Perhutanan Sosial dimuat terpisah untuk sesi staf.':'');
     var s=d.summary||{};
     document.getElementById('fm-hotspots').textContent=Number(s.hotspots||0).toLocaleString('id-ID');
     document.getElementById('fm-villages').textContent=Number(s.villages||0).toLocaleString('id-ID');
@@ -91,13 +91,13 @@
 
     if(year){document.getElementById('fm-status').textContent='Rekap tahunan sementara · '+d.period.start+' sampai '+d.period.end+' · '+d.months.length+' laporan bulanan final'+(d.missingMonths.length?' · Belum tersedia: '+d.missingMonths.join(', '):'')+' · Bulan setelah cakupan belum dihitung';document.getElementById('fm-daily-label').textContent='LINIMASA TAHUNAN';document.getElementById('fm-daily-title').textContent='Deteksi per bulan';}
     var burnedPromise=window.loadMonthlyBurned(map,month,d,layerControl);
-    if(!staffSession||year)return burnedPromise;
+    if(!staffSession)return burnedPromise;
     return Promise.all([burnedPromise,privatePromise]).then(function(all){
       if(window.YG_STAFF_DATA.session()?.token!==staffSession.token)return;
       var geo=all[0],privateRows=all[1],errors=privateRows.map(function(x){return x.error}).filter(Boolean);
       if(errors.length){showInternalFailure(errors);['fm-companies','fm-rspo-areas','fm-ps-areas'].forEach(function(id){var el=document.getElementById(id);if(el)el.textContent='—'});return;}
       permitGeo=privateRows[0].geo;rspoGeo=privateRows[1].geo;var psGeo=privateRows[2].geo;
-      return window.renderMonthlyInternal(map,month,d,geo,permitGeo,rspoGeo,psGeo,layerControl);
+      return window.renderMonthlyInternal(map,year?d.period.start+'–'+d.period.end:month,d,geo,permitGeo,rspoGeo,psGeo,layerControl);
     });
   }).catch(function(e){document.getElementById('fm-status').textContent='Laporan belum tersedia: '+e.message;document.getElementById('fm-status').style.color='#a33'});
 }());
