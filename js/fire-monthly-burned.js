@@ -6,13 +6,14 @@
   window.loadMonthlyBurned=function(map,month,d,control){
     var card=document.getElementById('fm-burned-area'),status=document.getElementById('fm-burned-status'),rows=document.getElementById('fm-area-rows');
     return fetch('data/burned-area-monthly/index.json?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('archive');return r.json()}).then(function(index){
+      if(d.annual){var selected=(index.reports||[]).filter(function(x){return d.months.indexOf(x.month)!==-1});return Promise.all(selected.map(function(x){return fetch(x.data+'?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('archive');return r.json()})})).then(function(items){if(!items.length)return null;var unique=new Map();items.forEach(function(g){(g.features||[]).forEach(function(f){var p=f.properties||{},id=p.archiveEventId||p.eventId||JSON.stringify(f.geometry);if(!unique.has(id))unique.set(id,f)})});var features=Array.from(unique.values());return {type:'FeatureCollection',features:features,eventCount:features.length,estimatedAreaHa:features.reduce(function(n,f){return n+Number(f.properties.estimatedAreaHa||0)},0),generatedAt:items.map(function(g){return g.generatedAt}).sort().pop(),annual:true,missingMonths:d.months.filter(function(m){return !selected.some(function(r){return r.month===m})})}})}
       var report=(index.reports||[]).find(function(x){return x.month===month});
       if(!report){card.textContent='Belum tersedia';status.textContent='Bulan ini belum memiliki hasil estimasi tersimpan.';rows.innerHTML='<tr><td colspan="3">Estimasi luas belum tersedia; bukan berarti tidak ada kebakaran.</td></tr>';return null}
       return fetch(report.data+'?t='+Date.now(),{cache:'no-store'}).then(function(r){if(!r.ok)throw Error('archive');return r.json()});
     }).then(function(geo){
       if(!geo)return;
       card.textContent=ha(geo.estimatedAreaHa);
-      status.textContent='Sementara · '+geo.eventCount+' kejadian · citra layak yang sudah tersedia · diperbarui '+new Date(geo.generatedAt).toLocaleString('id-ID',{timeZone:'Asia/Jakarta'})+' WIB';
+      status.textContent=(geo.annual?'Akumulasi estimasi kejadian; bukan luas lahan unik · Sementara · ':'Sementara · ')+geo.eventCount+' kejadian · citra layak yang sudah tersedia · diperbarui '+new Date(geo.generatedAt).toLocaleString('id-ID',{timeZone:'Asia/Jakarta'})+' WIB'+(geo.annual&&geo.missingMonths.length?' · Arsip luas belum tersedia: '+geo.missingMonths.join(', '):'');
       var villages=new Map();
       (d.villages||[]).forEach(function(v){villages.set(key(v),{village:v.village,district:v.district,regency:v.regency,hotspots:v.hotspots,area:null})});
       geo.features.forEach(function(f){(f.properties.villageAreas||[]).forEach(function(a){var k=key(a),r=villages.get(k)||{village:a.village,district:a.district,regency:a.regency,hotspots:d.unavailable?null:0,area:null};r.area=(r.area||0)+a.areaHa;villages.set(k,r)})});

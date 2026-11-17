@@ -161,6 +161,7 @@ for (const item of detections) {
 const daily = [];
 for (let cursor = new Date(start); cursor <= end; cursor = new Date(cursor.getTime() + 86400000)) daily.push({ date: iso(cursor), hotspots: dailyMap.get(iso(cursor)) || 0 });
 const villageRows = [...villageMap.values()].map((x) => ({ ...x, detectionDays: x.dates.size, dates: undefined })).sort((a, b) => b.hotspots - a.hotspots || a.village.localeCompare(b.village));
+if (GEOJSON_ARCHIVE && (archiveCoverage?.sourceStatus !== "complete" || !archiveCoverage.start || !archiveCoverage.end || archiveCoverage.start > iso(start) || archiveCoverage.end < iso(end))) throw new Error("Archive does not cover the complete reporting month");
 const report = {
   schemaVersion: 2, month: MONTH, period: { start: iso(start), end: iso(end) }, province: "Riau",
   status: "final",

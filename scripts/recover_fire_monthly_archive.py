@@ -8,11 +8,24 @@ sources=[]
 if a.snapshot:
     sources=[(s,json.loads(pathlib.Path(s).read_text())) for s in a.snapshot]
 else:
-    # Month-end covers the first days; the newest snapshot includes late arrivals.
-    sha=subprocess.check_output(['git','log','-1','--format=%H','--until='+end.isoformat()+'T23:59:59Z','--',path],text=True).strip()
-    if not sha: raise SystemExit('No month-end snapshot in git history')
-    for ref in [sha,'HEAD']:
-        sources.append((ref,json.loads(subprocess.check_output(['git','show',ref+':'+path],text=True))))
+    # A 30-day window cannot cover every day of a 31-day month.
+    # Walk snapshots newest first until complete calendar coverage is recovered.
+    refs=subprocess.check_output(['git','log','--format=%H %cI','--since='+start.isoformat()+'T00:00:00Z','--until='+(end+dt.timedelta(days=32)).isoformat()+'T23:59:59Z','--',path],text=True).splitlines()
+    if not refs: raise SystemExit('No snapshots in git history for requested month')
+    required={start+dt.timedelta(days=n) for n in range((end-start).days+1)}
+    recovered=set()
+    cutoff=None
+    for entry in refs:
+        ref,committed=entry.split(' ',1)
+        if cutoff and dt.date.fromisoformat(committed[:10])>cutoff: continue
+        j=json.loads(subprocess.check_output(['git','show',ref+':'+path],text=True))
+        if j.get('sourceStatus')!='complete' or j.get('skippedChunks'): continue
+        lo=dt.date.fromisoformat(j['coverageStart']); hi=dt.date.fromisoformat(j['coverageEnd'])
+        overlap={day for day in required if lo<=day<=hi}
+        if not overlap-recovered: continue
+        sources.append((ref,j)); recovered.update(overlap)
+        if required<=recovered: break
+        cutoff=max(required-recovered)+dt.timedelta(days=1)
 covered=set(); features={}; provenance=[]
 for ref,j in sources:
     if j.get('sourceStatus')!='complete' or j.get('skippedChunks'): raise SystemExit('Incomplete source snapshot: '+ref)
