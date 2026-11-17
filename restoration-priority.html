@@ -9,7 +9,7 @@
   <title>Analisis Prioritas Restorasi Gambut | YG GeoPortal</title>
   <link rel="icon" href="assets/logo-yayasan-gambut.png">
   <link rel="stylesheet" href="css/restoration-priority.css?v=20261117-dumai2">
-  <link rel="stylesheet" href="css/restoration-plan.css?v=20261117-plan1">
+  <link rel="stylesheet" href="css/restoration-analysis.css?v=20261117-analysis1">
 </head>
 <body>
   <header><a href="staff-riau-reference.html">← Peta Referensi Riau</a><span>YG GeoPortal · Internal</span></header>
@@ -18,42 +18,77 @@
     <h1>Wilayah Prioritas Restorasi Gambut</h1>
     <p id="access-status" role="status">Memeriksa akses staf…</p>
     <section id="workspace" hidden>
-      <section id="restoration-plan-workspace" class="panel plan-workspace" aria-labelledby="plan-title">
-        <p class="eyebrow">DRAF PROGRAM &amp; PROPOSAL</p>
-        <h2 id="plan-title">Rencana restorasi Bengkalis &amp; Dumai</h2>
-        <p id="plan-status" role="status">Memuat analisis dan rencana tersimpan.</p>
-        <details id="plan-import"><summary>Sumber analisis internal</summary>
-          <p class="muted">Paket analisis disimpan untuk akses staf. Gunakan sumber dengan tanggal serta checksum geometri yang sesuai.</p>
-          <label for="plan-file">Paket analisis restorasi (JSON)</label><input id="plan-file" type="file" accept=".json,application/json" disabled>
-          <p id="plan-import-status" role="status">Belum ada paket dipilih.</p><button id="plan-save-source" type="button" disabled>Simpan sumber internal</button>
-          <p id="plan-source-info" class="muted"></p>
-        </details>
-        <div id="plan-editor" hidden>
-          <p id="plan-summary" class="plan-summary" aria-live="polite"></p>
-          <p class="muted">P1: bukti setempat berimpit. P2: tekanan historis pada unit yang sama, perlu dilokalisasi. P3: api historis dan kanal, bukti perubahan vegetasi belum lengkap. D: data belum cukup. Kelas ini mengurutkan verifikasi tapak.</p>
-          <details class="plan-catalog"><summary>Pilih desa atau kelurahan untuk rencana</summary>
-            <div class="plan-filters">
-              <label>Wilayah<select id="plan-region"><option value="">Bengkalis &amp; Dumai</option><option>Bengkalis</option><option>Kota Dumai</option></select></label>
-              <label>Cari desa / kecamatan<input id="plan-search" type="search" placeholder="Nama lokasi"></label>
-              <label>Cakupan<select id="plan-scope"><option value="candidate">Kandidat P1–P3</option><option value="all">Semua kelas bukti</option></select></label>
+      <section id="restoration-analysis-workspace" class="panel analysis-workspace" aria-labelledby="analysis-title">
+        <p class="eyebrow">ANALISIS KEBUTUHAN PEMULIHAN</p>
+        <h2 id="analysis-title">Prioritas restorasi Bengkalis &amp; Dumai</h2>
+        <p id="analysis-status" role="status">Memuat hasil analisis staf.</p>
+        <button id="analysis-reload" type="button" disabled>Muat ulang sumber analisis</button>
+        <div id="analysis-content" hidden>
+          <p id="analysis-summary" class="analysis-summary"></p>
+          <div id="analysis-regions" class="analysis-regions"></div>
+          <p class="muted">Kelas menunjukkan urutan verifikasi dari bukti historis. Tanggal kompilasi bukan tanggal observasi seluruh data. Bukti pada satu unit gambut belum tentu berada di setiap desa yang beririsan.</p>
+          <fieldset id="analysis-controls" disabled><legend>Telusuri hasil analisis</legend>
+            <div class="analysis-filters">
+              <label>Wilayah analisis<select id="analysis-region"><option value="">Bengkalis &amp; Dumai</option><option>Bengkalis</option><option>Kota Dumai</option></select></label>
+              <label>Kelas bukti<select id="analysis-class"><option value="candidate">Kandidat P1–P3</option><option value="P1">P1 — bukti setempat</option><option value="P2">P2 — lokalisasi tekanan</option><option value="P3">P3 — tapak historis</option><option value="D">D — data belum cukup</option><option value="N">N — cakupan belum memadai</option><option value="X">X — geometri perlu diperbaiki</option><option value="all">Semua kelas</option></select></label>
+              <label>Cari lokasi<input id="analysis-search" type="search" placeholder="Desa, kelurahan atau kecamatan"></label>
             </div>
-            <p id="plan-catalog-count" class="muted"></p>
-            <div class="table-wrap plan-catalog-table"><table><thead><tr><th>Pilih</th><th>Desa / kelurahan</th><th>Wilayah sumber</th><th>Kelas</th><th>Sel setempat</th><th>Unit P1–P3</th></tr></thead><tbody id="plan-villages"></tbody></table></div>
+            <p id="analysis-count" class="muted" aria-live="polite"></p>
+            <div class="table-wrap analysis-table"><table><thead><tr><th>Kelas</th><th>Desa / kelurahan</th><th>Wilayah sumber</th><th>Sel setempat</th><th>Unit P1 / P2 / P3</th><th>Tindak lanjut analisis</th></tr></thead><tbody id="analysis-rows"></tbody></table></div>
+            <div class="analysis-actions"><button id="analysis-map-all" type="button">Lihat peta hasil sesuai filter</button><button id="analysis-csv" type="button">Unduh hasil analisis (.csv)</button><button id="analysis-md" type="button">Unduh telaah restorasi (.md)</button><button id="analysis-geojson" type="button">Unduh unit referensi (.geojson)</button></div>
+            <section id="analysis-detail" class="analysis-detail" hidden aria-labelledby="analysis-detail-title">
+              <h3 id="analysis-detail-title"></h3><p id="analysis-detail-location" class="muted"></p><p id="analysis-detail-basis"></p>
+              <dl><dt>Langkah berikutnya</dt><dd id="analysis-detail-next"></dd><dt>Pemulihan tata air</dt><dd id="analysis-detail-water"></dd><dt>Pemulihan vegetasi</dt><dd id="analysis-detail-vegetation"></dd><dt>Kesenjangan bukti</dt><dd id="analysis-detail-gap"></dd><dt>Jumlah sekat &amp; luas</dt><dd>Belum dapat dihitung dari paket ini. Memerlukan kanal/aliran/elevasi, TMAT, vegetasi terkini, inventaris struktur dan batas intervensi.</dd></dl>
+              <button id="analysis-map-detail" type="button">Lihat unit lokasi ini pada peta</button>
+              <details><summary>Bukti pada unit gambut yang beririsan</summary><p class="muted">Kolom sel berikut adalah jumlah dalam seluruh unit, bukan sel setempat di desa. Unit yang sama dapat beririsan beberapa desa.</p><div class="table-wrap"><table><thead><tr><th>ID unit</th><th>Kelas unit</th><th>Api 2015–2017</th><th>Kanal arsip</th><th>Kehilangan tutupan 2018–2025</th><th>Sel dalam unit</th></tr></thead><tbody id="analysis-units"></tbody></table></div></details>
+            </section>
+          </fieldset>
+          <details><summary>Metode, sumber dan batas keputusan</summary>
+            <p>Penapisan memakai gambut BBSDLP 2019, api historis 2015–2017, kehilangan tutupan pohon 2018–2025, dan kanal arsip yang tahun pengamatannya belum pasti.</p>
+            <p><strong>P1:</strong> bukti historis pada unit disertai konvergensi bukaan dan kanal pada sel setempat. <strong>P2:</strong> api, kanal dan kehilangan tutupan pada unit, belum terlokalisasi pada sel setempat. <strong>P3:</strong> api dan kanal historis, bukti kehilangan tutupan belum terkonfirmasi. <strong>D:</strong> bukti belum cukup. <strong>N:</strong> cakupan referensi belum memadai; bukan penetapan lokasi bukan gambut.</p>
+            <p>Kelas indikatif bukan status kerusakan resmi atau kesiapan konstruksi. Nol sel tercatat bukan bukti tidak ada kerusakan. Jumlah sel bukan hektare; kehilangan tutupan pohon bukan luas terbakar. Pemilihan tapak perlu verifikasi kondisi terkini serta KHG/fungsi gambut, tenurial/pengelola dan struktur eksisting.</p>
+            <p>Rujukan teknis: <a href="https://pkgppkl.menlhk.go.id/v0/wp-content/uploads/2018/10/P.16_2017-Pedoman-Pemulihan-Gambut.pdf">Permen LHK P.16/2017, Pasal 3, 12 dan 17</a>.</p>
+            <p id="analysis-source" class="muted"></p>
           </details>
-          <p class="muted">Target kosong berarti belum dihitung. Nilai 0 hanya diisi jika memang diputuskan tidak diusulkan. Inventaris sekat eksisting perlu diperiksa sebelum menetapkan struktur baru.</p>
-          <div id="plan-entries" class="plan-entries"></div>
-          <div class="plan-actions"><button id="plan-scenario" type="button" class="secondary">Pakai skenario 8 sekat Dumai</button><span class="muted">4 Pelintung + 4 Guntung; asumsi awal anggaran, menunggu survei.</span></div>
-          <div class="plan-actions"><button id="plan-save" type="button">Simpan draf rencana</button><button id="plan-reload" type="button" class="secondary">Muat rencana tersimpan</button><span id="plan-save-state" role="status"></span></div>
-          <details><summary>Pratinjau &amp; unduh rencana</summary>
-            <div class="plan-actions"><button id="plan-md" type="button">Unduh narasi proposal (.md)</button><button id="plan-csv" type="button">Unduh tabel (.csv)</button><button id="plan-geojson" type="button">Unduh unit referensi (.geojson)</button><button id="plan-json" type="button">Unduh draf (.json)</button></div>
-            <p class="muted">Poligon unduhan mencakup unit referensi utuh, bukan poligon intervensi. Luas restorasi dan titik sekat menunggu hasil survei.</p>
-            <pre id="plan-report"></pre>
-          </details>
-          <p id="plan-map-status" class="muted" role="status"></p>
+          <details><summary>Telaah lengkap sesuai filter</summary><pre id="analysis-report"></pre></details>
+          <p id="analysis-map-status" role="status" class="muted"></p>
+          <ul class="analysis-map-legend"><li><i style="--color:#aa342d"></i>P1 unit</li><li><i style="--color:#b16b16"></i>P2 unit</li><li><i style="--color:#b89b27"></i>P3 unit</li><li><i style="--color:#738078"></i>D unit</li></ul>
         </div>
       </section>
+      <p class="notice">Hasil penapisan Bengkalis–Dumai ditampilkan di atas dan pada peta. Poligon merupakan unit referensi utuh; luas intervensi belum ditetapkan.</p>
+      <details class="panel analysis"><summary>Ringkasan atribut BBSDLP — terpisah dari kelas analisis historis</summary><div class="stats" aria-live="polite">
+        <article><span>Luas sumber gambut tersaring</span><strong id="area">—</strong><small>Jumlah atribut Luas_Ha BBSDLP, bukan luas irisan KHG</small></article>
+        <article><span>Poligon gambut</span><strong id="polygon-count">—</strong><small id="unassessed">Belum dinilai</small></article>
+        <article><span>Poligon prioritas tinggi</span><strong id="priority-count">—</strong><small>Tumpang tindih tiga tekanan terverifikasi</small></article>
+      </div>
+      </details>
+      <div class="layout">
+        <aside class="panel">
+          <h2>Wilayah & layer</h2>
+          <label>Kabupaten/kota<select id="regency" disabled><option value="">Semua wilayah dalam data gambut</option></select></label>
+          <button id="use-feg-khg" type="button" disabled>Gunakan kode KHG dari FEG</button>
+          <details class="data-options"><summary>Sumber KHG & validasi</summary>
+          <label>Dataset KHG katalog staf<select id="khg-dataset" disabled><option value="">Data belum tersedia</option></select></label>
+          <button id="load-khg" type="button" disabled>Muat referensi KHG</button>
+          <p id="khg-status" role="status">Katalog KHG belum diperiksa.</p>
+          <p id="feg-khg-status" role="status">Kode/nama KHG dapat dikelompokkan dari atribut FEG asli setelah dimuat. Bagian FEG bukan batas KHG mandiri.</p>
+          </details>
+          <label>KHG (fokus peta)<select id="khg" disabled><option value="">Data belum tersedia</option></select></label>
+          <p id="khg-focus-source" role="status">Sumber fokus belum dipilih.</p>
+          <details class="data-options"><summary>Cakupan filter</summary><p class="muted">Pilihan KHG hanya menyorot dan memfokuskan peta. Sumber aktif dijelaskan pada status. Kelompok dari FEG mempertahankan poligon sumber tanpa dissolve. Ringkasan serta filter analisis tetap berdasarkan kabupaten; belum ada overlay/luas irisan KHG tervalidasi.</p>
+          <p class="muted">Filter kabupaten memakai atribut KABKOT BBSDLP 2019. KHG memerlukan batas dan relasi spasial yang tervalidasi.</p>
+          </details>
+          <details class="data-options"><summary>Layer referensi</summary><fieldset id="layers" disabled><legend>Data peta</legend></fieldset></details>
+          <button id="fit" type="button" disabled>Zoom ke wilayah tersaring</button>
+          <p id="layer-status" role="status"></p>
+          <h3>Legenda prioritas tiga tekanan</h3>
+          <ul class="legend"><li><i class="high"></i>Tinggi · tiga tekanan</li><li><i class="medium"></i>Sedang · dua tekanan</li><li><i class="low"></i>Rendah · satu tekanan</li><li><i class="unknown"></i>Data belum tersedia / belum dinilai</li></ul>
+        </aside>
+        <section class="panel map-panel"><h2>Peta referensi Provinsi Riau</h2><div id="map" aria-label="Peta interaktif Riau"></div><p class="muted">Filter kabupaten berlaku pada poligon gambut, inventaris FDRS/sekat kanal, titik BPBD/hotspot dalam gambut tersaring, dan estimasi terbakar berdasarkan atribut kabupaten. FEG merupakan konteks seluruh Riau. Inventaris alat dan sekat menunjukkan infrastruktur yang tercatat, bukan pengukuran atau penilaian kebutuhan ekologis. Titik BPBD bukan luas terbakar atau jumlah kejadian unik. Estimasi terbakar tidak dipotong ulang; luasnya tidak masuk ringkasan gambut.</p></section>
+      </div>
+      <details class="panel analysis"><summary>Studi historis Pelintung–Guntung</summary>
       <section class="panel proposal-focus" aria-labelledby="proposal-focus-title">
-        <p class="eyebrow">PRIORITAS PENGEMBANGAN PROPOSAL</p>
+        <p class="eyebrow">RINCIAN DATA HISTORIS</p>
         <h2 id="proposal-focus-title">Pelintung &amp; Guntung</h2>
         <p>Kelurahan Pelintung dan Guntung · Kecamatan Medang Kampai · Kota Dumai.</p>
         <p id="proposal-adjacency-status" class="muted" role="status">Memeriksa perbatasan pada peta referensi…</p>
@@ -90,36 +125,6 @@
         <p class="muted">Luas terbakar bersumber dari catatan Pemkot untuk seluruh kelurahan; belum dipotong ke gambut. Kehilangan tutupan pohon adalah indikator berbeda. Seluruh angka tersebut bukan luas restorasi proyek.</p>
         <a href="#proposal-history-title">Lihat histori luas terbakar dan rekomendasi ↓</a>
       </section>
-      <p class="notice">Rencana Bengkalis dan Dumai disusun di atas. Ringkasan berikut adalah konteks peta sumber; luasnya bukan luas intervensi rencana.</p>
-      <div class="stats" aria-live="polite">
-        <article><span>Luas sumber gambut tersaring</span><strong id="area">—</strong><small>Jumlah atribut Luas_Ha BBSDLP, bukan luas irisan KHG</small></article>
-        <article><span>Poligon gambut</span><strong id="polygon-count">—</strong><small id="unassessed">Belum dinilai</small></article>
-        <article><span>Poligon prioritas tinggi</span><strong id="priority-count">—</strong><small>Tumpang tindih tiga tekanan terverifikasi</small></article>
-      </div>
-      <div class="layout">
-        <aside class="panel">
-          <h2>Wilayah & layer</h2>
-          <label>Kabupaten/kota<select id="regency" disabled><option value="">Semua wilayah dalam data gambut</option></select></label>
-          <button id="use-feg-khg" type="button" disabled>Gunakan kode KHG dari FEG</button>
-          <details class="data-options"><summary>Sumber KHG & validasi</summary>
-          <label>Dataset KHG katalog staf<select id="khg-dataset" disabled><option value="">Data belum tersedia</option></select></label>
-          <button id="load-khg" type="button" disabled>Muat referensi KHG</button>
-          <p id="khg-status" role="status">Katalog KHG belum diperiksa.</p>
-          <p id="feg-khg-status" role="status">Kode/nama KHG dapat dikelompokkan dari atribut FEG asli setelah dimuat. Bagian FEG bukan batas KHG mandiri.</p>
-          </details>
-          <label>KHG (fokus peta)<select id="khg" disabled><option value="">Data belum tersedia</option></select></label>
-          <p id="khg-focus-source" role="status">Sumber fokus belum dipilih.</p>
-          <details class="data-options"><summary>Cakupan filter</summary><p class="muted">Pilihan KHG hanya menyorot dan memfokuskan peta. Sumber aktif dijelaskan pada status. Kelompok dari FEG mempertahankan poligon sumber tanpa dissolve. Ringkasan serta filter analisis tetap berdasarkan kabupaten; belum ada overlay/luas irisan KHG tervalidasi.</p>
-          <p class="muted">Filter kabupaten memakai atribut KABKOT BBSDLP 2019. KHG memerlukan batas dan relasi spasial yang tervalidasi.</p>
-          </details>
-          <details class="data-options"><summary>Layer referensi</summary><fieldset id="layers" disabled><legend>Data peta</legend></fieldset></details>
-          <button id="fit" type="button" disabled>Zoom ke wilayah tersaring</button>
-          <p id="layer-status" role="status"></p>
-          <h3>Legenda prioritas tiga tekanan</h3>
-          <ul class="legend"><li><i class="high"></i>Tinggi · tiga tekanan</li><li><i class="medium"></i>Sedang · dua tekanan</li><li><i class="low"></i>Rendah · satu tekanan</li><li><i class="unknown"></i>Data belum tersedia / belum dinilai</li></ul>
-        </aside>
-        <section class="panel map-panel"><h2>Peta referensi Provinsi Riau</h2><div id="map" aria-label="Peta interaktif Riau"></div><p class="muted">Filter kabupaten berlaku pada poligon gambut, inventaris FDRS/sekat kanal, titik BPBD/hotspot dalam gambut tersaring, dan estimasi terbakar berdasarkan atribut kabupaten. FEG merupakan konteks seluruh Riau. Inventaris alat dan sekat menunjukkan infrastruktur yang tercatat, bukan pengukuran atau penilaian kebutuhan ekologis. Titik BPBD bukan luas terbakar atau jumlah kejadian unik. Estimasi terbakar tidak dipotong ulang; luasnya tidak masuk ringkasan gambut.</p></section>
-      </div>
       <section class="panel analysis proposal-history" aria-labelledby="proposal-history-title">
         <h2 id="proposal-history-title">Histori luas terbakar · Pelintung–Guntung</h2>
         <p id="proposal-history-status" class="muted" role="status">Memuat catatan luas karhutla dari dokumen Pemkot Dumai…</p>
@@ -133,12 +138,13 @@
         <details><summary>Cakupan, tahun yang belum tersedia, dan batas interpretasi</summary><div id="proposal-history-notes" class="muted"></div><p class="muted"><a href="burned-area.html">Arsip estimasi satelit WebGIS →</a> ditampilkan terpisah dari catatan tahunan Pemkot.</p></details>
       </section>
       <section class="panel analysis" aria-labelledby="proposal-recommendation-title">
-        <h2 id="proposal-recommendation-title">Rekomendasi restorasi untuk pengembangan proposal</h2>
+        <h2 id="proposal-recommendation-title">Arahan verifikasi pemulihan Pelintung–Guntung</h2>
         <p id="proposal-recommendation-status" class="muted">Arahan awal; tapak dan desain mengikuti verifikasi lokasi.</p>
         <div id="proposal-recommendations" class="proposal-recommendations"></div>
         <p id="proposal-joint-action"></p>
         <p class="muted">Rujukan teknis: <span id="proposal-technical-source"></span>. Jumlah sekat, luas pembasahan dan penanaman ditentukan setelah survei; tidak dihitung dari total luas terbakar.</p>
       </section>
+      </details>
       <details class="panel analysis"><summary>Kandidat telaah dari paket privat</summary><p>Paket hanya dibaca di browser staf, tanpa diunggah. Kandidat bukan prioritas final; warna ungu menunjukkan antrean telaah. Ringkasan penilaian tidak berubah.</p><label for="review-data">Berkas review-candidates.geojson</label><input id="review-data" type="file" accept=".geojson,application/geo+json" disabled><label for="review-manifest">Berkas manifest.json dari paket yang sama</label><input id="review-manifest" type="file" accept=".json,application/json" disabled><p><button id="review-load" type="button" disabled>Muat paket telaah</button> <button id="review-clear" type="button" disabled>Hapus paket dari tampilan</button></p><p id="review-status" role="status">Belum ada paket kandidat dimuat.</p><p class="muted">Tahun tutupan hutan BRG dan pengamatan kanal belum terkonfirmasi. Metadata menyebut tutupan lahan 2016, sedangkan field akhir bernama PL17_ID. AREA_KANAL merupakan konteks jangkauan 1 km menurut sumber, bukan bukti irisan langsung garis kanal.</p></details>
       <section class="panel analysis" aria-labelledby="regions-title"><h2 id="regions-title">Wilayah kajian & status prioritas</h2><p id="region-status" role="status"></p><div class="table-wrap"><table><thead><tr><th>Kabupaten/kota</th><th>Luas sumber (ha)</th><th>Poligon gambut</th><th>Prioritas tinggi (poligon)</th><th>Belum dinilai (poligon)</th></tr></thead><tbody id="regions"></tbody></table></div><p class="muted">Luas mengikuti atribut sumber BBSDLP 2019, bukan luas restorasi atau irisan KHG. Tidak ada peringkat ekologis untuk wilayah yang belum dinilai. Gunakan filter kabupaten untuk memfokuskan peta.</p></section>
       <details class="panel analysis"><summary>Indikator & metode penilaian</summary><h2>Prioritas dari tiga tekanan</h2><p>Penapisan awal berdasarkan tumpang tindih kebakaran, bukaan hutan di lahan gambut, dan kanal/drainase: tiga tekanan = tinggi, dua = sedang, satu = rendah. Ini aturan penapisan, tanpa skor 0–100 atau bobot perkiraan. Ketiga status perlu diketahui dari sumber dan overlay yang terverifikasi. Data kosong tidak dianggap tidak ada tekanan. TMAT bukan prasyarat.</p><div class="table-wrap"><table><thead><tr><th>Indikator</th><th>Peran</th><th>Status</th></tr></thead><tbody id="indicators"></tbody></table></div><p>Kesiapan pelaksanaan: <strong>Belum dinilai</strong>. Tidak digabung ke skor ekologis.</p></details>
@@ -151,9 +157,9 @@
   <script src="js/restoration-catalog.js?v=20261104-bpbd1"></script>
   <script src="js/restoration-inventory.js?v=20261104-database1"></script>
   <script src="js/restoration-review.js?v=20261110-review1"></script>
-  <script src="js/restoration-focus.js?v=20261117-dumai2"></script>
-  <script src="js/restoration-plan-ui.js?v=20261117-plan1"></script>
-  <script src="js/restoration-priority.js?v=20261117-plan1"></script>
+  <script src="js/restoration-focus.js?v=20261117-analysis1"></script>
+  <script src="js/restoration-analysis-ui.js?v=20261117-analysis1"></script>
+  <script src="js/restoration-priority.js?v=20261117-analysis1"></script>
 </body>
 </html>
 

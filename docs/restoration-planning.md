@@ -1,5 +1,7 @@
 # Rencana restorasi Bengkalis dan Dumai
 
+> Arsip perilaku versi awal. Halaman aktif sudah diganti menjadi analisis seluruh kandidat berbasis bukti; lihat [restoration-analysis.md](restoration-analysis.md). Draf program lama tidak lagi dibaca sebagai hasil analisis.
+
 Halaman `restoration-priority.html` memakai sesi staf eksisting. Penyusun rencana membaca paket analisis privat melalui `/api/staff/restoration/source`, lalu draf bersama melalui `/api/staff/restoration/plan`. Keduanya memerlukan bearer token staf yang diverifikasi backend. Tidak ada paket analisis privat yang ditaruh di GitHub Pages.
 
 Paket sumber JSON memerlukan `access: staff_only`, schema 1, tanggal, checksum berkas sumber dan checksum geometri gambut asli. Paket dashboard lama dapat diimpor dengan metadata tersebut. Validator hanya menyimpan atribut yang diperlukan, relasi desa-unit dan provenance. Poligon referensi dipetakan memakai `baris_asal` hanya jika checksum BBSDLP cocok.

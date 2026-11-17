@@ -155,6 +155,7 @@
     definitions.filter(def => def.path && state.cache.has(def.id)).forEach(draw);
     drawReview();
     fit();
+    state.analysis?.onRegencyChange($('regency').value);
   }
   function clearReview(){
     if(state.reviewLayer)state.map.removeLayer(state.reviewLayer);state.reviewLayer=null;state.reviewData=null;
@@ -238,7 +239,7 @@
     const selected = $('khg').value;
     if (selected === '') { fit(); return; }
     const feature = state.khgFeatures[Number(selected)]; if (!feature) return;
-    state.proposalFocus?.clear();
+    state.proposalFocus?.clear(); state.analysis?.clear();
     if (state.khgMode === 'feg' && !$('layer-feg').checked) { $('layer-feg').checked = true; draw(definitions.find(d => d.id === 'feg')); }
     const title = state.khgMode === 'feg' ? 'Bagian FEG pada ' + state.fegGroups.groups[Number(selected)].code + ' · bukan batas KHG mandiri' : 'KHG · referensi peta, belum dinilai';
     state.khgLayer = L.geoJSON(feature, { style: { color: '#375bb1', weight: 3, fillOpacity: .08 }, onEachFeature: (f,l) => l.bindPopup(() => popup(f, title)) }).addTo(state.map);
@@ -299,7 +300,7 @@
       if (!response.ok) throw new Error('Sesi/otorisasi belum terverifikasi (HTTP ' + response.status + ')');
       const catalog = await response.json();
       if (catalog.access !== 'staff_only' || !Array.isArray(catalog.datasets)) throw new Error('Respons verifikasi katalog tidak valid');
-      status('Sesi staf diverifikasi backend · pengembangan internal · analisis belum dinilai');
+      status('Sesi staf diverifikasi backend · analisis dan referensi internal');
       C.candidates(catalog,'fire').forEach(item => definitions.push({id:'bpbd-'+item.uuid,label:'Lokasi kebakaran BPBD · '+item.title.match(/_(\d{4})_/)[1]+' (judul sumber)',path:BASE+'/api/staff/riau-geoportal/datasets/'+item.uuid+'/display',catalog:item,color:'#a54b38',note:'Titik asli dalam gambut tersaring · bukan luas terbakar/skor · '+item.metadataConflictCount+' catatan metadata'}));
       renderControls(); $('workspace').hidden = false;
       const manifest = await fetchJSON('data/restoration-priority-sources.json');
@@ -328,7 +329,7 @@
         state.proposalFocus = window.YG_RESTORATION_FOCUS.init({
           map: state.map, regency: $('regency'), L, document, fetchJSON,
           isActive: () => !$('workspace').hidden && window.YG_AUTH?.readStoredSession()?.token === state.session?.token,
-          initialFocus: ['pelintung', 'guntung'].includes(requestedFocus) ? requestedFocus : 'both',
+          initialFocus: ['pelintung', 'guntung'].includes(requestedFocus) ? requestedFocus : 'none',
           setRegency: district => {
             const option = [...$('regency').options].find(item => A.district(item.value) === district);
             if (!option) return false;
@@ -336,11 +337,16 @@
           }
         });
       }
-      if (window.YG_RESTORATION_PLAN_UI) state.planner = window.YG_RESTORATION_PLAN_UI.init({
+      if (window.YG_RESTORATION_ANALYSIS_UI) state.analysis = window.YG_RESTORATION_ANALYSIS_UI.init({
         map: state.map, L, peatFeatures: state.originalPeat, peatHash: state.peatSourceHash,
         getSession: () => window.YG_AUTH?.readStoredSession(),
         isActive: () => !$('workspace').hidden && window.YG_AUTH?.readStoredSession()?.token === state.session?.token,
-        clearOtherFocus: () => state.proposalFocus?.clear()
+        clearOtherFocus: () => state.proposalFocus?.clear(),
+        setRegion: region => {
+          const desired = region === 'Kota Dumai' ? 'DUMAI' : region === 'Bengkalis' ? 'BENGKALIS' : '';
+          const option = [...$('regency').options].find(item => desired ? A.district(item.value) === desired : item.value === '');
+          if (option && $('regency').value !== option.value) { $('regency').value = option.value; filter(); }
+        }
       });
       catalogKHG(catalog);
       ['review-data','review-manifest','review-load'].forEach(id=>$(id).disabled=false);

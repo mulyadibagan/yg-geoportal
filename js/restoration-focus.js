@@ -105,7 +105,7 @@
         style: { color: '#215eb0', weight: 3, fill: false },
         onEachFeature: (feature, item) => {
           const box = document.createElement('div');
-          box.textContent = (feature.properties.WADMKD || feature.properties.NAMOBJ) + ' · fokus pengembangan proposal restorasi gambut';
+          box.textContent = (feature.properties.WADMKD || feature.properties.NAMOBJ) + ' · batas referensi untuk telaah historis gambut';
           item.bindPopup(box);
         }
       }).addTo(map);
@@ -132,7 +132,7 @@
           ? 'Pelintung dan Guntung berbatasan langsung pada batas referensi. Konektivitas hidrologi perlu diperiksa di lapangan.'
           : 'Perbatasan bersama belum dapat dikenali dari geometri referensi ini.';
         buttons.forEach(button => button.disabled = false);
-        if (!regency.value || normal(regency.value).replace(/\s/g, '') === 'dumai') apply(initialFocus);
+        if (initialFocus !== 'none' && (!regency.value || normal(regency.value).replace(/\s/g, '') === 'dumai')) apply(initialFocus);
         else clear();
       } catch (error) {
         el('proposal-map-status').textContent = 'Batas fokus belum dapat dimuat: ' + error.message;
