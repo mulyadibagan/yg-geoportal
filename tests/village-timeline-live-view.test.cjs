@@ -21,4 +21,7 @@ test('live refresh preserves filters, avoids duplicate event handlers and defers
  assert.doesNotMatch(nodes['timeline-list'].innerHTML,/deferred update/);
  nodes['timeline-photo-dialog'].open=false;nodes['timeline-photo-dialog'].events.close[0]();
  assert.match(nodes['timeline-list'].innerHTML,/deferred update/);assert.doesNotMatch(nodes['timeline-list'].innerHTML,/new verified report/);
+ mount([],[],{});assert.equal(nodes['village-timeline'].hidden,true);
+ mount([row('C','new public activity')],[],{});assert.equal(nodes['village-timeline'].hidden,false);
+ assert.match(nodes['timeline-list'].innerHTML,/new public activity/);
 });
