@@ -11,7 +11,16 @@
   <link rel="stylesheet" href="css/village-profile.css?v=20260825-community-groups1">
   <link rel="stylesheet" href="css/village-activity-timeline.css?v=20261112-1">
   <link rel="stylesheet" href="css/final-monthly-hotspots.css?v=20260901-annual1">
-  <style>[hidden]{display:none!important}</style>
+  <style>[hidden]{display:none!important}
+.vp-hero__content{grid-template-columns:1fr;min-height:220px;padding:38px 0;gap:0}
+.vp-layout--single,.vp-program-grid--single{grid-template-columns:1fr}
+.vp-program-grid--single .vp-program-panel{border:0}
+.vp-program-summary{grid-template-columns:repeat(auto-fit,minmax(155px,1fr))}
+.vp-method>summary{cursor:pointer;font-weight:750;color:var(--teal-dark)}
+.vp-method-content{padding-top:22px}
+.vp-program-item__top h4,.vt-body h3{overflow-wrap:anywhere}
+@media(max-width:560px){.vp-hero__content{padding:28px 0}.vp-program-summary{grid-template-columns:repeat(2,minmax(0,1fr))}.vp-card{padding:18px}.vp-section-head{gap:10px;flex-wrap:wrap}}
+</style>
 </head>
 <body>
   <header class="vp-topbar">
@@ -40,11 +49,6 @@
             <span id="data-updated">Memeriksa tanggal pembaruan…</span>
           </div>
         </div>
-        <div class="vp-hero__summary">
-          <span>Ringkasan publik</span>
-          <strong>Program dan kondisi desa</strong>
-          <p>Jejak kegiatan YG, pelibatan masyarakat, tutupan pohon, hotspot, dan analisis pesisir disajikan dalam satu profil.</p>
-        </div>
       </div>
     </section>
 
@@ -59,30 +63,16 @@
       <div id="profile-content" hidden>
         <section class="vp-kpis" id="kpi-grid" aria-label="Ringkasan angka"></section>
 
-        <section class="vp-layout">
+        <section class="vp-layout vp-layout--single">
           <article class="vp-card vp-map-card">
             <div class="vp-section-head">
               <div><span class="vp-kicker">LOKASI</span><h2>Batas desa pada peta</h2></div>
               <span class="vp-badge">Citra satelit</span>
             </div>
             <div id="village-map" aria-label="Peta batas desa"></div>
-            <p class="vp-caption" id="map-caption">Garis menunjukkan batas polygon yang digunakan dalam analisis.</p>
+            <p class="vp-caption" id="map-caption">Batas desa dan lokasi kegiatan Yayasan Gambut.</p>
           </article>
 
-          <article class="vp-card">
-            <div class="vp-section-head">
-              <div><span class="vp-kicker">TUTUPAN HUTAN</span><h2>Kondisi ringkas</h2></div>
-            </div>
-            <div class="vp-forest-visual">
-              <div class="vp-donut" id="forest-donut"><span><strong id="forest-percent">—</strong><small>dari baseline 2000</small></span></div>
-              <div class="vp-forest-copy">
-                <p>Sisa tutupan pohon</p>
-                <strong id="current-forest">—</strong>
-                <small id="forest-definition">Keterangan metode sedang dimuat.</small>
-              </div>
-            </div>
-            <div class="vp-callout">Tutupan pohon ≥30% mengikuti dataset Hansen/UMD dan tidak selalu menunjukkan hutan alam.</div>
-          </article>
         </section>
 
         <section class="vp-card vp-program-card" id="program-section">
@@ -92,28 +82,28 @@
           </div>
           <div class="vp-program-summary" id="program-summary" aria-label="Ringkasan program"></div>
           <section class="vt-section" id="village-timeline" aria-labelledby="timeline-title" hidden>
-            <div class="vp-section-head"><div><span class="vp-kicker">DOKUMENTASI LINTAS DONOR</span><h2 id="timeline-title">Timeline foto dan kegiatan</h2></div><span class="vp-badge" id="timeline-count" aria-live="polite"></span></div>
+            <div class="vp-section-head"><div><span class="vp-kicker">KEGIATAN DESA</span><h2 id="timeline-title">Kegiatan dan dokumentasi</h2></div><span class="vp-badge" id="timeline-count" aria-live="polite"></span></div>
             <p class="vp-caption" id="timeline-context" hidden></p>
             <p class="vp-caption" id="timeline-sync-status" role="status">Memuat publikasi terbaru…</p>
             <div class="vt-filters"><label>Tahun<select id="timeline-year" aria-controls="timeline-list"></select></label><label>Donor<select id="timeline-donor" aria-controls="timeline-list"></select></label></div>
             <div id="timeline-list"></div>
             <button class="vp-button vt-more" id="timeline-more" type="button" hidden>Lihat catatan berikutnya</button>
           </section>
-          <div class="vp-program-grid">
+          <div class="vp-program-grid vp-program-grid--single">
             <section class="vp-program-panel" aria-labelledby="program-list-title">
               <div class="vp-program-panel__head">
                 <div><span>PROGRAM DI DESA INI</span><h3 id="program-list-title">Intervensi dan infrastruktur</h3></div>
               </div>
               <div class="vp-program-list" id="program-list"></div>
             </section>
-            <section class="vp-program-panel" aria-labelledby="activity-list-title">
+            <section class="vp-program-panel" id="activity-fallback" aria-labelledby="activity-list-title" hidden>
               <div class="vp-program-panel__head">
                 <div><span>PELIBATAN</span><h3 id="activity-list-title">Pelatihan, kegiatan, dan monitoring</h3></div>
               </div>
               <div class="vp-activity-list" id="activity-list"></div>
             </section>
           </div>
-          <p class="vp-program-note" id="program-note">Program dicocokkan menggunakan atribut desa pada Master Database dan laporan terverifikasi. Posisi spasial digunakan sebagai pemeriksaan tambahan.</p>
+          <p id="program-note" hidden></p>
         </section>
 
         <section class="vp-card vp-community-card" id="community-group-section" hidden>
@@ -122,7 +112,7 @@
             <span class="vp-badge" id="community-group-badge">Data kelompok</span>
           </div>
           <div class="vp-community-groups" id="community-group-list"></div>
-          <p class="vp-caption">Dokumen kelembagaan dikelola pada profil desa agar kartu donor dan informasi publik menggunakan sumber yang sama.</p>
+          
         </section>
 
         <section class="vp-card">
@@ -150,7 +140,7 @@
               <span class="vp-badge" id="priority-confidence">Memuat…</span>
             </div>
             <div id="priority-content" class="vp-module-loading">Mencocokkan hasil prioritas rehabilitasi…</div>
-            <a class="vp-module-link" id="priority-link" href="mangrove-priority.html" target="_blank" rel="noopener noreferrer">Buka polygon prioritas →</a>
+            <a class="vp-module-link" id="priority-link" href="mangrove-priority.html" target="_blank" rel="noopener noreferrer">Lihat wilayah prioritas →</a>
           </article>
         </section>
 
@@ -172,22 +162,22 @@
 
           <article class="vp-card">
             <div class="vp-section-head">
-              <div><span class="vp-kicker">KONTEKS WILAYAH</span><h2>Irisan layer referensi</h2></div>
+              <div><span class="vp-kicker">KONTEKS WILAYAH</span><h2>Penggunaan lahan dan ekosistem</h2></div>
             </div>
             <div class="vp-reference-list" id="reference-list"></div>
             <p class="vp-caption">Layer dapat saling tumpang tindih, sehingga nilainya tidak boleh dijumlahkan sebagai total luas desa.</p>
           </article>
         </section>
 
-        <section class="vp-card vp-method">
+        <details class="vp-card vp-method"><summary>Sumber dan metode data</summary><div class="vp-method-content"><p id="forest-definition"></p>
           <div class="vp-section-head">
             <div><span class="vp-kicker">TRANSPARANSI DATA</span><h2>Bagaimana data ini dihasilkan?</h2></div>
           </div>
           <div class="vp-method-grid">
-            <div><b>1</b><strong>Batas analisis</strong><p>Polygon batas desa menjadi area pemotongan seluruh dataset.</p></div>
-            <div><b>2</b><strong>Tutupan pohon</strong><p>Raster Hansen/UMD dihitung untuk kanopi sesuai ambang dataset.</p></div>
-            <div><b>3</b><strong>Perubahan tahunan</strong><p>Pixel kehilangan dikelompokkan menurut tahun lalu dikonversi ke hektare.</p></div>
-          <div><b>4</b><strong>Hotspot</strong><p>Hanya titik NASA FIRMS dari laporan bulanan final terpilih yang dihitung di dalam polygon desa.</p></div>
+            <div><b>1</b><strong>Batas analisis</strong><p>Analisis menggunakan batas desa yang ditampilkan pada peta.</p></div>
+            <div><b>2</b><strong>Tutupan pohon</strong><p>Tutupan pohon mengacu pada data Hansen/UMD dengan ambang kanopi ≥30%; tidak selalu menunjukkan hutan alam.</p></div>
+            <div><b>3</b><strong>Perubahan tahunan</strong><p>Kehilangan tutupan pohon disajikan dalam hektare menurut tahun pengamatan.</p></div>
+          <div><b>4</b><strong>Hotspot</strong><p>Hanya titik NASA FIRMS dari laporan bulanan final terpilih yang dihitung di dalam batas desa.</p></div>
           </div>
           <div class="vp-source-grid">
             <div><span>Baseline tutupan pohon</span><strong id="baseline-period">—</strong></div>
@@ -195,7 +185,7 @@
             <div><span>Sumber tutupan pohon</span><strong>Hansen / UMD / Google / USGS / NASA</strong></div>
             <div><span>Sumber hotspot</span><strong>NASA FIRMS · MODIS/VIIRS · laporan bulanan final</strong></div>
           </div>
-        </section>
+        </div></details>
 
         <footer class="vp-footer">
           <p><strong>Catatan penggunaan:</strong> angka bersifat indikatif untuk penyaringan awal dan komunikasi publik. Verifikasi lapangan dan sumber resmi tetap diperlukan untuk keputusan operasional.</p>
@@ -211,7 +201,7 @@
   <script src="js/final-monthly-hotspots.js?v=20260901-annual1"></script>
   <script src="js/planting-inventory.js?v=20261112-temiang3"></script>
 <script src="js/village-timeline-sync.js?v=20261112-1"></script>
-  <script src="js/village-activity-timeline.js?v=20261112-temiang3"></script>
-  <script src="js/village-profile.js?v=20261117-infrastructure1"></script>
+  <script src="js/village-activity-timeline.js?v=20261118-public-profile1"></script>
+  <script src="js/village-profile.js?v=20261118-public-profile1"></script>
 </body>
 </html>
