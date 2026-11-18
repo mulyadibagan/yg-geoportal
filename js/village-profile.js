@@ -152,7 +152,7 @@
       layer.bindTooltip(name,{permanent:false,direction:"center"});
     }else{
       map.setView([1.25,102.05],7);
-      el("map-caption").textContent="Batas polygon tidak tersedia pada snapshot saat ini; angka analisis tetap dibaca dari basis data desa.";
+      el("map-caption").textContent="Peta batas desa belum tersedia. Ringkasan desa tetap dapat dibaca.";
     }
     function programmeLayer(id,label,markerClass,color){
       var features=profileProgramFeatures.filter(function(item){return layerId(item)===id&&item.geometry;});
@@ -409,7 +409,6 @@
     if(group.phase){meta.push("<span>Fase "+esc(group.phase)+"</span>");}
     if(group.year){meta.push("<span>"+esc(group.year)+"</span>");}
     var species=Object.keys(group.species||{});if(species.length){meta.push("<span>Jenis: "+esc(compactText(species.join(", "),110))+"</span>");}
-    if(group.outside){meta.push('<span class="vp-warning">'+format(group.outside,0)+' titik di luar batas referensi</span>');}
     var measures=[];
     if(group.area>0){measures.push("<span><strong>"+ha(group.area)+"</strong> luas tercatat</span>");}
     if(group.length>0){measures.push("<span><strong>"+format(group.length,0)+" m</strong> panjang</span>");}
@@ -519,27 +518,25 @@
     var participantTotal=trainings.reduce(function(total,row){return total+(number(row.male)||0)+(number(row.female)||0);},0)+reports.reduce(function(total,feature){var props=feature.properties||{},target=props.targetFeatureProperties||{};return total+(number(props.Jumlah_Peserta||target.Jumlah_Peserta)||0);},0);
     var plantingArea=programs.filter(function(feature){return ["area_mangrove","area_kopi","mineral_land_restoration_area"].indexOf(layerId(feature))!==-1;}).reduce(function(total,feature){var props=feature.properties||{},area=number(props.Luas_Ha);if(area==null&&feature.geometry&&/Polygon/.test(feature.geometry.type)){area=geometryAreaHa(feature.geometry);}return total+(area||0);},0);
     var plants=plantInventory(programs,reports,timelineAttributions);
-    var reviewNotes=timelineAttributions.filter(function(a){return a.plantingInventory&&programs.concat(reports).some(function(f){var p=f.properties||{};return [p.Object_ID,p.Source_Report_ID,p.reportId].indexOf(a.evidenceId)!==-1;});}).map(function(a){return a.plantingInventory.note;}).filter(Boolean);
-    var note=el('planting-count-review-note');if(!note){note=document.createElement('p');note.id='planting-count-review-note';el('program-summary').insertAdjacentElement('afterend',note);}note.textContent=Array.from(new Set(reviewNotes)).join(' ');note.hidden=!reviewNotes.length;
     var canalUnits=programs.filter(function(feature){return layerId(feature)==="sekat_kanal";}).length,fdrsUnits=programs.filter(function(feature){return layerId(feature)==="fdrs";}).length;
-    el("program-badge").textContent=(programs.length||activities.length)?format(programs.length,0)+" objek · "+format(activities.length,0)+" kegiatan":"Belum ada catatan";
+    el("program-badge").textContent=(programs.length||activities.length)?"Program desa":"Belum ada catatan";
     el("program-summary").innerHTML=[
-      ["Sekat kanal",format(canalUnits,0)+" unit","berdasarkan titik infrastruktur"],
+      ["Sekat kanal",format(canalUnits,0)+" unit","infrastruktur pembasahan gambut"],
       ["FDRS",format(fdrsUnits,0)+" unit","pemantauan muka air"],
-      ["Mangrove tertanam",plants.mangrove>0?format(plants.mangrove,0)+" pohon":"—","stok persemaian tidak dihitung"],
+      ["Mangrove tertanam",plants.mangrove>0?format(plants.mangrove,0)+" pohon":"—","pohon tertanam"],
       ["Kopi tertanam",plants.coffee>0?format(plants.coffee,0)+" pohon":"—","jumlah tanam yang tercatat"],
       ["Tanaman gambut",plants.peat>0?format(plants.peat,0)+" pohon":"—","selain tanaman kopi"],
       ["Tanaman hutan",plants.forest>0?format(plants.forest,0)+" pohon":"—","restorasi hutan/mineral"],
-      ["Luas kegiatan",plantingArea>0?ha(plantingArea):"—","area yang memiliki polygon"],
+      ["Luas kegiatan",plantingArea>0?ha(plantingArea):"—","luas penanaman tercatat"],
       ["Partisipasi",participantTotal>0?format(participantTotal,0):"—","kehadiran, bukan orang unik"]
-    ].map(function(item){return '<div class="vp-program-stat"><span>'+esc(item[0])+'</span><strong>'+esc(item[1])+'</strong><small>'+esc(item[2])+'</small></div>';}).join("");
+    ].filter(function(item){return item[1]!=="—"&&item[1]!=="0 unit";}).map(function(item){return '<div class="vp-program-stat"><span>'+esc(item[0])+'</span><strong>'+esc(item[1])+'</strong><small>'+esc(item[2])+'</small></div>';}).join("");
     el("program-list").innerHTML=expandableList(groups,function(group){return programItem(group,name);},4,"program");
-    el("activity-list").innerHTML=expandableList(activities,activityItem,4,"kegiatan");
+    el("activity-list").innerHTML=window.VillageActivityTimeline?"":expandableList(activities,activityItem,4,"kegiatan");
+    el("activity-fallback").hidden=!!window.VillageActivityTimeline;
     if(window.VillageActivityTimeline){
       var timelineFeatures=allFeatures.filter(function(f){var p=f.properties||{};return (isActivityFeature(f)||(p.Source_Type==="verified_report_asset"&&p.Source_Report_ID))&&activityMatchesPlace(f,name,district,regency,boundary);});
       window.VillageActivityTimeline.mount(timelineFeatures,trainings,{name:name,regency:regency,donors:timelineDonors,attributions:timelineAttributions,objects:allFeatures,localObjectIds:allFeatures.filter(function(f){return featureMatchesPlace(f,name,district,regency,boundary);}).map(function(f){return String((f.properties||{}).Object_ID||'').toLowerCase();})});
     }
-    el("program-note").textContent="Objek program dicocokkan dengan atribut desa dan kabupaten yang tercatat; posisi digunakan bila identitas lokasi tidak tersedia. Laporan kegiatan juga diperiksa melalui irisan batas desa. Titik di luar batas rujukan tetap ditandai untuk pemeriksaan.";
   }
 
   function renderCommunityGroups(rows,name,district,regency){
@@ -590,15 +587,12 @@
     var updated=record.generatedAt||viirs.updatedAt||manifest.generatedAt;
     el("data-updated").textContent=updated?"Pembaruan analisis "+new Date(updated).toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"}):"Tanggal pembaruan belum tersedia";
     el("kpi-grid").innerHTML=[
-      kpi("⌗","Luas desa",ha(area),"berdasarkan polygon analisis"),
-      kpi("♣","Tutupan pohon awal",ha(baseline),"baseline "+(method.baselineYear||"dataset")),
-      kpi("◒","Sisa tutupan pohon",ha(current),remainingPct==null?"persentase belum tersedia":percent(remainingPct)+" dari baseline "+(method.baselineYear||2000)),
-      kpi("↘","Kehilangan kumulatif",ha(loss),"akumulasi pixel kehilangan")
+      kpi("⌗","Luas desa",ha(area),"berdasarkan batas desa"),
+      kpi("♣","Tutupan pohon awal",ha(baseline),"tahun awal "+(method.baselineYear||"dataset")),
+      kpi("◒","Sisa tutupan pohon",ha(current),remainingPct==null?"persentase belum tersedia":percent(remainingPct)+" dari tutupan tahun "+(method.baselineYear||2000)),
+      kpi("↘","Kehilangan kumulatif",ha(loss),"kehilangan tutupan pohon sejak 2001")
     ].join("");
-    el("forest-percent").textContent=percent(remainingPct);
-    el("current-forest").textContent=ha(current);
-    el("forest-donut").style.setProperty("--value",remainingPct==null?0:remainingPct);
-    el("forest-definition").textContent="Tutupan pohon baseline "+(method.baselineYear||2000)+" yang belum terdeteksi mengalami kehilangan hingga "+(method.lossDataThroughYear||"tahun data terakhir")+". Regenerasi atau pertambahan tidak dihitung.";
+    el("forest-definition").textContent="Tutupan pohon tahun "+(method.baselineYear||2000)+" yang belum terdeteksi mengalami kehilangan hingga "+(method.lossDataThroughYear||"tahun data terakhir")+". Regenerasi atau pertambahan tidak dihitung.";
     el("baseline-period").textContent=method.baselineYear||"—";
     el("loss-through").textContent=method.lossDataThroughYear||"—";
     renderPrograms(snapshotFeatures,capacityRows,feature,name,district,regency);
