@@ -60,7 +60,6 @@ jobs:
             --exclude 'internal-data/' \
             --exclude 'data/riau-geoportal/' \
             --exclude 'cloudflare/yg-webgis-public-data/tmp/' \
-            --exclude 'data/kph_2019_riau.geojson' \
             --exclude 'data/PBPH_RIAU_052026.geojson' \
             --exclude 'data/pbph-documents.json' \
             --exclude 'data/PERHUTANAN_SOSIAL_RIAU.geojson' \
