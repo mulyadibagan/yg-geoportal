@@ -292,8 +292,12 @@
         if(index<coastalFiles.length){coastalRows=coastalRows.concat(data.villages||[]);if(!Object.keys(coastalMeta).length){coastalMeta=data;}}
         else{priorityRows=priorityRows.concat(data.villages||[]);priorityMeta=data;}
       });
-      renderCoastalModule(coastalRows.find(function(row){return samePlace(row,name,district,regency);}),coastalMeta,name);
-      renderPriorityModule(priorityRows.find(function(row){return samePlace(row,name,district,regency);}),priorityMeta);
+      var coastal=coastalRows.find(function(row){return samePlace(row,name,district,regency);}),priority=priorityRows.find(function(row){return samePlace(row,name,district,regency);});
+      renderCoastalModule(coastal,coastalMeta,name);
+      renderPriorityModule(priority,priorityMeta);
+      el("coastal-content").closest("article").hidden=!coastal;
+      el("priority-content").closest("article").hidden=!priority;
+      el("coastal-content").closest(".vp-coastal-grid").hidden=!coastal&&!priority;
     }catch(error){
       console.warn("Data pesisir dan prioritas gagal dimuat",error);
       emptyModule("coastal-content","Data gagal dimuat","Terjadi gangguan saat membaca analisis pesisir.","coastal-confidence");
@@ -414,7 +418,7 @@
     if(group.length>0){measures.push("<span><strong>"+format(group.length,0)+" m</strong> panjang</span>");}
     if(group.plants>0){measures.push("<span><strong>"+format(group.plants,0)+"</strong> tanaman</span>");}
     return '<article class="vp-program-item"><div class="vp-program-icon">'+esc(programIcon(group.id))+'</div><div class="vp-program-item__body">'+
-      '<div class="vp-program-item__top"><h4>'+esc(group.title)+'</h4><span class="vp-program-count">'+format(group.count,0)+' objek</span></div>'+
+      '<div class="vp-program-item__top"><h4>'+esc(group.title)+'</h4><span class="vp-program-count">'+format(group.count,0)+' lokasi</span></div>'+
       (meta.length?'<div class="vp-program-meta">'+meta.join("")+'</div>':"")+
       (measures.length?'<div class="vp-program-measures">'+measures.join("")+'</div>':"")+
       '<a class="vp-item-link" target="_blank" rel="noopener noreferrer" href="webgis.html?layer='+encodeURIComponent(group.id)+'&amp;village='+encodeURIComponent(name)+'">Lihat pada peta →</a></div></article>';
