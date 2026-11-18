@@ -45,7 +45,8 @@ test('Imbo Putui report polygons share one reviewed 1200 total without merging e
  assert.equal(context.plantInventory([separate],explicit,attributions).forest,2400);
  const timeline=require('../js/village-activity-timeline.js');const rows=timeline.buildRecords(reports,[],{attributions});
  assert.equal(rows.length,2);assert.equal(rows.reduce((n,r)=>n+r.photos.length,0),4);
- assert.ok(rows.every(r=>r.donor==='Aliansi Kolibri'&&r.copy.includes('dihitung sekali')));
+ assert.ok(rows.every(r=>r.donor==='Aliansi Kolibri'));
+ assert.ok(rows.every(r=>!r.copy.includes('dihitung sekali')),'public activity descriptions omit inventory review notes');
 });
 
 
