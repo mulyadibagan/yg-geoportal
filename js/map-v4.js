@@ -175,7 +175,8 @@
     kph_2019_riau: {
       id: "kph_2019_riau",
       label: "Wilayah KPH 2019 Provinsi Riau",
-      file: "https://yg-webgis-public-data.yg-webgis-public-data-worker.workers.dev/references/kph_2019_riau.geojson",
+      file: "data/kph_2019_riau.geojson",
+      version: "20261118-kph-same-origin1",
       color: "#827717",
       count: 1382,
       type: "kph",
