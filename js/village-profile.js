@@ -102,7 +102,7 @@
   function setTimelineSyncStatus(snapshot){
     var node=el("timeline-sync-status");if(!node)return;
     var date=new Date(snapshot&&(snapshot.snapshotGeneratedAt||snapshot.generatedAt)||Date.now());
-    node.textContent="Mengikuti laporan terverifikasi · data "+date.toLocaleString("id-ID",{day:"numeric",month:"short",year:"numeric",hour:"2-digit",minute:"2-digit"})+" · pembaruan otomatis";
+    node.textContent="Diperbarui "+date.toLocaleDateString("id-ID",{day:"numeric",month:"long",year:"numeric"});
   }
   function startTimelineSync(boundary,capacityRows,collections,snapshot){
     if(timelineSyncStarted||!window.VillageTimelineSync)return;timelineSyncStarted=true;setTimelineSyncStatus(snapshot);
@@ -534,6 +534,8 @@
       ["Luas kegiatan",plantingArea>0?ha(plantingArea):"—","luas penanaman tercatat"],
       ["Partisipasi",participantTotal>0?format(participantTotal,0):"—","kehadiran, bukan orang unik"]
     ].filter(function(item){return item[1]!=="—"&&item[1]!=="0 unit";}).map(function(item){return '<div class="vp-program-stat"><span>'+esc(item[0])+'</span><strong>'+esc(item[1])+'</strong><small>'+esc(item[2])+'</small></div>';}).join("");
+    el("program-summary").hidden=!el("program-summary").children.length;
+    el("program-list").closest(".vp-program-grid").hidden=!groups.length&&!!window.VillageActivityTimeline;
     el("program-list").innerHTML=expandableList(groups,function(group){return programItem(group,name);},4,"program");
     el("activity-list").innerHTML=window.VillageActivityTimeline?"":expandableList(activities,activityItem,4,"kegiatan");
     el("activity-fallback").hidden=!!window.VillageActivityTimeline;
@@ -541,6 +543,7 @@
       var timelineFeatures=allFeatures.filter(function(f){var p=f.properties||{};return (isActivityFeature(f)||(p.Source_Type==="verified_report_asset"&&p.Source_Report_ID))&&activityMatchesPlace(f,name,district,regency,boundary);});
       window.VillageActivityTimeline.mount(timelineFeatures,trainings,{name:name,regency:regency,donors:timelineDonors,attributions:timelineAttributions,objects:allFeatures,localObjectIds:allFeatures.filter(function(f){return featureMatchesPlace(f,name,district,regency,boundary);}).map(function(f){return String((f.properties||{}).Object_ID||'').toLowerCase();})});
     }
+    el("program-section").hidden=!groups.length&&!activities.length&&el("village-timeline").hidden;
   }
 
   function renderCommunityGroups(rows,name,district,regency){
