@@ -19,7 +19,7 @@
   function preview(url){var m=url.match(/drive\.google\.com\/file\/d\/([\w-]+)/)||url.match(/drive\.google\.com\/.*[?&]id=([\w-]+)/);return m?'https://drive.google.com/thumbnail?id='+m[1]+'&sz=w1200':url;}
   function donorName(value){var text=String(value||'').trim();if(/^(yayasan\s+)?penabulu$/i.test(text))return 'Yayasan Penabulu';if(/^(gec|global environment centre(?:\s*\(gec\))?)$/i.test(text))return 'Global Environment Centre';if(/^(aliansi\s+)?kolibri$/i.test(text))return 'Aliansi Kolibri';if(/^aramco(?: asia singapore)?$/i.test(text))return 'Aramco Asia Singapore';if(/^(ppcf|pan pacific conservation foundation(?:\s*\(ppcf\))?)$/i.test(text))return 'Pan Pacific Conservation Foundation (PPCF)';return !text||/^donor belum tercatat$/i.test(text)?'Donor belum tercatat':text;}
   function canonicalId(id){return String(id||'').trim().replace(/^(?:COMMUNITY-|MONITORING-)(YG-)/i,'$1').toLowerCase();}
-  function publicCopy(p){var copy=p.description||p.Temuan||p.Monitoring_Type||'';return /nursery|rumah bibit/i.test(p.title||p.Nama_Objek||'')&&/stok bibit/i.test(copy)?'Stok bibit dalam laporan masih menunggu verifikasi terhadap kapasitas rumah pembibitan.':copy;}
+  function publicCopy(p){var copy=p.description||p.Temuan||p.Monitoring_Type||'';return /nursery|rumah bibit/i.test(p.title||p.Nama_Objek||'')&&/stok bibit/i.test(copy)?'Kegiatan pembangunan dan pengelolaan rumah pembibitan.':copy;}
   function published(p){return !/pending|rejected|draft|unverified|menunggu|ditolak|belum diverifikasi/i.test(String(p.status||p.Status_Verifikasi||'').trim())&&p.published!==false&&p.verified!==false&&p.staffOnly!==true&&p.access!=='staff';}
   // These two instrument reports describe the same explicitly documented four-day installation.
   var eventGroups={'yg-20260901-201544-276':'temiang-ews-20260823','yg-20260901-202530-896':'temiang-ews-20260823'};
@@ -63,7 +63,7 @@
     if(context){context.hidden=!(String(options.name||'').toLowerCase()==='sepahat'&&String(options.regency||'').toLowerCase()==='bengkalis');context.textContent='Sepahat bergabung dalam program Aramco Asia Singapore mulai Fase III (Juli 2025–Desember 2026). Timeline juga memuat kegiatan donor lainnya.';}
     function update(next){
       if(dialog&&dialog.open){pending=next;return;}
-      var nextSignature=JSON.stringify(next);if(nextSignature===signature)return;signature=nextSignature;rows=next;
+      var nextSignature=JSON.stringify(next);if(nextSignature===signature)return;signature=nextSignature;rows=next;section.hidden=rows.length===0;
       var selectedYear=year.value,selectedDonor=donor.value;
       year.innerHTML='<option value="">Semua tahun</option>'+Array.from(new Set(rows.map(function(r){return r.date.year;}))).sort(function(a,b){return a==='unknown'?1:b==='unknown'?-1:Number(b)-Number(a);}).map(function(y){return '<option value="'+esc(y)+'">'+(y==='unknown'?'Tanggal belum tercatat':esc(y))+'</option>';}).join('');
       donor.innerHTML='<option value="">Semua donor</option>'+Array.from(new Set(rows.map(function(r){return r.donor;}))).sort().map(function(d){return '<option>'+esc(d)+'</option>';}).join('');
