@@ -26,6 +26,7 @@
     .compilation-toolbar{position:sticky;top:65px;z-index:35;grid-template-columns:minmax(170px,.8fr) minmax(170px,.8fr) minmax(280px,1.7fr);gap:10px;padding:12px;border-color:#d8e5df;border-radius:14px;box-shadow:0 9px 24px rgba(22,67,51,.09)}
     .compilation-toolbar label{font-size:10px}
     .compilation-toolbar input,.compilation-toolbar select{min-height:40px;border-color:#d3e1db;background:#f8fbf9}
+    .compilation-page [hidden]{display:none!important}
     .cluster-map-panel{margin-top:12px;padding:16px;border:1px solid #d8e5df;border-radius:16px;background:#fff;box-shadow:0 8px 22px rgba(22,67,51,.06)}
     .cluster-map-head{display:flex;align-items:flex-start;justify-content:space-between;gap:18px;margin-bottom:12px}.cluster-map-head h2{margin:3px 0 2px;font-size:21px}.cluster-map-head p{margin:0;color:#667b73;font-size:11px}
     .cluster-map-filters{display:grid;grid-template-columns:repeat(5,minmax(135px,1fr)) auto;gap:9px;align-items:end;margin-bottom:10px}.cluster-map-filters label{color:#667b73;font-size:10px;font-weight:800}.cluster-map-filters select{display:block;width:100%;min-height:40px;margin-top:5px;border:1px solid #d3e1db;border-radius:10px;background:#f8fbf9}.cluster-map-reset{min-height:40px;padding:0 15px;border:1px solid #9bc8b5;border-radius:10px;background:#eef8f3;color:var(--compilation-green);font-weight:850;cursor:pointer}
@@ -113,8 +114,8 @@
       <p>Angka total dihitung dari laporan terbaru setiap objek. Riwayat dan grafik di bawah tetap dipisahkan per objek agar perkembangan lokasi tidak tercampur.</p>
     </section>
     <section id="compilation-kpis" class="compilation-kpis"></section>
-    <section class="toolbar compilation-toolbar" aria-label="Klaster detail monitoring">
-      <label>Klaster
+    <section class="toolbar compilation-toolbar" aria-label="Filter monitoring">
+      <label id="compilation-group-label">Kelompokkan menurut
         <select id="compilation-cluster">
           <option value="object">Objek</option>
           <option value="village">Nama desa</option>
@@ -123,7 +124,7 @@
           <option value="phase">Fase</option>
         </select>
       </label>
-      <label>Nilai klaster
+      <label id="compilation-group-value-label">Pilihan
         <select id="compilation-cluster-value"><option value="">Semua</option></select>
       </label>
       <label>Cari detail
@@ -131,16 +132,16 @@
       </label>
     </section>
     <section class="cluster-map-panel" id="cluster-map-panel" aria-labelledby="cluster-map-title">
-      <div class="cluster-map-head"><div><span class="eyebrow">PETA KLASTER PENANAMAN</span><h2 id="cluster-map-title">Polygon menurut laporan dan program</h2><p>Saring pelapor dan tanggal submit untuk melihat footprint laporan. Polygon yang sama dari ID berbeda ditandai sebagai klaster tumpang tindih.</p></div></div>
+      <div class="cluster-map-head"><div><span class="eyebrow">PETA PENANAMAN</span><h2 id="cluster-map-title">Lokasi penanaman mangrove</h2><p>Filter di bawah berlaku untuk peta dan daftar objek. Pilih pelapor atau tanggal kirim untuk melihat poligon laporan.</p></div></div>
       <div class="cluster-map-filters">
         <label>Pelapor<select id="cluster-map-reporter"><option value="">Semua pelapor</option></select></label>
-        <label>Tanggal submit<select id="cluster-map-submitted"><option value="">Semua tanggal</option></select></label>
+        <label>Tanggal kirim<select id="cluster-map-submitted"><option value="">Semua tanggal</option></select></label>
         <label>Donor<select id="cluster-map-donor"><option value="">Semua donor</option></select></label>
         <label>Desa<select id="cluster-map-village"><option value="">Semua desa</option></select></label>
         <label>Fase penanaman<select id="cluster-map-phase"><option value="">Semua fase</option></select></label>
-        <button type="button" class="cluster-map-reset" id="cluster-map-reset">Reset peta</button>
+        <button type="button" class="cluster-map-reset" id="cluster-map-reset">Reset filter</button>
       </div>
-      <div id="cluster-map-chips" class="cluster-map-chips" aria-label="Kombinasi klaster tersedia"></div>
+      <div id="cluster-map-chips" class="cluster-map-chips" aria-label="Pintasan donor, desa, dan fase"></div>
       <div class="cluster-map-layout"><div id="cluster-map" class="cluster-map-canvas" aria-label="Peta polygon monitoring berdasarkan klaster"></div><aside id="cluster-map-summary" class="cluster-map-summary" aria-live="polite"><strong>Memuat polygon…</strong></aside></div>
       <section id="cluster-result-summary" class="cluster-result-card" aria-live="polite"><strong>Memuat ringkasan hasil klaster…</strong></section>
     </section>
@@ -162,6 +163,6 @@
     <section id="compilation-objects" class="compilation-objects"><div class="loading">Memuat hasil kompilasi…</div></section>
   </main>
   <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" crossorigin=""></script>
-  <script src="js/monitoring-compilation.js?v=20261105-target-identity1"></script>
+  <script src="js/monitoring-compilation.js?v=20261121-shared-filters1"></script>
 </body>
 </html>

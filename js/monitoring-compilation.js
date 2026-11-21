@@ -542,9 +542,24 @@
     if(clusterMapChips)clusterMapChips.innerHTML=Object.keys(combinations).sort(function(a,b){var x=combinations[a],y=combinations[b];return x.donor.label.localeCompare(y.donor.label,'id')||x.village.label.localeCompare(y.village.label,'id')||x.phase.label.localeCompare(y.phase.label,'id');}).map(function(key){var item=combinations[key];return'<button type="button" class="cluster-map-chip" data-map-donor="'+esc(item.donor.key)+'" data-map-village="'+esc(item.village.key)+'" data-map-phase="'+esc(item.phase.key)+'"><b>'+esc(item.donor.label)+'</b> · '+esc(item.village.label)+' · '+esc(item.phase.label)+' ('+item.count+')</button>';}).join('');
     updateClusterMap(data);
   }
+  function usesMangroveFilters(data){
+    return Boolean(data && (!data.type || data.type==='Penanaman Mangrove'));
+  }
+
+  function matchesProgramFilters(group){
+    var dimensions=clusterDimensions(group);
+    return (!clusterMapDonor.value||dimensions.donor.key===clusterMapDonor.value)
+      && (!clusterMapVillage.value||dimensions.village.key===clusterMapVillage.value)
+      && (!clusterMapPhase.value||dimensions.phase.key===clusterMapPhase.value);
+  }
+
+  function hasReportFilters(){
+    return Boolean(clusterMapReporter.value||clusterMapSubmitted.value);
+  }
+
   function updateClusterMap(data){
     ensureClusterMap();if(!clusterMapReady)return;
-    var reportMode=Boolean(clusterMapReporter&&clusterMapReporter.value||clusterMapSubmitted&&clusterMapSubmitted.value);
+    var reportMode=hasReportFilters();
     if(reportMode){
       var reports=selectedReportRecords(data),spatial=spatialReportGroups(reports),overlaps=0,reportBounds=L.latLngBounds([]);clusterMapLayer.clearLayers();
       spatial.forEach(function(item,index){var ids=reportObjectIds(item.records),overlapping=ids.length>1;if(overlapping)overlaps+=1;var layer=L.geoJSON({type:'Feature',geometry:item.geometry,properties:{}},{style:{color:overlapping?'#a5411f':'#087653',weight:overlapping?4:3,fillColor:overlapping?'#e97743':'#14a978',fillOpacity:.3}}).bindPopup(reportClusterPopup(item,index));layer.addTo(clusterMapLayer);var layerBounds=layer.getBounds();if(layerBounds.isValid())reportBounds.extend(layerBounds);if(overlapping){L.marker(layerBounds.getCenter(),{icon:L.divIcon({className:'monitor-map-cluster-label',html:String(ids.length),iconSize:[28,28]})}).bindPopup(reportClusterPopup(item,index)).addTo(clusterMapLayer);}});
@@ -553,8 +568,7 @@
       if(clusterMapSummary)clusterMapSummary.innerHTML='<strong>'+reports.length+' laporan · '+spatial.length+' polygon spasial</strong><p>'+esc(labels.join(' · '))+(overlaps?'<br>'+overlaps+' klaster tumpang tindih':'')+'</p><div class="cluster-map-summary-list">'+spatial.map(function(item,index){var ids=reportObjectIds(item.records);return'<a href="#cluster-map"><b>'+(ids.length>1?'Klaster tumpang tindih':'Polygon '+(index+1))+'</b>'+esc(ids.join(' · '))+'<br>'+item.records.length+' laporan</a>';}).join('')+'</div>';
       renderClusterResultSummary((data&&data.groups||[]).filter(function(group){return(group.history||[]).some(function(record){return reports.indexOf(record)>-1;});}),labels,0);return;
     }
-    var donor=clusterMapDonor&&clusterMapDonor.value||'',village=clusterMapVillage&&clusterMapVillage.value||'',phase=clusterMapPhase&&clusterMapPhase.value||'';
-    var groups=clusterMapGroups(data).filter(function(group){var d=clusterDimensions(group);return(!donor||d.donor.key===donor)&&(!village||d.village.key===village)&&(!phase||d.phase.key===phase);});
+    var groups=clusterMapGroups(data).filter(matchesProgramFilters);
     clusterMapLayer.clearLayers();var bounds=L.latLngBounds([]),mapped=0,monitored=0,pending=0,totalArea=0,totalPlanted=0;
     groups.forEach(function(group){var geometry=mapGeometry(group),latest=group.latest||{},d=clusterDimensions(group);if(!geometry)return;var feature={type:'Feature',geometry:geometry,properties:{}},detailHref=group.unmonitored?'webgis.html?layer=area_mangrove&object='+encodeURIComponent(group.key):'monitoring-detail.html?object='+encodeURIComponent(group.key)+'&title='+encodeURIComponent(group.label||latest.title||'Objek monitoring'),detailLabel=group.unmonitored?'Buka objek pada peta →':'Buka seluruh histori monitoring →';var layer=L.geoJSON(feature,{style:{color:phaseColor(d.phase.label),weight:3,dashArray:group.unmonitored?'7 6':null,fillColor:phaseColor(d.phase.label),fillOpacity:group.unmonitored?0.12:0.3}}).bindPopup('<div class="cluster-map-popup"><strong>'+esc(group.label||latest.title||'Objek monitoring')+'</strong><p>'+esc(d.donor.label)+'<br>'+esc(d.village.label)+' · '+esc(d.phase.label)+'</p>'+monitoringResultHtml(group)+'<a href="'+detailHref+'">'+detailLabel+'</a></div>',{maxWidth:330});layer.addTo(clusterMapLayer);var layerBounds=layer.getBounds();if(layerBounds.isValid())bounds.extend(layerBounds);mapped+=1;if(group.unmonitored)pending+=1;else monitored+=1;var area=metricValue(latest.metrics||{},metricDefs[6]);if(area!==null)totalArea+=area;if(latest.plantedCount!==null&&latest.plantedCount!==undefined)totalPlanted+=Number(latest.plantedCount)||0;});
     if(bounds.isValid())clusterMap.fitBounds(bounds.pad(.12),{maxZoom:17});else clusterMap.setView([1.45,102.05],10);setTimeout(function(){clusterMap.invalidateSize()},0);
@@ -572,6 +586,10 @@
     applyMasterObjectData(data);
     normalizeCompiledVillages(data.groups);
     activeData=data;
+    var sharedFilters=usesMangroveFilters(data);
+    for (var id of ['compilation-group-label','compilation-group-value-label']) document.getElementById(id).hidden=sharedFilters;
+    renderClusterMap(data);
+    var matchedReports=sharedFilters&&hasReportFilters()?new Set(selectedReportRecords(data)):null;
     var summary=data.summary||{};
     var kpiItems=[
       ['Objek dipantau',summary.objects,'objek'],['Laporan masuk',summary.reports,'laporan'],
@@ -592,6 +610,11 @@
         (mode==='donor'&&group.donorKeys&&group.donorKeys[value])||
         (mode==='phase'&&group.phaseKeys&&group.phaseKeys[value]);
       var hay=[group.label,latest.title,latest.location,latest.village,latest.reporter,latest.donor,latest.phase,group.objectCode].join(' ').toLowerCase();
+      if(sharedFilters){
+        matchesValue=matchedReports
+          ? (group.history||[]).some(function(record){return matchedReports.has(record);})
+          : matchesProgramFilters(group);
+      }
       return matchesValue&&(!query||hay.indexOf(query)>-1);
     });
     count.textContent=groups.length+' objek';
@@ -611,7 +634,7 @@
   }
 
   function refreshClusterValues(){
-    if(!activeData||!clusterValue)return;
+    if(!activeData||!clusterValue||usesMangroveFilters(activeData))return;
     var mode=cluster.value;
     var values={};
     (activeData.groups||[]).forEach(function(group){
@@ -635,13 +658,19 @@
   if(cluster)cluster.addEventListener('change',refreshClusterValues);
   if(clusterValue)clusterValue.addEventListener('change',function(){render(activeData);});
   if(search)search.addEventListener('input',function(){render(activeData);});
-  [clusterMapReporter,clusterMapSubmitted,clusterMapDonor,clusterMapVillage,clusterMapPhase].forEach(function(select){if(select)select.addEventListener('change',function(){updateClusterMap(activeData);});});
-  var clusterMapReset=document.getElementById('cluster-map-reset');if(clusterMapReset)clusterMapReset.addEventListener('click',function(){clusterMapReporter.value='';clusterMapSubmitted.value='';clusterMapDonor.value='';clusterMapVillage.value='';clusterMapPhase.value='';updateClusterMap(activeData);});
-  if(clusterMapChips)clusterMapChips.addEventListener('click',function(event){var button=event.target.closest('[data-map-donor]');if(!button)return;clusterMapDonor.value=button.getAttribute('data-map-donor');clusterMapVillage.value=button.getAttribute('data-map-village');clusterMapPhase.value=button.getAttribute('data-map-phase');updateClusterMap(activeData);document.getElementById('cluster-map').scrollIntoView({behavior:'smooth',block:'center'});});
+  [clusterMapReporter,clusterMapSubmitted,clusterMapDonor,clusterMapVillage,clusterMapPhase].forEach(function(select){if(select)select.addEventListener('change',function(){if(activeData)render(activeData);});});
+  var clusterMapReset=document.getElementById('cluster-map-reset');if(clusterMapReset)clusterMapReset.addEventListener('click',function(){clusterMapReporter.value='';clusterMapSubmitted.value='';clusterMapDonor.value='';clusterMapVillage.value='';clusterMapPhase.value='';if(activeData)render(activeData);});
+  if(clusterMapChips)clusterMapChips.addEventListener('click',function(event){var button=event.target.closest('[data-map-donor]');if(!button)return;clusterMapDonor.value=button.getAttribute('data-map-donor');clusterMapVillage.value=button.getAttribute('data-map-village');clusterMapPhase.value=button.getAttribute('data-map-phase');if(activeData)render(activeData);document.getElementById('cluster-map').scrollIntoView({behavior:'smooth',block:'center'});});
 
   if(villageChart)villageChart.addEventListener('click',function(event){
     var row=event.target.closest('[data-village-chart-key]');
     if(!row||!cluster||!clusterValue)return;
+    if(usesMangroveFilters(activeData)){
+      clusterMapVillage.value=row.getAttribute('data-village-chart-key');
+      render(activeData);
+      clusterMapVillage.focus();
+      return;
+    }
     cluster.value='village';
     refreshClusterValues();
     clusterValue.value=row.getAttribute('data-village-chart-key');
@@ -652,6 +681,12 @@
   if(reporters)reporters.addEventListener('click',function(event){
     var button=event.target.closest('[data-reporter-key]');
     if(!button||!cluster||!clusterValue)return;
+    if(usesMangroveFilters(activeData)){
+      clusterMapReporter.value=button.getAttribute('data-reporter-key');
+      render(activeData);
+      clusterMapReporter.focus();
+      return;
+    }
     cluster.value='reporter';
     refreshClusterValues();
     clusterValue.value=button.getAttribute('data-reporter-key');
