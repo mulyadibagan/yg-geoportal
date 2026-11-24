@@ -17,13 +17,20 @@ test('popup escapes report text and links to the source month without private at
   assert.match(html,/07:22 UTC/);assert.match(html,/&lt;script&gt;/);assert.match(html,/fire-monthly-report.html\?month=2026-07/);assert.doesNotMatch(html,/private/);
 });
 test('partial network failures remain explicit and retry succeeds without reloading completed months',async()=>{
-  const rows=[{month:'2026-07',generatedAt:'1'},{month:'2026-08',generatedAt:'1'}],cache={};
+  const rows=[{month:'2026-07',generatedAt:'1',status:'final'},{month:'2026-08',generatedAt:'1',status:'final'}],cache={};
   let failed=true,calls=[];
   const fetcher=async url=>{calls.push(url);const month=url.match(/2026-\d{2}/)[0];if(month==='2026-08'&&failed)throw Error('offline');return{month,hotspots:[]};};
   let results=await history.loadReports(rows,fetcher,cache);
   assert.equal(results.filter(r=>r.error).length,1);
   failed=false;results=await history.loadReports(rows,fetcher,cache);
   assert.equal(results.filter(r=>r.error).length,0);assert.equal(calls.length,3);
+});
+test('recent detections stay in Riau and do not duplicate finalized months',()=>{
+  const boundary={features:[{geometry:{type:'Polygon',coordinates:[[[100,0],[104,0],[104,3],[100,3],[100,0]]]}}]};
+  const feature=(date,coordinates)=>({geometry:{type:'Point',coordinates},properties:{acq_date:date,acq_time:'0700',satellite:'N21'}});
+  const data={features:[feature('2026-11-24',[101,1]),feature('2026-10-01',[101,1]),feature('2026-11-24',[110,1])]};
+  assert.equal(history.recentPoints(data,boundary,new Set(['2026-10'])).length,1);
+  assert.doesNotMatch(history.popup(history.recentPoints(data,boundary,new Set(['2026-10']))[0],'2026-11','recent'),/fire-monthly-report/);
 });
 test('unavailable report is not cached as zero detections',async()=>{
   const cache={};const results=await history.loadReports([{month:'2026-07'}],async()=>({month:'2026-07',unavailable:true,hotspots:[]}),cache);
