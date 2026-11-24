@@ -57,7 +57,12 @@
       return geometries.some(function(g){return (g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[]).some(function(rings){return inRing(c,rings[0])&&!rings.slice(1).some(function(r){return inRing(c,r);});});});
     }).map(function(f){var p=f.properties||{};return {date:p.acq_date,time:p.acq_time,latitude:f.geometry.coordinates[1],longitude:f.geometry.coordinates[0],satellite:p.satellite,frp:p.frp,village:p.village,district:p.district,regency:p.regency};});
   }
-  var core={entries:entries,points:points,popup:popup,loadReports:loadReports,recentPoints:recentPoints};
+  function updateLabel(data){
+    var date=new Date(data&&data.generatedAt||'');
+    if(!Number.isFinite(date.getTime())){return 'Tanggal pembaruan belum tersedia';}
+    return 'Data diperbarui '+date.toLocaleString('id-ID',{timeZone:'Asia/Jakarta',day:'2-digit',month:'2-digit',year:'numeric',hour:'2-digit',minute:'2-digit'})+' WIB';
+  }
+  var core={entries:entries,points:points,popup:popup,loadReports:loadReports,recentPoints:recentPoints,updateLabel:updateLabel};
   if(typeof module==='object'&&module.exports){module.exports=core;return;}
   var doc=root.document;
   var state={index:null,cache:{},generation:0,layer:null,renderer:null};
@@ -78,7 +83,7 @@
     row.innerHTML='<input id="environment-layer-hotspot-history" type="checkbox" data-env="hotspot-history">'+
       '<span class="swatch area" style="--yg-swatch-color:#b91c1c"></span><label for="environment-layer-hotspot-history">Titik api Riau</label>'+
       '<div data-history-controls hidden style="grid-column:1 / -1;min-width:0;padding:4px 0 0 0">'+
-      '<p data-history-status role="status" aria-live="polite" style="font-size:11px;line-height:1.5;margin:7px 0 0"></p>'+
+      '<p data-history-status role="status" aria-live="polite" style="font-size:11px;line-height:1.5;margin:7px 0 0;white-space:pre-line"></p>'+
       '<button type="button" data-history-retry hidden>Coba lagi</button></div>';
     var input=row.querySelector('input'),controls=row.querySelector('[data-history-controls]'),note=row.querySelector('[data-history-status]'),retry=row.querySelector('button'),busy=false,lastRefresh=0;
     async function render(refresh){
@@ -114,7 +119,10 @@
             if(!seen.has(key)&&points({hotspots:[p]},month).length){seen.add(key);add(p,month,'recent');}
           });
         }else{failed.push('data terbaru');}
-        note.textContent=count.toLocaleString('id-ID')+' deteksi sejak Juli 2026'+(latest?' \u00b7 terakhir '+latest.split('-').reverse().join('/'):'')+'.'+(failed.length?' Sebagian data belum termuat.':'');
+        note.textContent=count.toLocaleString('id-ID')+' deteksi keyakinan tinggi sejak Juli 2026.'+
+          (latest?'\nDeteksi terakhir: '+latest.split('-').reverse().join('/')+'.':'')+
+          (recent.every(function(r){return r.status==='fulfilled';})?'\n'+updateLabel(recent[0].value)+'.':'')+
+          (failed.length?'\nSebagian data belum termuat.':'');
         retry.hidden=!failed.length;lastRefresh=Date.now();
         if(input.checked){state.layer.addTo(map);}
       }catch(error){
