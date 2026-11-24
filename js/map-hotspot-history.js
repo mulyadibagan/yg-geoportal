@@ -59,10 +59,10 @@
     state.layer=L.layerGroup();state.renderer=L.canvas({padding:.3});
     var row=doc.createElement('div');
     row.className='layer-row environment-layer-row yg-hotspot-history';
-    row.style.cssText='flex-wrap:wrap;align-items:center';
+    row.style.cssText='grid-template-columns:auto auto minmax(0,1fr);align-items:center';
     row.innerHTML='<input id="environment-layer-hotspot-history" type="checkbox" data-env="hotspot-history">'+
       '<span class="swatch area" style="--yg-swatch-color:#b91c1c"></span><label for="environment-layer-hotspot-history">Histori titik api Riau</label>'+
-      '<div data-history-controls hidden style="flex-basis:100%;min-width:0;padding:4px 0 0 0">'+
+      '<div data-history-controls hidden style="grid-column:1 / -1;min-width:0;padding:4px 0 0 0">'+
       '<label for="hotspot-history-month" style="display:block;font-size:11px;margin:4px 0">Periode laporan</label>'+
       '<select id="hotspot-history-month" style="display:block;width:100%;max-width:100%;min-height:36px;border:1px solid #cbdcd3;border-radius:7px;background:#fff;color:#244337;padding:6px;font:inherit"></select>'+
       '<p data-history-status role="status" aria-live="polite" style="font-size:11px;line-height:1.5;margin:7px 0 0"></p>'+
