@@ -3,6 +3,11 @@ const assert=require('node:assert/strict');
 const fs=require('node:fs');
 const path=require('node:path');
 const history=require('../js/map-hotspot-history.js');
+test('data refresh timestamp is independent of the last detection date',()=>{
+  const label=history.updateLabel({generatedAt:'2026-11-24T02:27:04.837Z'});
+  assert.match(label,/24\/11\/2026/);assert.match(label,/09[.:]27/);assert.match(label,/WIB/);
+  assert.match(history.updateLabel({}),/belum tersedia/);
+});
 test('uses available reports from July onward, including future months, without duplicates',()=>{
   const reports=['2026-06','2026-07','2026-10','2027-01','bad','2026-07'].map(month=>({month}));
   assert.deepEqual(history.entries({reports}).map(r=>r.month),['2026-07','2026-10','2027-01']);
