@@ -23,17 +23,17 @@
   function popup(p,month,status){
     var date=p.date.split('-').reverse().join('/'),raw=String(p.time==null?'':p.time).padStart(4,'0');
     var time=/^([01]\d|2[0-3])[0-5]\d$/.test(raw)?raw.slice(0,2)+':'+raw.slice(2)+' UTC':'Waktu tidak tersedia';
-    return '<strong>Titik api Riau</strong><br>'+esc(date+' � '+time)+'<br>'+esc([p.village,p.district,p.regency].filter(Boolean).join(', ')||'Lokasi administratif tidak tersedia')+
-      '<br>Satelit: '+esc(p.satellite||'-')+'<br>Koordinat: '+Number(p.latitude).toFixed(5)+', '+Number(p.longitude).toFixed(5)+
+    return '<strong>Titik api Riau</strong><br>'+esc(date+' \u00b7 '+time)+'<br>'+esc([p.village,p.district,p.regency].filter(Boolean).join(', ')||'Lokasi administratif tidak tersedia')+
+      '<br>Satelit: '+esc(p.satellite||'\u2014')+'<br>Koordinat: '+Number(p.latitude).toFixed(5)+', '+Number(p.longitude).toFixed(5)+
       (p.frp!=null?'<br>FRP: '+esc(p.frp)+' MW':'')+
-      '<br><a href="fire-monthly-report.html?month='+month+'">Laporan '+esc(monthLabel(month))+'</a> � '+(status==='final'?'Final':'Sementara')+
-      '<br><small>NASA FIRMS � deteksi panas, bukan konfirmasi kebakaran.</small>';
+      (status==='recent'?'<br>Data terbaru':('<br><a href="fire-monthly-report.html?month='+month+'">Laporan '+esc(monthLabel(month))+'</a> - '+(status==='final'?'Final':'Sementara')))+
+      '<br><small>NASA FIRMS \u00b7 deteksi panas, bukan konfirmasi kebakaran.</small>';
   }
   async function loadReports(rows,fetchJson,cache){
     return Promise.all(rows.map(async function(row){
       try{
         var key=row.month+'|'+(row.generatedAt||'');
-        if(!cache[key]){
+        if(!cache[key]||row.status!=='final'){
           var report=await fetchJson('data/fire-monthly/'+row.month+'.json?v='+encodeURIComponent(row.generatedAt||'1'));
           if(report.month!==row.month||report.unavailable||!Array.isArray(report.hotspots)){throw Error('Laporan belum tersedia');}
           cache[key]=report;
@@ -42,7 +42,22 @@
       }catch(error){return {row:row,error:error};}
     }));
   }
-  var core={entries:entries,points:points,popup:popup,loadReports:loadReports};
+  function inRing(point,ring){
+    var inside=false;
+    for(var i=0,j=ring.length-1;i<ring.length;j=i++){
+      var a=ring[i],b=ring[j];
+      if((a[1]>point[1])!==(b[1]>point[1])&&point[0]<(b[0]-a[0])*(point[1]-a[1])/(b[1]-a[1])+a[0]){inside=!inside;}
+    }return inside;
+  }
+  function recentPoints(data,boundary,finalMonths){
+    var geometries=(boundary.features||[]).map(function(f){return f.geometry;});
+    return (data.features||[]).filter(function(f){
+      var c=f.geometry&&f.geometry.type==='Point'&&f.geometry.coordinates,p=f.properties||{};
+      if(!c||!Number.isFinite(c[0])||!Number.isFinite(c[1])||String(p.acq_date||'').slice(0,7)<START||finalMonths.has(String(p.acq_date||'').slice(0,7))){return false;}
+      return geometries.some(function(g){return (g.type==='Polygon'?[g.coordinates]:g.type==='MultiPolygon'?g.coordinates:[]).some(function(rings){return inRing(c,rings[0])&&!rings.slice(1).some(function(r){return inRing(c,r);});});});
+    }).map(function(f){var p=f.properties||{};return {date:p.acq_date,time:p.acq_time,latitude:f.geometry.coordinates[1],longitude:f.geometry.coordinates[0],satellite:p.satellite,frp:p.frp,village:p.village,district:p.district,regency:p.regency};});
+  }
+  var core={entries:entries,points:points,popup:popup,loadReports:loadReports,recentPoints:recentPoints};
   if(typeof module==='object'&&module.exports){module.exports=core;return;}
   var doc=root.document;
   var state={index:null,cache:{},generation:0,layer:null,renderer:null};
@@ -61,59 +76,61 @@
     row.className='layer-row environment-layer-row yg-hotspot-history';
     row.style.cssText='grid-template-columns:auto auto minmax(0,1fr);align-items:center';
     row.innerHTML='<input id="environment-layer-hotspot-history" type="checkbox" data-env="hotspot-history">'+
-      '<span class="swatch area" style="--yg-swatch-color:#b91c1c"></span><label for="environment-layer-hotspot-history">Histori titik api Riau</label>'+
+      '<span class="swatch area" style="--yg-swatch-color:#b91c1c"></span><label for="environment-layer-hotspot-history">Titik api Riau</label>'+
       '<div data-history-controls hidden style="grid-column:1 / -1;min-width:0;padding:4px 0 0 0">'+
-      '<label for="hotspot-history-month" style="display:block;font-size:11px;margin:4px 0">Periode laporan</label>'+
-      '<select id="hotspot-history-month" style="display:block;width:100%;max-width:100%;min-height:36px;border:1px solid #cbdcd3;border-radius:7px;background:#fff;color:#244337;padding:6px;font:inherit"></select>'+
       '<p data-history-status role="status" aria-live="polite" style="font-size:11px;line-height:1.5;margin:7px 0 0"></p>'+
       '<button type="button" data-history-retry hidden>Coba lagi</button></div>';
-    var input=row.querySelector('input'),controls=row.querySelector('[data-history-controls]'),select=row.querySelector('select'),note=row.querySelector('[data-history-status]'),retry=row.querySelector('button');
-    function options(rows,value){
-      select.innerHTML='<option value="all">Semua laporan sejak Juli 2026</option>'+rows.map(function(r){return '<option value="'+r.month+'">'+esc(monthLabel(r.month))+(r.status==='final'?'':' � sementara')+'</option>';}).join('');
-      select.value=rows.some(function(r){return r.month===value;})?value:'all';
-    }
+    var input=row.querySelector('input'),controls=row.querySelector('[data-history-controls]'),note=row.querySelector('[data-history-status]'),retry=row.querySelector('button'),busy=false,lastRefresh=0;
     async function render(refresh){
       var generation=++state.generation;
-      retry.hidden=true;select.disabled=true;note.textContent='Memuat histori titik api.';
+      busy=true;retry.hidden=true;note.textContent='Memuat titik api\u2026';
       try{
         if(refresh||!state.index){
           var index=await json('data/fire-monthly/index.json?v='+Date.now());
           if(generation!==state.generation){return;}
-          state.index=index;options(entries(index),select.value);
+          state.index=index;
         }
-        var available=entries(state.index),selected=select.value||'all';
-        var rows=available.filter(function(r){return selected==='all'||r.month===selected;});
+        var rows=entries(state.index);
         var results=await loadReports(rows,json,state.cache);
+        var recent=await Promise.allSettled([json('data/hotspot-high-confidence.geojson?v='+Date.now()),json('data/batas_provinsi_riau_dissolve.geojson')]);
         if(generation!==state.generation||!input.checked){return;}
         state.layer.clearLayers();
-        var count=0,loaded=0,failed=[],temporary=false;
+        var count=0,failed=[],finalMonths=new Set(),latest='';
+        function add(p,month,status){
+          if(p.date>latest){latest=p.date;}
+          L.circleMarker([Number(p.latitude),Number(p.longitude)],{renderer:state.renderer,radius:4,color:'#fff',weight:.8,fillColor:'#b91c1c',fillOpacity:.85})
+            .bindPopup(popup(p,month,status)).addTo(state.layer);count++;
+        }
         results.forEach(function(result){
           if(result.error){failed.push(monthLabel(result.row.month));return;}
-          loaded++;temporary=temporary||result.report.status!=='final';
-          points(result.report,result.row.month).forEach(function(p){
-            L.circleMarker([Number(p.latitude),Number(p.longitude)],{renderer:state.renderer,radius:4,color:'#fff',weight:.8,fillColor:'#b91c1c',fillOpacity:.85})
-              .bindPopup(popup(p,result.row.month,result.report.status)).addTo(state.layer);count++;
-          });
+          if(result.report.status==='final'){finalMonths.add(result.row.month);}
+          points(result.report,result.row.month).forEach(function(p){add(p,result.row.month,result.report.status);});
         });
-        if(!rows.length){note.textContent='Belum ada laporan titik api sejak Juli 2026.';}
-        else{
-          note.textContent=count.toLocaleString('id-ID')+' deteksi � '+loaded+' laporan'+(temporary?' � termasuk laporan sementara':' final')+'. '+
-            (selected==='all'?'Arsip tersedia: '+monthLabel(available[0].month)+'-'+monthLabel(available[available.length-1].month)+'. ':'')+
-            (failed.length?'Belum termuat: '+failed.join(', ')+'.':'');
-        }
-        retry.hidden=!failed.length;
+        if(recent.every(function(r){return r.status==='fulfilled';})){
+          var seen=new Set();
+          results.filter(function(r){return !r.error;}).forEach(function(r){points(r.report,r.row.month).forEach(function(p){seen.add([p.date,String(p.time||'').padStart(4,'0'),Number(p.latitude).toFixed(5),Number(p.longitude).toFixed(5),p.satellite||''].join('|'));});});
+          recentPoints(recent[0].value,recent[1].value,finalMonths).forEach(function(p){
+            var month=String(p.date||'').slice(0,7),key=[p.date,String(p.time||'').padStart(4,'0'),Number(p.latitude).toFixed(5),Number(p.longitude).toFixed(5),p.satellite||''].join('|');
+            if(!seen.has(key)&&points({hotspots:[p]},month).length){seen.add(key);add(p,month,'recent');}
+          });
+        }else{failed.push('data terbaru');}
+        note.textContent=count.toLocaleString('id-ID')+' deteksi sejak Juli 2026'+(latest?' \u00b7 terakhir '+latest.split('-').reverse().join('/'):'')+'.'+(failed.length?' Sebagian data belum termuat.':'');
+        retry.hidden=!failed.length;lastRefresh=Date.now();
         if(input.checked){state.layer.addTo(map);}
       }catch(error){
         if(generation!==state.generation){return;}
         state.layer.clearLayers();note.textContent='Histori titik api belum dapat dimuat. Silakan coba lagi.';retry.hidden=false;
-      }finally{if(generation===state.generation){select.disabled=false;}}
+      }finally{if(generation===state.generation){busy=false;}}
     }
     input.addEventListener('change',function(){
       controls.hidden=!input.checked;
-      if(input.checked){render(true);}else{state.generation++;select.disabled=false;map.removeLayer(state.layer);}
+      if(input.checked){render(true);}else{state.generation++;busy=false;map.removeLayer(state.layer);}
     });
-    select.addEventListener('change',function(){render(false);});
     retry.addEventListener('click',function(){render(true);});
+    root.setInterval(function(){if(input.checked&&!busy&&!doc.hidden){render(true);}},300000);
+    doc.addEventListener('visibilitychange',function(){if(input.checked&&!busy&&!doc.hidden&&Date.now()-lastRefresh>60000){render(true);}});
+    var old=doc.getElementById('environment-layer-hotspot');
+    if(old){old.closest('.environment-layer-row').remove();}
     list.appendChild(row);
     doc.dispatchEvent(new CustomEvent('yg:environment-layer-controls-ready'));
     return true;
