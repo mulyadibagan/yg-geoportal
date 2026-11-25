@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generatedAt": "2026-11-25T07:23:10.013Z",
+  "generatedAt": "2026-11-25T08:25:43.567Z",
   "periodDays": 30,
   "confidenceFilter": "high",
   "excludedSourceTypes": [
@@ -36860,7 +36860,7 @@
         "land_cover_class": 60,
         "land_cover_label": "bare / sparse vegetation",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:20.375680+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:57.688863+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 3
       }
@@ -36886,7 +36886,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:20.134900+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:54.431706+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -36912,7 +36912,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.761651+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:04.761940+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -36938,7 +36938,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272257+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856385+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -36964,7 +36964,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272276+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856405+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 2
       }
@@ -36990,7 +36990,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.761659+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:04.761958+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -37016,7 +37016,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:20.375697+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:57.688893+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -37042,7 +37042,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:20.375702+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:57.688899+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -37068,7 +37068,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:20.375705+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:57.688902+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -37094,7 +37094,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:22.220970+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:54.172920+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -37120,7 +37120,267 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.761678+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:04.761970+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          141.45779,
+          -9.05348
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0618",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 333.75,
+        "frp": 33.88,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:25:54.430497+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          141.45496,
+          -8.92132
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0618",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 358.66,
+        "frp": 101.12,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:03.469256+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          141.46606,
+          -8.91978
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0618",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 331.25,
+        "frp": 27.82,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:03.469266+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.83679,
+          -8.82229
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0618",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 345.12,
+        "frp": 73.4,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 90,
+        "land_cover_label": "herbaceous wetland",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856416+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.57587,
+          -8.42995
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0618",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 338.33,
+        "frp": 57.42,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856421+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.31052,
+          -8.34216
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0618",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 343.13,
+        "frp": 72.3,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856424+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.35663,
+          -7.81562
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0618",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 332.76,
+        "frp": 45.89,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856428+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.09886,
+          -7.7149
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0618",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 326.95,
+        "frp": 42.31,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856432+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.08658,
+          -7.46368
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0618",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 329.99,
+        "frp": 37.93,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856435+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.50343,
+          -7.41625
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0618",
+        "satellite": "Aqua",
+        "confidence": "high",
+        "brightness": 327.68,
+        "frp": 30.75,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856438+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -64386,7 +64646,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:17.793837+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.469272+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -64412,7 +64672,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:20.134359+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:55.386742+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -64438,7 +64698,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:22.220544+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:59.744472+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -64464,7 +64724,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:26.517544+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.468864+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -64490,7 +64750,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:26.517561+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.468895+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -64516,7 +64776,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:26.517581+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.468900+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -64542,7 +64802,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:24.380497+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:00.006429+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -64568,7 +64828,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:24.380515+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:00.006446+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -64594,9 +64854,529 @@
         "land_cover_class": 60,
         "land_cover_label": "bare / sparse vegetation",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:26.518017+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:00.257025+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 2
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          138.78683,
+          -8.29951
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0448",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 21.03,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856443+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.01837,
+          -8.1432
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0448",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.13,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856446+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.49585,
+          -8.01276
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0448",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 6.81,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856450+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          141.03426,
+          -8.00046
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0448",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.6,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:03.469277+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.59637,
+          -7.985
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0448",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.25,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856456+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.73099,
+          -7.97714
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0448",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 20.48,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856459+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          141.14517,
+          -7.72719
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0448",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 7.06,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:03.469281+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.62474,
+          -7.68571
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0448",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 7.39,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856462+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.62564,
+          -7.68206
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0448",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 13.92,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856466+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.64551,
+          -7.42082
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0448",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 6.12,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856470+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          140.50456,
+          -7.40884
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0448",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 5.91,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856474+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.93235,
+          -5.07748
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0450",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.28,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:04.761975+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.44038,
+          -5.04054
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0450",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 6.81,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:04.761979+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.40553,
+          -4.91682
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0450",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17.19,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:04.761983+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.86058,
+          -4.58294
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0450",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.4,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:04.761987+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.86068,
+          -4.58
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0450",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 10.52,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:04.761990+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.2561,
+          -4.2157
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0450",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 11.93,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:04.761994+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.25552,
+          -4.21034
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0450",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.54,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:04.761998+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.47233,
+          -4.10917
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0450",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 9.04,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:04.762001+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.15213,
+          -3.10514
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0450",
+        "satellite": "N20",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 20.96,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:04.762005+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
       }
     },
     {
@@ -127620,9 +128400,9 @@
         "land_cover_class": null,
         "land_cover_label": "unknown class",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:26.760461+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:01.125620+00:00",
         "persistent_thermal_candidate": true,
-        "thermal_detection_days_30d": 5
+        "thermal_detection_days_30d": 6
       }
     },
     {
@@ -127646,7 +128426,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:17.793859+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.469285+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127672,7 +128452,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:17.793889+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.469289+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127698,7 +128478,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272282+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856478+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127724,7 +128504,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272286+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856482+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127750,7 +128530,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272289+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856485+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127776,7 +128556,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272293+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856488+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127802,7 +128582,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272296+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856494+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127828,7 +128608,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.987105+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:04.298623+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127854,7 +128634,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272299+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856497+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127880,7 +128660,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272303+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856501+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127906,7 +128686,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272310+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856504+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127932,7 +128712,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272313+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856507+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127958,7 +128738,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.987122+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:04.298641+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -127984,7 +128764,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:20.134375+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:55.386787+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128010,7 +128790,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:20.134910+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:54.431719+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128036,7 +128816,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:20.134914+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:54.431724+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128062,7 +128842,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:20.134917+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:54.431728+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128088,7 +128868,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:20.134920+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:54.431732+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128114,7 +128894,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:26.987473+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.744353+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128140,7 +128920,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:26.987489+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.744371+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128166,7 +128946,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:26.987494+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.744376+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128192,7 +128972,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:26.987497+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.744380+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128218,7 +128998,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.761683+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:04.762012+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128244,7 +129024,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.761486+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.762520+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128270,7 +129050,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.761685+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:04.762017+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128296,7 +129076,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.761688+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:04.762021+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128322,7 +129102,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.761691+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:04.762024+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128348,7 +129128,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.761694+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:04.762028+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128374,7 +129154,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.761697+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:04.762032+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128400,7 +129180,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:27.761699+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:04.762036+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128426,7 +129206,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.116373+00:00",
+        "land_cover_checked_at": "2026-11-25T08:25:54.430524+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128452,7 +129232,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:17.793893+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.469293+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128478,7 +129258,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:17.793897+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:03.469303+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128504,7 +129284,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272317+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856511+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128530,7 +129310,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272320+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856514+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128556,7 +129336,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272323+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856518+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128582,7 +129362,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272326+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856520+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128608,7 +129388,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272330+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856523+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -128634,18 +129414,96 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-25T07:23:28.272332+00:00",
+        "land_cover_checked_at": "2026-11-25T08:26:05.856528+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          130.27141,
+          -9.82175
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0531",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 17.46,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": null,
+        "land_cover_label": "unknown class",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:01.125636+00:00",
+        "persistent_thermal_candidate": true,
+        "thermal_detection_days_30d": 6
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          122.06179,
+          -3.45895
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0533",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 14.46,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:26:04.762040+00:00",
+        "persistent_thermal_candidate": false,
+        "thermal_detection_days_30d": 1
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          127.76591,
+          -3.19598
+        ]
+      },
+      "properties": {
+        "acq_date": "2026-11-25",
+        "acq_time": "0533",
+        "satellite": "N21",
+        "confidence": "high",
+        "brightness": 367,
+        "frp": 12.2,
+        "daynight": "D",
+        "type": null,
+        "land_cover_class": 10,
+        "land_cover_label": "tree cover",
+        "land_cover_source": "ESA WorldCover 2021 v200 COG",
+        "land_cover_checked_at": "2026-11-25T08:25:55.386794+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
     }
   ],
   "landCoverScreening": {
-    "generatedAt": "2026-11-25T07:23:28.274132+00:00",
+    "generatedAt": "2026-11-25T08:26:05.859911+00:00",
     "product": "ESA WorldCover 2021 v200",
     "access": "Direct public Cloud-Optimized GeoTIFF",
     "maxAgeHours": 36,
-    "enrichedFeatures": 60,
+    "enrichedFeatures": 93,
     "queriedTiles": 16,
     "failedTiles": [],
     "method": "Native categorical class sampled at each FIRMS point from the public 10 m COG.",
