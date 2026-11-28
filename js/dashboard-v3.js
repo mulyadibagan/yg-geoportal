@@ -2043,12 +2043,12 @@
               '<small>Imbo Putui · ' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program</small>' +
             '</button>';
           }
-          if (name === "Yayasan Penabulu") {
+          if (name === penabuluName) {
             return '<button class="category-card dashboard-link funding-card funding-card-penabulu" type="button" data-open-penabulu>' +
               '<i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-penabulu.png" alt="" loading="lazy"></i>' +
               '<span class="funding-penabulu-name">' + escapeHtml(name) + '</span>' +
-              '<strong class="funding-penabulu-period">2026–2027</strong>' +
-              '<small>Desa Temiang · ' + formatNumber(count) + ' objek · ' + formatNumber(programCount) + ' program</small>' +
+              '<strong class="funding-penabulu-period">Kopi Liberika dan gambut</strong>' +
+              '<small>Desa Temiang, Bengkalis · 2026–2027</small>' +
             '</button>';
           }
           if (name === "MA Earth") {
