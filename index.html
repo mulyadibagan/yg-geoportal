@@ -397,6 +397,22 @@
 }
 </style>
   <link rel="stylesheet" href="css/penabulu-summary.css?v=20261104-1"/>
+  <style>
+    #penabulu-dashboard .penabulu-target-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 12px;
+    }
+    #penabulu-dashboard .penabulu-target-card { min-width: 0; }
+    @media (max-width: 760px) {
+      #penabulu-dashboard .penabulu-target-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
+    @media (max-width: 420px) {
+      #penabulu-dashboard .penabulu-target-grid { grid-template-columns: 1fr; }
+    }
+  </style>
 <link rel="stylesheet" href="css/dashboard-years.css?v=20261113-entry3">
 </head>
 <body>
@@ -598,8 +614,8 @@
       <button class="category-card dashboard-link funding-card funding-card-penabulu" type="button" data-open-penabulu>
         <i class="category-icon" aria-hidden="true"></i>
         <span class="funding-penabulu-name">Yayasan Penabulu</span>
-        <strong class="funding-penabulu-period">2026–2027</strong>
-        <small>Desa Temiang · lihat ringkasan program</small>
+        <strong class="funding-penabulu-period">Kopi Liberika dan gambut</strong>
+        <small>Desa Temiang, Bengkalis · 2026–2027</small>
       </button>
       <button class="category-card dashboard-link funding-card funding-card-ma-earth" type="button" data-open-ma-earth>
         <i class="category-icon funding-card-logo" aria-hidden="true"><img src="assets/funding-ma-earth.svg?v=20260902-official1" alt="" loading="lazy"></i><span>MA Earth</span>
@@ -919,29 +935,29 @@
         <span><b>Periode Proyek</b>Juni 2026 – Februari 2027</span>
         <span><b>Lokasi Proyek</b>Desa Temiang, Kabupaten Bengkalis, Riau</span>
       </div>
-      <p class="funding-penabulu-summary-modal">Penguatan usaha kopi Liberika yang dipimpin perempuan dan peningkatan ketahanan ekosistem gambut melalui mata pencaharian berkelanjutan berbasis komunitas.</p>
+      <p class="funding-penabulu-summary-modal">Program ini mendukung kelompok perempuan di Desa Temiang dalam pembibitan dan pengolahan kopi Liberika, serta membantu menjaga kondisi gambut dan memantau risiko kebakaran.</p>
       <div class="funding-penabulu-hero-actions">
-        <small class="funding-penabulu-status">Status: Program Berjalan</small>
+        <small class="funding-penabulu-status">Program berjalan</small>
         <a class="funding-penabulu-map-btn" href="webgis.html?donor=Penabulu&amp;village=Temiang&amp;layers=kopi,nursery_kopi,community_reports,sekat_kanal,tmat,fdrs">Lihat di Peta</a>
       </div>
     </header>
     <div class="funding-content">
-      <section class="penabulu-overview" aria-label="Ringkasan capaian Penabulu"><h3>Ringkasan capaian</h3><div id="penabulu-overview-metrics" aria-live="polite">Memuat ringkasan…</div></section>
       <section class="penabulu-section" aria-labelledby="penabulu-target-title">
-        <div class="funding-heading">
-          <div><span>Target dan capaian proyek</span><h3 id="penabulu-target-title">Dukungan dan hasil pelaksanaan</h3></div>
-          <p>Realisasi hanya dihitung setelah paket bukti pelaksanaan lengkap dan ditelaah.</p>
-        </div>
+        <div class="funding-heading"><div><h3 id="penabulu-target-title">Capaian di Temiang</h3></div></div>
         <div class="funding-indicators funding-indicators-penabulu penabulu-target-grid">
-          <article class="funding-indicator penabulu-target-card"><i>🌱</i><strong>10.000</strong><span>Benih Liberika dan paket media tanam diserahkan</span><small>Masing-masing 10.000 · Aktivitas 1.3.2 selesai, 21–23 September 2026</small></article>
-          <article class="funding-indicator penabulu-target-card"><i>☕</i><strong>1 sistem</strong><span>Micro-mill komunitas</span><small>Output 1.1 · 3 aktivitas telah terverifikasi</small></article>
-          <article class="funding-indicator penabulu-target-card"><i>🚧</i><strong>2 unit</strong><span>Sekat kanal lama diperbaiki</span><small>Selesai · 3–11 Agustus 2026 · dua sekat lama diperbaiki</small></article>
-          <article class="funding-indicator penabulu-target-card"><i>🔥</i><strong>2 titik</strong><span>Titik TMAT dan FDRS/EWS terpasang</span><small>Terpasang · 23–26 Agustus 2026 · berdasarkan laporan dan berita acara</small></article>
+          <article class="funding-indicator penabulu-target-card"><i>🌱</i><strong>10.000</strong><span>Benih Liberika dan paket media tanam diserahkan</span><small>10.000 benih dan 10.000 paket media tanam · 21–23 September 2026</small></article>
+          <article class="funding-indicator penabulu-target-card"><i>☕</i><strong>1 sistem</strong><span>Unit pengolahan kopi kelompok</span><small>Rumah jemur, mesin pengupas, dan panduan operasional</small></article>
+          <article class="funding-indicator penabulu-target-card"><i>🚧</i><strong>2 unit</strong><span>Sekat kanal lama diperbaiki</span><small>3–11 Agustus 2026</small></article>
+          <article class="funding-indicator penabulu-target-card"><i>🔥</i><strong>2 titik</strong><span>Pos pemantauan gambut dan risiko kebakaran terpasang</span><small>23–26 Agustus 2026</small></article>
         </div>
       </section>
+      <details class="penabulu-detail">
+        <summary>Rekap dokumentasi kegiatan</summary>
+      <section class="penabulu-overview" aria-label="Ringkasan capaian Penabulu"><h3>Ringkasan capaian</h3><div id="penabulu-overview-metrics" aria-live="polite">Memuat ringkasan…</div></section>
       <section class="penabulu-section funding-milestone-status" aria-label="Status output Penabulu">
         <p class="penabulu-evidence-empty">Memuat status 6 output dan 12 aktivitas...</p>
       </section>
+      </details>
       <details class="penabulu-detail"><summary>Laporan Interim Q1 · Juni–Agustus 2026</summary>
       <section class="penabulu-section" id="penabulu-interim-q1" aria-labelledby="penabulu-interim-title">
         <div class="funding-heading"><div><span>Pembaruan laporan · ditelaah 4 November 2026</span><h3 id="penabulu-interim-title">Laporan Interim Q1 · Juni–Agustus 2026</h3></div><p>Periode laporan Juni–Agustus 2026 · tanggal pengiriman pada laporan: 7 September 2026.</p></div>
@@ -954,12 +970,12 @@
       <details class="penabulu-detail"><summary>Bukti pelaksanaan</summary>
       <section class="penabulu-section penabulu-evidence-summary" aria-labelledby="penabulu-evidence-title">
         <div class="penabulu-evidence-heading">
-          <div><span>Evidence terverifikasi</span><h3 id="penabulu-evidence-title">Paket bukti pelaksanaan</h3></div>
-          <strong id="penabulu-evidence-status">Memuat evidence...</strong>
+          <div><span>Dokumentasi kegiatan</span><h3 id="penabulu-evidence-title">Dokumentasi terverifikasi</h3></div>
+          <strong id="penabulu-evidence-status">Memuat dokumentasi…</strong>
         </div>
-        <p class="penabulu-evidence-note">Basis penelaahan: paket bukti yang telah tercatat, laporan interim Q1, executive summary, dan berita acara pelaksanaan. Status bukti setiap kegiatan ditampilkan pada rinciannya. Kegiatan yang baru berada pada tahap UM tidak dihitung sebagai capaian.</p>
+        <p class="penabulu-evidence-note">Dokumentasi mencakup laporan kegiatan dan berita acara pelaksanaan.</p>
         <div id="penabulu-evidence-list" class="penabulu-evidence-list" aria-live="polite">
-          <p class="penabulu-evidence-empty">Memuat evidence Penabulu...</p>
+          <p class="penabulu-evidence-empty">Memuat dokumentasi Penabulu…</p>
         </div>
       </section>
       </details>
