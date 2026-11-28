@@ -1,6 +1,6 @@
 {
   "type": "FeatureCollection",
-  "generatedAt": "2026-11-27T23:21:31.974Z",
+  "generatedAt": "2026-11-28T00:39:20.659Z",
   "periodDays": 30,
   "confidenceFilter": "high",
   "excludedSourceTypes": [
@@ -16,869 +16,9 @@
     "VIIRS_NOAA20_NRT",
     "VIIRS_NOAA21_NRT"
   ],
-  "coverageStart": "2026-10-29",
-  "coverageEnd": "2026-11-27",
+  "coverageStart": "2026-10-30",
+  "coverageEnd": "2026-11-28",
   "features": [
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.7745,
-          -4.4812
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0716",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 327.09,
-        "frp": 60.12,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          123.10595,
-          -3.59603
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0716",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 328.01,
-        "frp": 44.42,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          126.70921,
-          -3.22273
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0716",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 332.42,
-        "frp": 29.78,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          126.71043,
-          -3.21153
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0716",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 327.38,
-        "frp": 22.53,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          119.70271,
-          -2.92092
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0716",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 327.24,
-        "frp": 122.86,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          128.11363,
-          -1.60984
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0716",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 327.92,
-        "frp": 24.18,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.59642,
-          -1.46385
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0716",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 372.73,
-        "frp": 358.85,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.61211,
-          -1.46161
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0716",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 324.39,
-        "frp": 52.13,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.59232,
-          -1.46081
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0716",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 369.82,
-        "frp": 327.85,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.72752,
-          0.79325
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0718",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 337.8,
-        "frp": 63.9,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          127.87442,
-          1.19989
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0718",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 325.41,
-        "frp": 17.76,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          103.4127,
-          -3.63962
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0854",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 346.49,
-        "frp": 50.64,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          130.26604,
-          -9.81871
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1200",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 324.26,
-        "frp": 19.24,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.56212,
-          -8.2469
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1200",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 318.71,
-        "frp": 142.19,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.55705,
-          -8.2466
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1200",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 317.56,
-        "frp": 130.76,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.55907,
-          -8.22942
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1200",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 313.38,
-        "frp": 99.37,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.78041,
-          -4.57401
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1200",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 317.23,
-        "frp": 57.22,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.78603,
-          -4.56468
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1200",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 324.38,
-        "frp": 88.17,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.79977,
-          -4.52876
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1200",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 319.84,
-        "frp": 65.12,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.70279,
-          -2.93948
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1202",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 315.18,
-        "frp": 47.79,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          128.11412,
-          -1.60132
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1202",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 326.08,
-        "frp": 22.56,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          127.43443,
-          -1.45601
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1202",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 315.4,
-        "frp": 12.28,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          127.90874,
-          0.54384
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1202",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 312.09,
-        "frp": 8.33,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          125.40224,
-          2.77788
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1202",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 314.91,
-        "frp": 15.31,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          111.57745,
-          -2.4724
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1340",
-        "satellite": "Terra",
-        "confidence": "high",
-        "brightness": 312.98,
-        "frp": 42.95,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.56949,
-          -8.24627
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1800",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 316.68,
-        "frp": 28.42,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.5713,
-          -8.23518
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1800",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 323.18,
-        "frp": 42.19,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.63995,
-          -7.87663
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1800",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 337.5,
-        "frp": 87.92,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.58292,
-          -7.8559
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1800",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 328.25,
-        "frp": 57.09,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.56807,
-          -7.85347
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1800",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 358.91,
-        "frp": 180.69,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.65762,
-          -7.81078
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1800",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 312.1,
-        "frp": 27.47,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.04147,
-          -3.43851
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1936",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 312.35,
-        "frp": 11.24,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.03281,
-          -3.4372
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1936",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 310.43,
-        "frp": 9.87,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.68562,
-          -2.63556
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1936",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 320.67,
-        "frp": 18.39,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.39174,
-          -2.57309
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1936",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 318.6,
-        "frp": 15.68,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.38302,
-          -2.57177
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1936",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 373.7,
-        "frp": 130.36,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.58627,
-          -2.51069
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1936",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 311.88,
-        "frp": 11.34,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.54457,
-          -0.97911
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1936",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 311.56,
-        "frp": 10.42,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          116.19656,
-          -0.61167
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1936",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 313.94,
-        "frp": 36.29,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          116.20394,
-          -0.61133
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1936",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 310.86,
-        "frp": 29.47,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          123.23656,
-          0.46912
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1936",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 312.3,
-        "frp": 9.93,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.2398,
-          1.08475
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1936",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 325.3,
-        "frp": 24.4,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.8014,
-          -4.52487
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1938",
-        "satellite": "Aqua",
-        "confidence": "high",
-        "brightness": 324.69,
-        "frp": 21.79,
-        "daynight": "N",
-        "type": null
-      }
-    },
     {
       "type": "Feature",
       "geometry": {
@@ -31876,13 +31016,7 @@
         "brightness": 310.78,
         "frp": 12.95,
         "daynight": "N",
-        "type": null,
-        "land_cover_class": 30,
-        "land_cover_label": "grassland",
-        "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.170938+00:00",
-        "persistent_thermal_candidate": false,
-        "thermal_detection_days_30d": 2
+        "type": null
       }
     },
     {
@@ -31902,13 +31036,7 @@
         "brightness": 315.41,
         "frp": 18.09,
         "daynight": "N",
-        "type": null,
-        "land_cover_class": 30,
-        "land_cover_label": "grassland",
-        "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.170955+00:00",
-        "persistent_thermal_candidate": false,
-        "thermal_detection_days_30d": 3
+        "type": null
       }
     },
     {
@@ -31928,13 +31056,7 @@
         "brightness": 315.05,
         "frp": 20.09,
         "daynight": "N",
-        "type": null,
-        "land_cover_class": 10,
-        "land_cover_label": "tree cover",
-        "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.939175+00:00",
-        "persistent_thermal_candidate": false,
-        "thermal_detection_days_30d": 1
+        "type": null
       }
     },
     {
@@ -31954,13 +31076,7 @@
         "brightness": 314.09,
         "frp": 13.46,
         "daynight": "N",
-        "type": null,
-        "land_cover_class": 60,
-        "land_cover_label": "bare / sparse vegetation",
-        "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.033319+00:00",
-        "persistent_thermal_candidate": false,
-        "thermal_detection_days_30d": 1
+        "type": null
       }
     },
     {
@@ -31984,7 +31100,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726801+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926477+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 2
       }
@@ -32010,7 +31126,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726818+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926498+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32036,7 +31152,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726824+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926502+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32062,7 +31178,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111594+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545673+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32088,7 +31204,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.939193+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:31.111296+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32114,7 +31230,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.939199+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:31.111315+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32140,7 +31256,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.939203+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:31.111320+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32166,7 +31282,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.939207+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:31.111323+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32192,7 +31308,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.939211+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:31.111325+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32218,7 +31334,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.939215+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:31.111327+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 2
       }
@@ -32244,7 +31360,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.939222+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:31.111330+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32270,7 +31386,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726829+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926505+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32296,7 +31412,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726832+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926508+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32322,7 +31438,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726836+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926510+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32348,7 +31464,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726840+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926513+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32374,7 +31490,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726843+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926516+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32400,7 +31516,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726847+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926518+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32426,7 +31542,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726854+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926520+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32452,7 +31568,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726857+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926522+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 2
       }
@@ -32478,7 +31594,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726861+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926524+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32504,7 +31620,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726864+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926526+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32530,7 +31646,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726868+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926531+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 2
       }
@@ -32556,7 +31672,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726872+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926533+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32582,7 +31698,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726874+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926535+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32608,7 +31724,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726877+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926536+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32634,7 +31750,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726881+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926539+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32660,7 +31776,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726884+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926542+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32686,7 +31802,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726890+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926544+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32712,7 +31828,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726893+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926547+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32738,7 +31854,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726896+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926549+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32764,7 +31880,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726900+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926551+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32790,7 +31906,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726902+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926556+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32816,7 +31932,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726906+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926559+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32842,7 +31958,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726909+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926561+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32868,7 +31984,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111613+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545693+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32894,7 +32010,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726912+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926563+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32920,7 +32036,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726916+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926566+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32946,7 +32062,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726919+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926568+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32972,7 +32088,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726924+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926569+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -32998,7 +32114,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111619+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545701+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33024,7 +32140,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111623+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545704+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33050,7 +32166,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726927+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926572+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33076,7 +32192,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726930+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926574+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33102,7 +32218,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726936+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926576+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33128,7 +32244,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726939+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926579+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33154,7 +32270,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726942+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926581+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33180,7 +32296,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726945+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926583+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33206,7 +32322,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726948+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926586+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33232,7 +32348,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726951+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926588+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33258,7 +32374,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726954+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926589+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33284,7 +32400,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726957+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926591+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33310,7 +32426,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:41.093327+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:30.470225+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 4
       }
@@ -33336,7 +32452,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726961+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926594+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 3
       }
@@ -33362,7 +32478,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726964+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926596+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33388,7 +32504,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111628+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545708+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -33414,1729 +32530,9 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726967+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926599+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          124.04606,
-          -9.70186
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0434",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 33.12,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          124.04453,
-          -9.69713
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0434",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 45.63,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          125.05429,
-          -9.41262
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0434",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.64,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          126.45213,
-          -8.80842
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0434",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 7.4,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.34113,
-          -8.33567
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0434",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 12.96,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          138.29585,
-          -8.24572
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0434",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 18.7,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          138.29532,
-          -8.24237
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0434",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 17.5,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          138.28493,
-          -8.19932
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0434",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.28,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          138.28848,
-          -8.19877
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0434",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.07,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.74284,
-          -7.61829
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0434",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 8.14,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          131.49055,
-          -7.28255
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0434",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.64,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          131.48996,
-          -7.27835
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0434",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 11.04,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.41415,
-          -1.26935
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0438",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 50.98,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.14617,
-          -0.98911
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0438",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 22.01,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          123.35951,
-          -0.9307
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0438",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 13.51,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          123.35683,
-          -0.93009
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0438",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 28.65,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.73089,
-          0.79346
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0438",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 16.57,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.73185,
-          0.7969
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0438",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 20.69,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          123.97466,
-          -10.16522
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0614",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 38.28,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          123.97367,
-          -10.16721
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 19.06,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          124.38515,
-          -10.05488
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 11.48,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          124.40016,
-          -10.03874
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.4,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          124.38872,
-          -10.02778
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.42,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          118.17241,
-          -8.34715
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.91,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          119.93784,
-          -4.92422
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 6.65,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          123.00366,
-          -4.79323
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.28,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.95818,
-          -4.67831
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 18.07,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.95747,
-          -4.67664
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 8.95,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.78278,
-          -4.62086
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 8.51,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.0602,
-          -4.61874
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 4.47,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.05637,
-          -4.61395
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.59,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.05933,
-          -4.61345
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.74,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.7907,
-          -4.56115
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.01,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.77998,
-          -4.55078
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 12.34,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.81074,
-          -4.52713
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 56.8,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.78331,
-          -4.50133
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 13.64,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.84094,
-          -4.49737
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 38.27,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.7457,
-          -4.48668
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 12.83,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.74606,
-          -4.48346
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 15.67,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.76293,
-          -4.48048
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 8.48,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.76162,
-          -4.47788
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.42,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.787,
-          -4.47011
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.29,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.78585,
-          -4.46766
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 6.73,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.1648,
-          -4.46108
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.88,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.13313,
-          -4.44676
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 5.09,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.27489,
-          -4.15219
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 33.86,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          119.80937,
-          -4.07112
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 7.37,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          119.811,
-          -4.07041
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.66,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.08113,
-          -3.99905
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.08,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          119.66388,
-          -3.93438
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.38,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.80202,
-          -3.63701
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 23.15,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.80164,
-          -3.63594
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 12.85,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          123.10995,
-          -3.59506
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 26.62,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          119.92583,
-          -3.20869
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.27,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.58957,
-          -3.13765
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 15.21,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.59239,
-          -3.13324
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 42.96,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.52555,
-          -3.02539
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 30,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.5229,
-          -3.0238
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 13.39,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.52724,
-          -3.02308
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0616",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 13.39,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          119.09123,
-          -3.26732
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 38.45,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.13807,
-          -2.86766
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 11.64,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.10979,
-          -2.85125
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.96,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.11235,
-          -2.84392
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 12.98,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.12314,
-          -2.84224
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 8.36,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.12159,
-          -2.83208
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 66.69,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.37952,
-          -2.59014
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 7.15,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.85115,
-          -2.49304
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 15.61,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          114.64373,
-          -2.43478
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 8.17,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.75591,
-          -1.66313
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 15.1,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.4049,
-          -1.56318
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 5.15,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.21411,
-          -1.52022
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.47,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.45061,
-          -1.50893
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 46.73,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.44966,
-          -1.50795
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 49.17,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.44408,
-          -1.4983
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.56,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.4427,
-          -1.49735
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 6.46,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.93217,
-          -1.42158
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 12.75,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.55981,
-          -1.1058
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 35.1,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.55733,
-          -1.10132
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 13.33,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.51211,
-          -1.01454
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.19,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.5105,
-          -1.01404
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.79,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.40875,
-          0.67733
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 21.18,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.73035,
-          0.79739
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 27.84,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.72541,
-          0.79743
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0618",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 16.12,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.56697,
-          -8.23835
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1539",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 8.54,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.63794,
-          -7.87695
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1539",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.52,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.92149,
-          -8.11307
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1720",
-        "satellite": "N",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 15.26,
-        "daynight": "N",
-        "type": null
       }
     },
     {
@@ -38216,1226 +35612,6 @@
         "brightness": 367,
         "frp": 20.26,
         "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          141.49963,
-          -5.14576
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0315",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 39.41,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.19413,
-          -9.68193
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 33.41,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.06075,
-          -9.5318
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 8.52,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          141.0015,
-          -9.03081
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 17.83,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          141.00151,
-          -9.0286
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.87,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.95325,
-          -9.00815
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 7.55,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          141.3093,
-          -8.98413
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.32,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          141.31017,
-          -8.98405
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.92,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          141.28014,
-          -8.95963
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 11.37,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          141.2791,
-          -8.95383
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 20.31,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.80626,
-          -8.50237
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 16.47,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.43707,
-          -8.38826
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.29,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.43803,
-          -8.38713
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 13.43,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.55446,
-          -8.35575
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.29,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.55518,
-          -8.35375
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 23.88,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.55347,
-          -8.35016
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.29,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.34094,
-          -8.33721
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 12.96,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          138.29163,
-          -8.24415
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 17.02,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          138.29369,
-          -8.24296
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 16.67,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.25185,
-          -8.06387
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 18.55,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          139.13065,
-          -7.93444
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 13.75,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          139.13281,
-          -7.92878
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 7.5,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          139.92535,
-          -7.92343
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 7.19,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          139.62704,
-          -7.8848
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0453",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.38,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          117.45248,
-          -8.70094
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 67.19,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          118.86387,
-          -8.60151
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.39,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          117.72343,
-          -8.59793
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 22.05,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          117.72204,
-          -8.59619
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 15.92,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          117.62718,
-          -8.48381
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 12.99,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          118.11211,
-          -8.2472
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 48.55,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          119.66717,
-          -5.48298
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.89,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          141.49934,
-          -5.14373
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 30.46,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.07803,
-          -4.71248
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.36,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          119.71039,
-          -4.6062
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 12.16,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          138.84323,
-          -3.87638
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 12.05,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.29478,
-          -2.52805
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 6.59,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          119.37447,
-          -2.01143
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 22.7,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.85875,
-          -1.89139
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 5.61,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.46655,
-          -1.58901
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 7.7,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.40675,
-          -1.56657
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 5.06,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.40912,
-          -1.56092
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 67.14,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          120.44596,
-          -1.49734
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0455",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 6.33,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          117.84264,
-          -8.89237
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0635",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 15.54,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          113.78696,
-          -8.35483
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0635",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.12,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          114.22461,
-          -8.00222
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0635",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.28,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.15495,
-          -2.90745
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0637",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.75,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.15707,
-          -2.90198
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0637",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 20.41,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.11652,
-          -2.85733
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0637",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 22.44,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.10849,
-          -2.8433
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0637",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 16.05,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.10768,
-          -2.83831
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0637",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 44.62,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.11339,
-          -2.83736
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0637",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 44.62,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.11163,
-          -2.83731
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0637",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 26.57,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.72371,
-          -2.70814
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0637",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 8.63,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.63717,
-          -2.69017
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0637",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 27.33,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.64652,
-          -2.68864
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0637",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 16.5,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.64964,
-          -2.68813
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0637",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 8.16,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          130.26096,
-          -9.81689
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1601",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.21,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          114.29108,
-          -2.17717
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1737",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.26,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          114.29322,
-          -2.17608
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1737",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 7.14,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          114.28883,
-          -2.17536
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1737",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 7.5,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          114.29607,
-          -2.17416
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1737",
-        "satellite": "N20",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 9.26,
-        "daynight": "N",
         "type": null
       }
     },
@@ -55420,7 +51596,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111633+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545712+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 2
       }
@@ -55446,7 +51622,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111637+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545716+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -55472,7 +51648,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111641+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545719+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 2
       }
@@ -55498,7 +51674,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726972+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926604+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -55524,7 +51700,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726975+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926606+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -55550,7 +51726,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111658+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545722+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -55576,7 +51752,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726978+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926609+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -55602,7 +51778,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111662+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545725+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -55628,7 +51804,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726982+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926613+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -55654,609 +51830,9 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111666+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545728+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.63086,
-          -8.32175
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0357",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 51.31,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          138.29439,
-          -8.24259
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0357",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 82.14,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          139.49336,
-          -7.9667
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0357",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 27.91,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          138.01588,
-          -7.9031
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0357",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 22.79,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.74283,
-          -7.61892
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0357",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 22.53,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          126.19302,
-          -8.9151
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0538",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.5,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          117.45042,
-          -8.70397
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0538",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 16.69,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.78535,
-          -4.50406
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 17.97,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.0439,
-          -4.17535
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 27.09,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          123.1049,
-          -3.59521
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 26.23,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          126.93871,
-          -3.52545
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 56.51,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.11764,
-          -3.29932
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 17.97,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.59309,
-          -3.14041
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 28.11,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.11583,
-          -2.85521
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 131.41,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          112.11794,
-          -2.8522
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.56,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.37776,
-          -2.59076
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 12.86,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          122.00136,
-          -1.37048
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 22.54,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          121.26277,
-          -1.34867
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 8.27,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          116.31434,
-          -1.27873
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 15.61,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          116.44483,
-          -1.25883
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 14.85,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          116.4409,
-          -1.25605
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 12.23,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          124.4474,
-          0.73231
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0540",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 10.75,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          125.41092,
-          2.78189
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "0542",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 22.36,
-        "daynight": "D",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.56369,
-          -7.92825
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1501",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 23.13,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.6393,
-          -7.87662
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1501",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 47.69,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.6501,
-          -7.81994
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1501",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 28.14,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.64389,
-          -7.81475
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1501",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 35.25,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.65143,
-          -7.81286
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1501",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 20.02,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          140.64441,
-          -7.81146
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1501",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 47.48,
-        "daynight": "N",
-        "type": null
-      }
-    },
-    {
-      "type": "Feature",
-      "geometry": {
-        "type": "Point",
-        "coordinates": [
-          116.26591,
-          -1.38485
-        ]
-      },
-      "properties": {
-        "acq_date": "2026-10-29",
-        "acq_time": "1821",
-        "satellite": "N21",
-        "confidence": "high",
-        "brightness": 367,
-        "frp": 13.12,
-        "daynight": "N",
-        "type": null
       }
     },
     {
@@ -76680,7 +72256,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726985+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926616+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -76706,7 +72282,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726989+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926619+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -76732,7 +72308,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726995+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926621+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -76758,7 +72334,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.726998+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926623+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -76784,7 +72360,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727001+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926625+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -76810,7 +72386,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111671+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545732+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -76836,7 +72412,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111676+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545737+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -76862,7 +72438,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727004+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926627+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -76888,7 +72464,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111679+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545739+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -76914,7 +72490,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727008+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926630+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -76940,7 +72516,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727011+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926632+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -76966,7 +72542,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727015+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926634+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -76992,7 +72568,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727017+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926636+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77018,7 +72594,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727020+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926638+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77044,7 +72620,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727024+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926640+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77070,7 +72646,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727033+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926642+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77096,7 +72672,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727036+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926644+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77122,7 +72698,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727040+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926647+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77148,7 +72724,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727043+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926649+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 2
       }
@@ -77174,7 +72750,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727046+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926652+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77200,7 +72776,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727049+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926654+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77226,7 +72802,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727052+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926655+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77252,7 +72828,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727055+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926657+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77278,7 +72854,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727058+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926659+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77304,7 +72880,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727060+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926661+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77330,7 +72906,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111684+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545743+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77356,7 +72932,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727067+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926664+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77382,7 +72958,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727069+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926666+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77408,7 +72984,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.046782+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:29.964063+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77434,7 +73010,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111688+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545747+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77460,7 +73036,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111692+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545750+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77486,7 +73062,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111695+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545753+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 2
       }
@@ -77512,7 +73088,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111700+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545755+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 2
       }
@@ -77538,7 +73114,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727072+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926668+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77564,7 +73140,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727076+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926670+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77590,7 +73166,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727079+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926674+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77616,7 +73192,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727083+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926675+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77642,7 +73218,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111704+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545758+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77668,7 +73244,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111708+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545760+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77694,7 +73270,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727086+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926678+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77720,7 +73296,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727090+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926680+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77746,7 +73322,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727093+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926681+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77772,7 +73348,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727096+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926683+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77798,7 +73374,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.265839+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:30.306578+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77824,7 +73400,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727102+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926685+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77850,7 +73426,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727105+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926687+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77876,7 +73452,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727108+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926689+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77902,7 +73478,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727110+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926690+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77928,7 +73504,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727113+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926693+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77954,7 +73530,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727119+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926695+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -77980,7 +73556,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727122+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926697+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78006,7 +73582,7 @@
         "land_cover_class": 30,
         "land_cover_label": "grassland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727125+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926699+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78032,7 +73608,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727128+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926700+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78058,7 +73634,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727131+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926702+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78084,7 +73660,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727136+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926704+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78110,7 +73686,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727139+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926706+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78136,7 +73712,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727157+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926708+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78162,7 +73738,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727160+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926709+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78188,7 +73764,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727163+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926712+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78214,7 +73790,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727165+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926714+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78240,7 +73816,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727168+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926716+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78266,7 +73842,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727172+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926719+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78292,7 +73868,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727175+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926721+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78318,7 +73894,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727178+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926724+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78344,7 +73920,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727184+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926726+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78370,7 +73946,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727187+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926728+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78396,7 +73972,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727190+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926730+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78422,7 +73998,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727193+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926732+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78448,7 +74024,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727196+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926735+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78474,7 +74050,7 @@
         "land_cover_class": 20,
         "land_cover_label": "shrubland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727199+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926737+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78500,7 +74076,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727202+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926739+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78526,7 +74102,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727205+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926740+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78552,7 +74128,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727208+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926742+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78578,7 +74154,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727211+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926744+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78604,7 +74180,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727216+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926746+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78630,7 +74206,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111712+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545765+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78656,7 +74232,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111715+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545768+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78682,7 +74258,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727219+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926748+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78708,7 +74284,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111718+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545771+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78734,7 +74310,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111721+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545774+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78760,7 +74336,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727222+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926750+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78786,7 +74362,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727225+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926752+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78812,7 +74388,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111725+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545776+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78838,7 +74414,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727228+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926755+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78864,7 +74440,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727231+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926757+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78890,7 +74466,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111728+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545780+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78916,7 +74492,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727234+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926759+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78942,7 +74518,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727237+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926761+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78968,7 +74544,7 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:48.727240+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:38.926763+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -78994,7 +74570,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111732+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545783+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -79020,7 +74596,7 @@
         "land_cover_class": 90,
         "land_cover_label": "herbaceous wetland",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:44.111738+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:32.545786+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 1
       }
@@ -79046,19 +74622,19 @@
         "land_cover_class": 10,
         "land_cover_label": "tree cover",
         "land_cover_source": "ESA WorldCover 2021 v200 COG",
-        "land_cover_checked_at": "2026-11-27T23:21:42.939227+00:00",
+        "land_cover_checked_at": "2026-11-28T00:39:31.111333+00:00",
         "persistent_thermal_candidate": false,
         "thermal_detection_days_30d": 2
       }
     }
   ],
   "landCoverScreening": {
-    "generatedAt": "2026-11-27T23:21:48.730411+00:00",
+    "generatedAt": "2026-11-28T00:39:38.928376+00:00",
     "product": "ESA WorldCover 2021 v200",
     "access": "Direct public Cloud-Optimized GeoTIFF",
     "maxAgeHours": 36,
-    "enrichedFeatures": 162,
-    "queriedTiles": 8,
+    "enrichedFeatures": 158,
+    "queriedTiles": 6,
     "failedTiles": [],
     "method": "Native categorical class sampled at each FIRMS point from the public 10 m COG.",
     "limitation": "WorldCover describes 2021 land cover and is a screening covariate, not fire verification.",
