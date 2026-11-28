@@ -404,7 +404,13 @@
       grid-template-columns: repeat(4, minmax(0, 1fr));
       gap: 12px;
     }
-    #penabulu-dashboard .penabulu-target-card { min-width: 0; }
+    #penabulu-dashboard .penabulu-target-card {
+      min-width: 0;
+      align-content: start;
+    }
+    #penabulu-dashboard .penabulu-target-card > small {
+      grid-column: 1 / -1;
+    }
     @media (max-width: 760px) {
       #penabulu-dashboard .penabulu-target-grid {
         grid-template-columns: repeat(2, minmax(0, 1fr));
